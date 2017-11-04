@@ -9,5 +9,7 @@ enum class Figure(val value: Int) {
     JACK(2),
     QUEEN(3),
     KING(4),
-    ACE(11)
+    ACE(11);
+
+    override fun toString(): String = name.toLowerCase().capitalize()
 }
