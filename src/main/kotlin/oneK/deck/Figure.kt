@@ -1,4 +1,4 @@
-package deck
+package oneK.deck
 
 /**
  * Created by Jakub Licznerski on 03.11.2017.
