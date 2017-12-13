@@ -37,9 +37,11 @@ data class Card(val figure: Figure, val color: Color) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Card) return false
-        if (figure != other.figure && color != other.color) return false
+        if (figure != other.figure || color != other.color) return false
         return true
     }
 
-    override fun hashCode(): Int = figure.value + color.value
+    //Implementation based on Josh Bloch's Effective Java
+    override fun hashCode() =
+            37 * figure.value.xor(figure.value.ushr(32)) + color.value.xor(color.value.ushr(32))
 }

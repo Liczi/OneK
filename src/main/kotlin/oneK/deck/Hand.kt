@@ -3,14 +3,27 @@ package oneK.deck
 /**
  * Created by Jakub Licznerski on 03.11.2017.
  */
-class Hand(val cards: List<Card>) {
+class Hand {
+
+    val cards: HashSet<Card>
+
+    constructor(cards: HashSet<Card>) {
+        this.cards = cards
+    }
+
+    constructor(cards: Array<Card>) {
+        this.cards = cards.toHashSet()
+    }
 
     companion object {
         @JvmStatic
         fun fromString(hand: String): Hand? {
+            if (hand.trim() == "") return Hand(hashSetOf())
             val cards = hand.split(",".toRegex())
-            val cardsList = cards.map { Card.fromString(it[0], it[1]) }
-            return if (cardsList.contains(null)) null else Hand(cardsList.requireNoNulls())
+            val cardsList = cards
+                    .map { it.trim() }
+                    .map { Card.fromString(it[0], it[1]) }
+            return if (cardsList.contains(null)) null else Hand(cardsList.requireNoNulls().toHashSet())
         }
     }
 
@@ -26,8 +39,6 @@ class Hand(val cards: List<Card>) {
         return true
     }
 
-    override fun hashCode(): Int {
-        return cards.hashCode()
-    }
-
+    //Implementation based on Josh Bloch's Effective Java
+    override fun hashCode() = cards.map { it.hashCode() }.reduceRight { i, acc -> 37 * acc + i }
 }

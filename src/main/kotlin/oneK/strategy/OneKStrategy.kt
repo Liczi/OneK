@@ -1,5 +1,6 @@
 package oneK.strategy
 
+import oneK.TestInter
 import java.util.logging.Logger
 
 /**
