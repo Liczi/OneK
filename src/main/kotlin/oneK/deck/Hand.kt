@@ -25,6 +25,12 @@ class Hand {
                     .map { Card.fromString(it[0], it[1]) }
             return if (cardsList.contains(null)) null else Hand(cardsList.requireNoNulls().toHashSet())
         }
+
+        @JvmStatic
+        fun getClassicDeck(): HashSet<Card> {
+            val cards = "9S,9C,9D,9H,JS,JC,JD,JH,QS,QC,QD,QH,KS,KC,KD,KH,TS,TC,TD,TH,AS,AC,AD,AH"
+            return fromString(cards)!!.cards
+        }
     }
 
     override fun toString(): String {
