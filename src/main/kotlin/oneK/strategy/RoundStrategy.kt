@@ -26,11 +26,12 @@ interface RoundStrategy {
 
         fun build(): RoundStrategy = this.strategy
 
-        fun setBombPoints(points: Int) {
+        fun setBombPoints(points: Int): Builder {
             this.strategy.getBombPoints = { points }
+            return this
         }
 
-        fun setPlayersQuant(players: Int) {
+        fun setPlayersQuant(players: Int): Builder {
             when (players) {
                 2 -> {
                     this.strategy.getTalonSize = { 2 }
@@ -46,10 +47,13 @@ interface RoundStrategy {
                 }
                 else -> throw IllegalArgumentException("Too many players")
             }
+
+            return this
         }
 
-        fun setBombAllowedBidThreshold(threshold: Int) {
+        fun setBombAllowedBidThreshold(threshold: Int): Builder {
             this.strategy.getBombAllowedBidThreshold = { threshold }
+            return this
         }
 
     }
