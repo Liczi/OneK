@@ -1,6 +1,7 @@
 package oneK.strategy
 
 import oneK.deck.Card
+import oneK.deck.Hand
 
 //todo TEST THIS CLASS !!1
 class DefaultRoundStrategy : RoundStrategy {
@@ -19,4 +20,5 @@ class DefaultRoundStrategy : RoundStrategy {
     override var getTalonSize: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalonsQuantity: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalons: () -> Array<HashSet<Card>> = { throw UninitializedPropertyAccessException() }
+    override var isValid = { hand: Hand -> true }
 }

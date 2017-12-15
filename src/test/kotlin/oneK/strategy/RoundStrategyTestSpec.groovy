@@ -1,8 +1,8 @@
-package oneK.deck
+package oneK.strategy
 
 import kotlin.UninitializedPropertyAccessException
-import oneK.strategy.DefaultRoundStrategy
-import oneK.strategy.RoundStrategy
+import oneK.deck.Card
+import oneK.deck.Hand
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -10,7 +10,7 @@ import static oneK.deck.Figure.*
 import static oneK.deck.Color.*
 
 
-class RoundStrategySpec extends Specification {
+class RoundStrategyTestSpec extends Specification {
     def "builder should build default strategy"() {
         expect:
         built.getBombPoints.invoke() == constructed.getBombPoints.invoke()

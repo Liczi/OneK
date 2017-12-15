@@ -1,5 +1,3 @@
 package oneK.player
 
-class Player {
-    //TODO IMPLEMENT
-}
+data class Player(val name: String)

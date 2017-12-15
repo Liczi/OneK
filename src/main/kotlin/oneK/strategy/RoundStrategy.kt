@@ -1,6 +1,7 @@
 package oneK.strategy
 
 import oneK.deck.Card
+import oneK.deck.Hand
 import java.lang.IllegalArgumentException
 
 interface RoundStrategy {
@@ -11,6 +12,11 @@ interface RoundStrategy {
     var getTalonSize: () -> Int
     var getTalonsQuantity: () -> Int
     var getTalons: () -> Array<HashSet<Card>>
+
+    //    var activateBomb()
+
+    //todo test this
+    var isValid: (Hand) -> Boolean
 
     //todo show talon listener ?
     //var getShowTalonThreshold: () -> Int
@@ -54,6 +60,11 @@ interface RoundStrategy {
         fun setBombAllowedBidThreshold(threshold: Int): Builder {
             this.strategy.getBombAllowedBidThreshold = { threshold }
             return this
+        }
+
+        //todo test this
+        fun setIsValid(isValid: (Hand) -> Boolean) {
+            // TODO(IMplement)
         }
 
     }
