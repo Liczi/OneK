@@ -15,6 +15,8 @@ class Hand {
         this.cards = cards.toHashSet()
     }
 
+    public fun contains(card: Card) = this.cards.any { it == card }
+
     companion object {
         @JvmStatic
         fun fromString(hand: String): Hand? {

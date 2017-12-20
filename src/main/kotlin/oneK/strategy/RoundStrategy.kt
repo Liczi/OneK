@@ -16,6 +16,7 @@ interface RoundStrategy {
     //    var activateBomb()
 
     //todo test this
+    // false if game could be restarted
     var isValid: (Hand) -> Boolean
 
     //todo show talon listener ?
