@@ -54,9 +54,11 @@ class Round(private val players: List<Player>,
         val ranking = mutableListOf<Int>()
         val players = mutableListOf<Player>()
         var count = 1
+        var firstColor: Color? = null
         for ((player, card) in this.table) {
-            val firstBonus = if (count > 0) 10 else 1
-            val playerRanking = card.figure.value * firstBonus * if (card.color == this.currentTrump) 100 else 1
+            firstColor = if (firstColor == null) card.color else firstColor
+            val firstBonus = if (card.color == firstColor) 100 else 0
+            val playerRanking = card.figure.value + firstBonus + if (card.color == this.currentTrump) 200 else 1
             count--
             ranking.add(playerRanking)
             players.add(player)
@@ -139,7 +141,10 @@ class Round(private val players: List<Player>,
         this.hands[currentPlayer]!!.cards.addAll(this.strategy.getTalons()[talonIndex])
     }
 
-    public fun canChangeBid(newBid: Int) = newBid in this.bid..MAXIMUM_BID && this.gameIsLocked && !roundHasEnded
+    public fun canChangeBid(newBid: Int) = newBid in this.bid..MAXIMUM_BID &&
+            newBid % 10 == 0 &&
+            this.gameIsLocked &&
+            !roundHasEnded
 
     public fun changeBid(newBid: Int) {
         require(canChangeBid(newBid))
@@ -198,8 +203,13 @@ class Round(private val players: List<Player>,
     }
 
     public fun canPlayTriumph(card: Card, player: Player): Boolean {
-        if (!((card.figure == Figure.KING || card.figure == Figure.QUEEN) && !gameIsLocked && table.isEmpty())) return false
-        val otherTriumphCard = if (card.figure == Figure.QUEEN) Card(Figure.KING, card.color) else Card(Figure.QUEEN, card.color)
+        if (!((card.figure == Figure.KING || card.figure == Figure.QUEEN) &&
+                !gameIsLocked &&
+                table.isEmpty())) return false
+        val otherTriumphCard =
+                if (card.figure == Figure.QUEEN) Card(Figure.KING, card.color)
+                else Card(Figure.QUEEN, card.color)
+
         if (!(hands[player]!!.contains(otherTriumphCard))) return false
 
         return true
