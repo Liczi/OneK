@@ -1,4 +1,4 @@
-package oneK.strategy
+package oneK.round.strategy
 
 import oneK.deck.Card
 import oneK.deck.Hand

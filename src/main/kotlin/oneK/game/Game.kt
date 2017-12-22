@@ -4,12 +4,12 @@ import oneK.deck.Card
 import oneK.deck.Hand
 import oneK.game.events.GameEvent
 import oneK.game.events.GameEventPublisher
+import oneK.game.strategy.GameStrategy
 import oneK.player.Player
 import oneK.round.Round
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
-import oneK.strategy.GameStrategy
-import oneK.strategy.RoundStrategy
+import oneK.round.strategy.RoundStrategy
 
 public val MAXIMUM_BID = 400
 public val GAME_GOAL = 1000
@@ -25,7 +25,7 @@ class Game(private val players: List<Player>,
     var winner: Player? = null
 
     var biddingEnded = false
-    val ranking: MutableMap<Player, Int>
+    internal var ranking: MutableMap<Player, Int>
     internal var hands: LinkedHashMap<Player, Hand>
     internal val bidders: MutableMap<Player, Boolean>
 
@@ -74,6 +74,7 @@ class Game(private val players: List<Player>,
         val biddingEntries = bidders.filter { entry -> entry.value }
         require(biddingEntries.size == 1)
         val biddingWinner = biddingEntries.keys.first()
+        this.currentPlayer = biddingWinner
 
         val newOrder = mutableListOf(biddingWinner)
         var index = players.indexOf(biddingWinner)
@@ -91,7 +92,6 @@ class Game(private val players: List<Player>,
         this.startRound(newOrder)
     }
 
-    //todo test for deadloop
     private fun nextPlayer() {
         val currentIndex = players.indexOf(currentPlayer)
         val nextIndex = if (currentIndex == players.size - 1) 0 else currentIndex + 1
@@ -150,10 +150,11 @@ class Game(private val players: List<Player>,
 
 
     public fun canBid(hand: Hand, bid: Int): Boolean {
-        return this.gameStrategy.canBid(hand, bid) &&
+        return bid > currentBid &&
+                this.gameStrategy.canBid(hand, bid) &&
                 !biddingEnded &&
                 bid % 10 == 0 &&
-                bid - currentBid <= gameStrategy.getMaxBidStep() &&
+                currentBid - bid <= this.gameStrategy.getMaxBidStep() &&
                 bid <= gameStrategy.getUpperBidThreshold()
     }
 
@@ -166,5 +167,6 @@ class Game(private val players: List<Player>,
     public fun fold() {
         bidders.put(currentPlayer, false)
         if (bidders.values.filter { it }.size <= 1) endBidding()
+        else nextPlayer()
     }
 }

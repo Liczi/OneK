@@ -1,4 +1,4 @@
-package oneK.strategy
+package oneK.round.strategy
 
 import kotlin.UninitializedPropertyAccessException
 import oneK.deck.Card

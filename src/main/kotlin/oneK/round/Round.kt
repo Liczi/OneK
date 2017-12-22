@@ -9,7 +9,7 @@ import oneK.player.Player
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
 import oneK.round.events.RoundEventPublisher
-import oneK.strategy.RoundStrategy
+import oneK.round.strategy.RoundStrategy
 import kotlin.math.round
 
 //TODO
@@ -22,7 +22,7 @@ class Round(private val players: List<Player>,
             internal var hands: LinkedHashMap<Player, Hand>) {
 
     internal val table: LinkedHashMap<Player, Card>
-    val score: MutableMap<Player, Int>
+    internal var score: MutableMap<Player, Int>
 
     internal var gameIsLocked = true
     var roundHasEnded = false
@@ -36,8 +36,6 @@ class Round(private val players: List<Player>,
     init {
         this.table = linkedMapOf()
         this.score = mutableMapOf(*(players.map { Pair(it, 0) }.toTypedArray()))
-//        this.hands = linkedMapOf()
-//        shuffleAndAssign()
     }
 
 

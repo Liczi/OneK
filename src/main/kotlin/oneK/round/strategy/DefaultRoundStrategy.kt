@@ -1,4 +1,4 @@
-package oneK.strategy
+package oneK.round.strategy
 
 import oneK.deck.Card
 import oneK.deck.Hand
@@ -19,5 +19,5 @@ class DefaultRoundStrategy : RoundStrategy {
     override var getTalonSize: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalonsQuantity: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalons: () -> Array<HashSet<Card>> = { throw UninitializedPropertyAccessException() }
-    override var isValid = { hand: Hand -> true }
+    override var isValid = { _: Hand -> true }
 }

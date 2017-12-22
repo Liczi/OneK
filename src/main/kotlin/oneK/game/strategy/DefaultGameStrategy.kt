@@ -1,4 +1,4 @@
-package oneK.strategy
+package oneK.game.strategy
 
 import oneK.deck.Hand
 import oneK.game.MAXIMUM_BID
@@ -8,7 +8,7 @@ class DefaultGameStrategy : GameStrategy {
     override var getInitialBid = { 100 }
     override var getMaxBidStep = { 10 }
     override var canBid: (Hand, Int) -> Boolean = { hand, bid ->
-        bid <= getMaxBidStep() && (bid <= 120 || hand.hasTriumph())
+        bid <= 120 || hand.hasTriumph()
     }
     override var getLimitedScoringThreshold = { 900 }
 }

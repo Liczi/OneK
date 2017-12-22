@@ -4,7 +4,7 @@ import oneK.deck.Card
 import oneK.deck.Color
 import oneK.deck.Hand
 import oneK.player.Player
-import oneK.strategy.RoundStrategy
+import oneK.round.strategy.RoundStrategy
 import spock.lang.Specification
 import spock.lang.Unroll
 

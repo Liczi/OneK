@@ -1,4 +1,4 @@
-package oneK.strategy
+package oneK.game.strategy
 
 import oneK.deck.Hand
 
@@ -18,30 +18,35 @@ interface GameStrategy {
             this.strategy = DefaultGameStrategy()
         }
 
-        public fun setUpperBidThreshold(threshold: Int) {
+        public fun setUpperBidThreshold(threshold: Int): Builder {
             this.strategy.getUpperBidThreshold = { threshold }
+            return this
         }
 
-        public fun setInitialBid(bid: Int) {
+        public fun setInitialBid(bid: Int): Builder {
             this.strategy.getInitialBid = { bid }
+            return this
         }
 
-        public fun setMaxBidStep(step: Int) {
+        public fun setMaxBidStep(step: Int): Builder {
             this.strategy.getMaxBidStep = { step }
+            return this
         }
 
         /**
          * You never know what is in stash - must be checked
          */
-        public fun setCanBid(canBid: (Hand, Int) -> Boolean) {
+        public fun setCanBid(canBid: (Hand, Int) -> Boolean): Builder {
             this.strategy.canBid = canBid
+            return this
         }
 
         //todo ??
 //        public fun setSubmitScores(submitScores: )
 
-        public fun setLimitedScoringThreshold(threshold: Int) {
+        public fun setLimitedScoringThreshold(threshold: Int): Builder {
             this.strategy.getUpperBidThreshold = { threshold }
+            return this
         }
 
         public fun build(): GameStrategy {
