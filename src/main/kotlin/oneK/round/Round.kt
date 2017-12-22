@@ -1,16 +1,22 @@
-package oneK.game
+package oneK.round
 
 import oneK.deck.Card
 import oneK.deck.Color
 import oneK.deck.Figure
 import oneK.deck.Hand
+import oneK.game.MAXIMUM_BID
 import oneK.player.Player
+import oneK.round.events.RoundEvent
+import oneK.round.events.RoundEventEmitter
+import oneK.round.events.RoundEventListener
 import oneK.strategy.RoundStrategy
 import kotlin.math.round
 import kotlin.collections.LinkedHashMap
 
+//TODO
+//Think about listeners concept (bomb, end of round, end of stage, restart...)
+//Maybe event system ?
 
-//tODO test firmly
 class Round(private val players: List<Player>,
             internal val strategy: RoundStrategy,
             internal var bid: Int) {
@@ -25,11 +31,17 @@ class Round(private val players: List<Player>,
     internal var currentPlayer = players[0]
     private val biddingPlayer = currentPlayer
 
+    private val eventEmmiter = RoundEventEmitter()
+
 
     init {
         this.table = linkedMapOf()
         this.score = mutableMapOf(*(players.map { Pair(it, 0) }.toTypedArray()))
         this.hands = linkedMapOf()
+        shuffleAndAssign()
+    }
+
+    private fun shuffleAndAssign() {
         val cards = Hand.getClassicDeck().shuffled().toMutableList()
         assignTalonCards(cards)
         assignPlayerCards(cards, players)
@@ -45,6 +57,7 @@ class Round(private val players: List<Player>,
         this.score.replace(biddingPlayer, bidderScore)
         this.score.round()
         this.roundHasEnded = true
+        this.eventEmmiter.emit(RoundEvent.ROUND_ENDED)
     }
 
     /**
@@ -69,6 +82,7 @@ class Round(private val players: List<Player>,
         addPoints(winningPlayer, tableCardsValueSum)
         this.table.clear()
         this.currentPlayer = winningPlayer
+        this.eventEmmiter.emit(RoundEvent.STAGE_ENDED)
     }
 
     private fun addPoints(player: Player, points: Int) {
@@ -76,11 +90,11 @@ class Round(private val players: List<Player>,
         this.score.replace(player, previousScore + points)
     }
 
-
     private fun nextPlayer() {
         val currentIndex = players.indexOf(currentPlayer)
         val nextIndex = if (currentIndex == players.size - 1) 0 else currentIndex + 1
         this.currentPlayer = players.elementAt(nextIndex)
+        this.eventEmmiter.emit(RoundEvent.PLAYER_CHANGED)
     }
 
 
@@ -115,22 +129,25 @@ class Round(private val players: List<Player>,
         return result
     }
 
-/* TODO procedure
-    if the cards given to player are not valid he could decide to re-draw
-    the current player begins, the game is locked (he cant place any
-    he picks talon
-    can change bet here or call bomb according to the strategy
-    redistibutes talon, the game unlocks here
 
-    he can place a card on the board, and the current player is changed
-    meanwhile the table is checked if it contains number of cards equal to number of players
-    if so, the stage is over, the score is updated and cards deleted
-    when currentPlayer has no more cards to play, tha game ends
- */
+    public fun restart(restartingHand: Hand) {
+        //we can restart game on our turn so the game not necessarily should be locked or unlocked
+        //only additional req is that no cards were scored
+        require(canRestart(restartingHand))
+        this.table.clear()
+        this.hands.clear()
+        this.score.clear()
 
+        this.gameIsLocked = true
+        this.roundHasEnded = false
+        this.currentTrump = null
+        this.currentPlayer = players[0]
+        shuffleAndAssign()
+        this.eventEmmiter.emit(RoundEvent.ROUND_RESTARTED)
+    }
 
-    public fun isHandValid(hand: Hand): Boolean {
-        return this.strategy.isValid(hand)
+    public fun canRestart(hand: Hand): Boolean {
+        return !this.strategy.isValid(hand) && score.values.all { it == 0 }
     }
 
     /**
@@ -139,6 +156,7 @@ class Round(private val players: List<Player>,
     public fun pickTalon(talonIndex: Int) {
         require(talonIndex in 0..(this.strategy.getTalonsQuantity() - 1) && this.gameIsLocked && !roundHasEnded)
         this.hands[currentPlayer]!!.cards.addAll(this.strategy.getTalons()[talonIndex])
+        this.eventEmmiter.emit(RoundEvent.TALON_PICKED)
     }
 
     public fun canChangeBid(newBid: Int) = newBid in this.bid..MAXIMUM_BID &&
@@ -149,21 +167,23 @@ class Round(private val players: List<Player>,
     public fun changeBid(newBid: Int) {
         require(canChangeBid(newBid))
         this.bid = newBid
+        this.eventEmmiter.emit(RoundEvent.BID_CHANGED)
     }
 
-    //todo test
     public fun activateBomb() {
         require(this.gameIsLocked && strategy.getBombAllowedBidThreshold() >= bid)
 
         val opponents = players.filter { it != currentPlayer }
         opponents.forEach { addPoints(it, strategy.getBombPoints()) }
+        this.eventEmmiter.emit(RoundEvent.BOMB_ACTIVATED)
         this.roundHasEnded = true
+        this.eventEmmiter.emit(RoundEvent.ROUND_ENDED)
     }
 
     /**
      * Current player distributes card, that he owns to other player
      */
-    public fun distributeCard(toGive: Map<Player, Card>) {
+    public fun distributeCards(toGive: Map<Player, Card>) {
         require(!toGive.containsKey(currentPlayer) &&
                 toGive.size == this.hands.size - 1 &&
                 toGive.values.all { card -> currentPlayer.has(card) } &&
@@ -173,6 +193,7 @@ class Round(private val players: List<Player>,
         this.hands[currentPlayer]!!.cards.removeAll(toGive.values)
 
         this.gameIsLocked = false
+        this.eventEmmiter.emit(RoundEvent.ROUND_STARTED)
     }
 
     /**
@@ -182,6 +203,7 @@ class Round(private val players: List<Player>,
         require(currentPlayer.has(card) && !this.table.containsKey(currentPlayer) && !gameIsLocked)
 
         this.table.put(currentPlayer, card)
+        this.eventEmmiter.emit(RoundEvent.CARD_PLAYED)
         this.hands[currentPlayer]!!.cards.remove(card)
         nextPlayer()
 
@@ -198,6 +220,7 @@ class Round(private val players: List<Player>,
         require(canPlayTriumph(card, currentPlayer))
 
         this.currentTrump = card.color
+        this.eventEmmiter.emit(RoundEvent.TRIUMPH_CHANGED)
         addPoints(currentPlayer, card.color.value)
         play(card)
     }
@@ -215,8 +238,13 @@ class Round(private val players: List<Player>,
         return true
     }
 
+    //todo test
+    public fun registerListener(listener: RoundEventListener) {
+        this.eventEmmiter.addListener(listener)
+    }
+
     //EXTENSION
-    fun Player.has(card: Card) = hands[currentPlayer]!!.contains(card)
+    private fun Player.has(card: Card) = hands[currentPlayer]!!.contains(card)
 
     fun MutableMap<Player, Hand>.empty() = this.values.all { hand -> hand.cards.isEmpty() }
 

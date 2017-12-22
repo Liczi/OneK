@@ -80,4 +80,18 @@ class RoundStrategyTestSpec extends Specification {
         new RoundStrategy.Builder().setPlayersQuant(4).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
     }
 
+    def "isValid test"() {
+        setup:
+        def strategy = new RoundStrategy.Builder()
+                .setIsValid({ hand -> hand.containsAll(Hand.fromString("9H,9C,9D,9S")) })
+                .build()
+
+        when:
+        def r1 = strategy.isValid().invoke(Hand.fromString("9H,9C,9D,9S, AS, KD"))
+        def r2 = strategy.isValid().invoke(Hand.fromString("9H,9C,9D,AS"))
+
+        then:
+        r1
+        !r2
+    }
 }

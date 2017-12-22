@@ -1,4 +1,4 @@
-package oneK.game
+package oneK.round
 
 import oneK.deck.Card
 import oneK.deck.Color
@@ -47,7 +47,7 @@ class RoundTestSpec extends Specification {
         def givenToFirst = round.hands[players[0]].cards[0]
         def givenToSecond = round.hands[players[0]].cards[1]
         def cardsToGive = [(players[1]): givenToFirst, (players[2]): givenToSecond] as Map<Player, Card>
-        round.distributeCard(cardsToGive)
+        round.distributeCards(cardsToGive)
 
         then:
         round.hands[players[1]].cards.contains(givenToFirst)
@@ -165,5 +165,34 @@ class RoundTestSpec extends Specification {
         round.score[players[0]] == 40
         round.score[players[1]] == 105
 
+    }
+
+    def "round should restart properly"() {
+        setup:
+        def strategy = new RoundStrategy.Builder().setPlayersQuant(3).setIsValid({ hand -> false }).build()
+        def players = [new Player("P1"), new Player("P2"), new Player("P3")]
+        def round = new Round(players, strategy, 120)
+        def h1 = Hand.fromString("AS, KS, QS")
+        def h2 = Hand.fromString("AD, KD, QD")
+        def h3 = Hand.fromString("AC, KC, QC")
+        def talon = Hand.fromString("9S, 9C, 9D")
+
+//        round.gameIsLocked = false
+        round.strategy.setTalonCards.invoke(*[talon.cards])
+        round.hands = [
+                (players[0]): h1,
+                (players[1]): h2,
+                (players[2]): h3,
+        ]
+
+        when:
+        //any hand
+        round.restart(h1)
+
+        then:
+        round.hands[players[0]] != h1
+        round.hands[players[0]] != h2
+        round.hands[players[0]] != h3
+        !talon.cards.containsAll(round.strategy.getTalons.invoke().flatten())
     }
 }

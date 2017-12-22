@@ -44,10 +44,28 @@ class HandTestSpec extends Specification {
         Hand.fromString(hand) == Hand.fromString(parsedHand)
 
         where:
-        hand                  | parsedHand
-        "9C,9C"               | "9C"
-        "AS, KH,   QS, KH   " | "AS, KH, QS"
+        hand                     | parsedHand
+        "9C,9C"                  | "9C"
+        "AS, KH,   QS, KH   "    | "AS, KH, QS"
         "AS, AS, AS, AS, AS, AS" | "AS"
 
+    }
+
+    @Unroll
+    def "has triumph on #hand should return #result"() {
+        when:
+        def hasTriumph = Hand.fromString(hand).hasTriumph()
+
+        then:
+        hasTriumph == result
+
+        where:
+        hand                 | result
+        "9D"                 | false
+        "AD, KD, 9D"         | false
+        "KD, QD"             | true
+        "KS, QS, AD, AS"     | true
+        "KS, QS, KD, QD"     | true
+        "KS, QS, KD, QD, AS" | true
     }
 }

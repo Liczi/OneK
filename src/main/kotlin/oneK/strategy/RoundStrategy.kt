@@ -13,15 +13,11 @@ interface RoundStrategy {
     var getTalonsQuantity: () -> Int
     var getTalons: () -> Array<HashSet<Card>>
 
-    //    var activateBomb()
-
-    //todo test this
     // false if game could be restarted
     var isValid: (Hand) -> Boolean
 
     //todo show talon listener ?
     //var getShowTalonThreshold: () -> Int
-    //todo bomb listener ?
 
     class Builder {
 
@@ -63,9 +59,9 @@ interface RoundStrategy {
             return this
         }
 
-        //todo test this
-        fun setIsValid(isValid: (Hand) -> Boolean) {
-            // TODO(IMplement)
+        fun setIsValid(isValid: (Hand) -> Boolean): Builder {
+            this.strategy.isValid = isValid
+            return this
         }
 
     }

@@ -17,6 +17,15 @@ class Hand {
 
     public fun contains(card: Card) = this.cards.any { it == card }
 
+    public fun containsAll(hand: Hand) = this.cards.containsAll(hand.cards)
+
+    public fun hasTriumph(): Boolean {
+        val kings = this.cards.filter { it.figure == Figure.KING }
+        val queens = this.cards.filter { it.figure == Figure.QUEEN }
+
+        return kings.any { queens.map { it.color }.contains(it.color) }
+    }
+
     companion object {
         @JvmStatic
         fun fromString(hand: String): Hand? {
