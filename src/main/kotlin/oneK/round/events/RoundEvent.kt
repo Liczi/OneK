@@ -1,7 +1,6 @@
 package oneK.round.events
 
 enum class RoundEvent {
-    STAGE_STARTED,
     STAGE_ENDED,
     ROUND_STARTED,
     ROUND_ENDED,

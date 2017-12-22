@@ -3,7 +3,6 @@ package oneK.strategy
 import oneK.deck.Card
 import oneK.deck.Hand
 
-//todo TEST THIS CLASS !!1
 class DefaultRoundStrategy : RoundStrategy {
     override var getBombPoints: () -> Int = { 60 }
     override var getBombAllowedBidThreshold: () -> Int = { 120 }
