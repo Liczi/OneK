@@ -14,6 +14,7 @@ buildscript {
 
 apply plugin: 'kotlin'
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -31,6 +32,16 @@ sourceSets {
     test.groovy.srcDirs += 'src/test/kotlin'
 }
 
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId 'licznerski'
+            artifactId 'oneK'
+            version '0.0.1-SNAPSHOT'
+            from components.java
+        }
+    }
+}
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
