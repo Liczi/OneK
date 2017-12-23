@@ -1,6 +1,8 @@
 package oneK.game
 
 import oneK.deck.Card
+import oneK.deck.Color
+import oneK.deck.Figure
 import oneK.deck.Hand
 import oneK.player.Player
 import oneK.game.strategy.GameStrategy
@@ -108,7 +110,71 @@ class GameTestSpec extends Specification {
         game.currentPlayer == players[0]
     }
 
-    def "bidding not allowed over 120"() {
+    def "simple game with 2 cards 2 players"() {
+        setup:
+        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def gameStrategy = new GameStrategy.Builder().build()
+        def players = [new Player("P1"), new Player("P2")]
+
+        def game = new Game(players, gameStrategy, roundStrategy)
+        game.hands.replace(players[0], Hand.fromString("KS, QS"))
+        game.hands.replace(players[1], Hand.fromString("AS, QD"))
+
+
+        when:
+        game.fold()
+        def round = game.getCurrentRound()
+        round.gameIsLocked = false
+
+        round.triumph(new Card(Figure.KING, Color.SPADES))
+        round.play(new Card(Figure.ACE, Color.SPADES))
+        round.play(new Card(Figure.QUEEN, Color.DIAMONDS))
+        round.play(new Card(Figure.QUEEN, Color.SPADES))
+
+        then:
+        game.biddingEnded
+        round.roundHasEnded
+        game.ranking == [(players[0]): -100, (players[1]): 15]
+    }
+
+    def "simple game and starting new round"() {
+        setup:
+        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def gameStrategy = new GameStrategy.Builder().build()
+        def players = [new Player("P1"), new Player("P2")]
+
+        def game = new Game(players, gameStrategy, roundStrategy)
+        def h1 = Hand.fromString("KS, QS")
+        def h2 = Hand.fromString("AS, QD")
+
+        game.hands.replace(players[0], new Hand(Arrays.copyOf(h1.cards.toArray([] as Card[]), h1.cards.size())))
+        game.hands.replace(players[1], new Hand(Arrays.copyOf(h2.cards.toArray([] as Card[]), h2.cards.size())))
+
+
+        when:
+        game.fold()
+        def round = game.getCurrentRound()
+        round.gameIsLocked = false
+
+        round.triumph(new Card(Figure.KING, Color.SPADES))
+        round.play(new Card(Figure.ACE, Color.SPADES))
+        round.play(new Card(Figure.QUEEN, Color.DIAMONDS))
+        round.play(new Card(Figure.QUEEN, Color.SPADES))
+        game.nextRound(players[1])
+        game.fold()
+        round = game.getCurrentRound()
+
+        then:
+        game.biddingEnded
+        game.ranking == [(players[0]): -100, (players[1]): 15]
+        !round.hands[players[0]].containsAll(h1)
+        !round.hands[players[1]].containsAll(h2)
+        round.gameIsLocked
+        round.currentPlayer == players[1]
+
+    }
+
+    def "bidding not allowed over 120 without triumph"() {
         setup:
         def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()

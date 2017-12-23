@@ -31,7 +31,6 @@ sourceSets {
     test.groovy.srcDirs += 'src/test/kotlin'
 }
 
-
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

@@ -17,17 +17,17 @@ import kotlin.math.round
 //Maybe event system ?
 
 class Round(private val players: List<Player>,
-            internal val strategy: RoundStrategy,
-            internal var bid: Int,
-            internal var hands: LinkedHashMap<Player, Hand>) {
+            private val strategy: RoundStrategy,
+            private var bid: Int,
+            private var hands: LinkedHashMap<Player, Hand>) {
 
-    internal val table: LinkedHashMap<Player, Card>
-    internal var score: MutableMap<Player, Int>
+    private val table: LinkedHashMap<Player, Card>
+    private var score: MutableMap<Player, Int>
 
-    internal var gameIsLocked = true
+    private var gameIsLocked = true
     var roundHasEnded = false
-    internal var currentTrump: Color? = null
-    internal var currentPlayer = players[0]
+    private var currentTrump: Color? = null
+    private var currentPlayer = players[0]
     val biddingPlayer = currentPlayer
 
     private val eventPublisher = RoundEventPublisher()
@@ -203,6 +203,8 @@ class Round(private val players: List<Player>,
     }
 
     public fun getHandOf(player: Player) = hands[player]
+
+    public fun getCurrentScore() = this.score
 
     //EXTENSION
     private fun Player.has(card: Card) = hands[currentPlayer]!!.contains(card)
