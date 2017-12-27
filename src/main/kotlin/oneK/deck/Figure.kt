@@ -1,9 +1,11 @@
 package oneK.deck
 
+import java.io.Serializable
+
 /**
  * Created by Jakub Licznerski on 03.11.2017.
  */
-enum class Figure(val value: Int) {
+enum class Figure(val value: Int) : Serializable {
     NINE(0),
     TEN(10),
     JACK(2),

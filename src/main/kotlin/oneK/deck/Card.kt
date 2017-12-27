@@ -1,12 +1,13 @@
 package oneK.deck
 
-import oneK.deck.Figure.*
 import oneK.deck.Color.*
+import oneK.deck.Figure.*
+import java.io.Serializable
 
 /**
  * Created by Jakub Licznerski on 03.11.2017.
  */
-data class Card(val figure: Figure, val color: Color) {
+data class Card(val figure: Figure, val color: Color) : Serializable {
 
     companion object {
         @JvmStatic

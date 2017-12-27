@@ -1,9 +1,10 @@
 package oneK.game.strategy
 
 import oneK.deck.Hand
+import java.io.Serializable
 
 
-interface GameStrategy {
+interface GameStrategy : Serializable {
 
     var getUpperBidThreshold: () -> Int
     var getInitialBid: () -> Int

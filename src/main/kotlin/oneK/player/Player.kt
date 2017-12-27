@@ -1,3 +1,5 @@
 package oneK.player
 
-data class Player(val name: String)
+import java.io.Serializable
+
+data class Player(val name: String) : Serializable

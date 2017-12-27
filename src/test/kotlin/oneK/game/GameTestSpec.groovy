@@ -160,7 +160,7 @@ class GameTestSpec extends Specification {
         round.play(new Card(Figure.ACE, Color.SPADES))
         round.play(new Card(Figure.QUEEN, Color.DIAMONDS))
         round.play(new Card(Figure.QUEEN, Color.SPADES))
-        game.nextRound(players[1])
+        game.nextGameStage(players[1])
         game.fold()
         round = game.getCurrentRound()
 
@@ -223,4 +223,41 @@ class GameTestSpec extends Specification {
 
     }
 
+    def "serialization shouldn't modify game object"() {
+        setup:
+        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def gameStrategy = new GameStrategy.Builder().build()
+        def players = [new Player("P1"), new Player("P2"), new Player("P3")]
+        def game = new Game(players, gameStrategy, roundStrategy)
+        game.fold()
+        game.fold()
+
+
+        when:
+        //SERIALIZE
+        def byteArrayOutput = new ByteArrayOutputStream()
+        def out = new ObjectOutputStream(byteArrayOutput)
+        out.writeObject(game)
+        out.close()
+        byteArrayOutput.close()
+
+        //DESERIALIZE
+        def gameDeserialized = null
+//        def fileIn = FileInputStream("/tmp/employee.ser")
+        def byteArrayInput = new ByteArrayInputStream(byteArrayOutput.toByteArray())
+        def input = new ObjectInputStream(byteArrayInput)
+        gameDeserialized = input.readObject() as Game
+        input.close()
+        byteArrayInput.close()
+
+        then:
+        game.hands == gameDeserialized.hands
+        game.players == gameDeserialized.players
+        game.ranking == gameDeserialized.ranking
+        game.currentBid == gameDeserialized.currentBid
+        gameDeserialized.hands.is(gameDeserialized.currentRound.hands)
+        game.currentRound.players == gameDeserialized.currentRound.players
+        game.currentRound.gameIsLocked == gameDeserialized.currentRound.gameIsLocked
+        game.currentRound.strategy.getTalons.invoke()[0] == gameDeserialized.currentRound.strategy.getTalons.invoke()[0]
+    }
 }

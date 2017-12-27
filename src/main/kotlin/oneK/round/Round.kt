@@ -10,6 +10,8 @@ import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
 import oneK.round.events.RoundEventPublisher
 import oneK.round.strategy.RoundStrategy
+import java.io.IOException
+import java.io.Serializable
 import kotlin.math.round
 
 //TODO
@@ -19,7 +21,7 @@ import kotlin.math.round
 class Round(private val players: List<Player>,
             private val strategy: RoundStrategy,
             private var bid: Int,
-            private var hands: LinkedHashMap<Player, Hand>) {
+            private var hands: LinkedHashMap<Player, Hand>) : Serializable {
 
     private val table: LinkedHashMap<Player, Card>
     private var score: MutableMap<Player, Int>
@@ -30,7 +32,8 @@ class Round(private val players: List<Player>,
     private var currentPlayer = players[0]
     val biddingPlayer = currentPlayer
 
-    private val eventPublisher = RoundEventPublisher()
+    @Transient
+    private var eventPublisher: RoundEventPublisher = RoundEventPublisher()
 
 
     init {
@@ -86,6 +89,12 @@ class Round(private val players: List<Player>,
         val nextIndex = if (currentIndex == players.size - 1) 0 else currentIndex + 1
         this.currentPlayer = players.elementAt(nextIndex)
         this.eventPublisher.publish(RoundEvent.PLAYER_CHANGED)
+    }
+
+    @Throws(IOException::class, ClassNotFoundException::class)
+    private fun readObject(`in`: java.io.ObjectInputStream) {
+        `in`.defaultReadObject()
+        this.eventPublisher = RoundEventPublisher()
     }
 
 

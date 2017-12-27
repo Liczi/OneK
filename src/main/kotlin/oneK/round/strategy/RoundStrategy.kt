@@ -2,9 +2,10 @@ package oneK.round.strategy
 
 import oneK.deck.Card
 import oneK.deck.Hand
+import java.io.Serializable
 import java.lang.IllegalArgumentException
 
-interface RoundStrategy {
+interface RoundStrategy : Serializable {
     var getBombPoints: () -> Int
     var getBombAllowedBidThreshold: () -> Int
 

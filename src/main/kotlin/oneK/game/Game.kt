@@ -11,13 +11,16 @@ import oneK.round.Round
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
 import oneK.round.strategy.RoundStrategy
+import java.io.IOException
+import java.io.Serializable
+
 
 public val MAXIMUM_BID = 400
 public val GAME_GOAL = 1000
 
 class Game(private var players: List<Player>,
            private val gameStrategy: GameStrategy,
-           private val roundStrategy: RoundStrategy) {
+           private val roundStrategy: RoundStrategy) : Serializable {
 
     //initialize after bidding
     private var currentRound: Round? = null
@@ -33,15 +36,31 @@ class Game(private var players: List<Player>,
     private var hands: LinkedHashMap<Player, Hand>
     private var bidders: MutableMap<Player, Boolean>
 
-    private val eventPublisher = GameEventPublisher()
+    @Transient
+    private var eventPublisher: GameEventPublisher = GameEventPublisher()
+
+    //todo handle events
+    @Transient
+    private var roundEventListener: RoundEventListener
 
     init {
+        roundEventListener = object : RoundEventListener {
+            override fun onEvent(event: RoundEvent) {
+                when (event) {
+                    RoundEvent.ROUND_ENDED -> handleEndRound()
+                    else -> return
+                }
+            }
+        }
+
         ranking = mutableMapOf(*(players.map { Pair(it, 0) }.toTypedArray())) //todo make sure reading from state is not overriding
         bidders = newBidders()
         hands = linkedMapOf()
 
         shuffleAndAssign()
         this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
+
+        currentRound?.registerListener(roundEventListener)
     }
 
     private fun clearRoundData() {
@@ -55,16 +74,6 @@ class Game(private var players: List<Player>,
     }
 
     private fun newBidders() = mutableMapOf(*players.map { Pair(it, true) }.toTypedArray())
-
-    //todo handle events
-    private val roundEventListener = object : RoundEventListener {
-        override fun onEvent(event: RoundEvent) {
-            when (event) {
-                RoundEvent.ROUND_ENDED -> handleEndRound()
-                else -> return
-            }
-        }
-    }
 
     private fun shuffleAndAssign() {
         val cards = Hand.getClassicDeck().shuffled().toMutableList()
@@ -83,9 +92,6 @@ class Game(private var players: List<Player>,
                 this.ranking.replace(player, ranking + roundScore[player]!!)
             }
         }
-
-        //this.biddingEnded = true //block until newRound called
-//        shuffleAndAssign()
         checkForWinner()
     }
 
@@ -158,6 +164,20 @@ class Game(private var players: List<Player>,
         roundStrategy.setTalonCards(talonCards)
     }
 
+    @Throws(IOException::class, ClassNotFoundException::class)
+    private fun readObject(`in`: java.io.ObjectInputStream) {
+        `in`.defaultReadObject()
+        eventPublisher = GameEventPublisher()
+        roundEventListener = object : RoundEventListener {
+            override fun onEvent(event: RoundEvent) {
+                when (event) {
+                    RoundEvent.ROUND_ENDED -> handleEndRound()
+                    else -> return
+                }
+            }
+        }
+    }
+
     private fun pickCards(quant: Int, cards: MutableList<Card>): HashSet<Card> {
         var i = 0
         val result = hashSetOf<Card>()
@@ -175,7 +195,7 @@ class Game(private var players: List<Player>,
     public fun getCurrentRound() = this.currentRound
 
 
-    public fun nextRound(firstPlayer: Player) {
+    public fun nextGameStage(firstPlayer: Player) {
         require(this.winner == null && this.currentRound?.roundHasEnded ?: false)
         //this.roundNumber++
         this.clearRoundData()
@@ -183,7 +203,6 @@ class Game(private var players: List<Player>,
         this.currentPlayer = players[1]
         shuffleAndAssign()
         this.eventPublisher.publish(GameEvent.BIDDING_STARTED)
-        //startRound(listPlayersFrom(firstPlayer))
     }
 
     public fun canBid(hand: Hand, bid: Int): Boolean {
