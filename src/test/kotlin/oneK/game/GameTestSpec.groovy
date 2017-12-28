@@ -167,8 +167,8 @@ class GameTestSpec extends Specification {
         then:
         game.biddingEnded
         game.ranking == [(players[0]): -100, (players[1]): 15]
-        !round.hands[players[0]].containsAll(h1)
-        !round.hands[players[1]].containsAll(h2)
+        round.hands[players[0]].cards.size() != h1.cards.size()
+        round.hands[players[1]].cards.size() != h2.cards.size()
         round.gameIsLocked
         round.currentPlayer == players[1]
 

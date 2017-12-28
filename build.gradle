@@ -21,7 +21,8 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    //compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     testCompile "org.codehaus.groovy:groovy-all:2.4.12"
     testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
@@ -43,8 +44,8 @@ publishing {
     }
 }
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "1.6"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = "1.6"
 }

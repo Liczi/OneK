@@ -13,6 +13,7 @@ import oneK.round.events.RoundEventListener
 import oneK.round.strategy.RoundStrategy
 import java.io.IOException
 import java.io.Serializable
+import java.util.*
 
 
 public val MAXIMUM_BID = 400
@@ -150,11 +151,13 @@ class Game(private var players: List<Player>,
     private fun assignPlayerCards(cards: MutableList<Card>, players: List<Player>) {
         require(cards.size % players.size == 0)
         val playerCardsQuant = cards.size / players.size
-        players.forEach { player ->
-            val playerCards = cards.subList(0, playerCardsQuant)
+        val toRemove = mutableListOf<Card>()
+        for ((index, player) in players.withIndex()) {
+            val playerCards = cards.subList(0 + playerCardsQuant * index, playerCardsQuant * (index + 1))
             hands.put(player, Hand(playerCards.toTypedArray()))
-            cards.removeAll(playerCards)
+            toRemove.addAll(playerCards)
         }
+        cards.removeAll(toRemove)
         require(cards.size == 0)
     }
 
@@ -231,4 +234,16 @@ class Game(private var players: List<Player>,
     }
 
     public fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
+
+    //EXTENSION FUNCTIONS
+
+//    private fun List<Player>.deepCopy(): MutableList<Player> {
+//        val result = mutableListOf<Player>()
+//
+//        .forEach { player ->
+//            result.add(Player(player.name))
+//        }
+//
+//        return result
+//    }
 }
