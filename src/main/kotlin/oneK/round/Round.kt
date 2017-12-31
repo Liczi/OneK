@@ -29,7 +29,10 @@ class Round(private val players: List<Player>,
     private var gameIsLocked = true
     var roundHasEnded = false
     private var currentTrump: Color? = null
-    private var currentPlayer = players[0]
+    var currentPlayer = players[0]
+        private set(value) {
+            field = value
+        }
     val biddingPlayer = currentPlayer
 
     @Transient
