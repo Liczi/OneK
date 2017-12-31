@@ -49,9 +49,13 @@ class Round(private val players: List<Player>,
      * Bidding player is confronted against his bid and score table is rounded to decimal
      */
     private fun endRound() {
+        require(this.score.keys.contains(biddingPlayer))
         var bidderScore = this.score[biddingPlayer]!!
         bidderScore = if (bidderScore >= bid) bid else -bid
-        this.score.replace(biddingPlayer, bidderScore)
+
+        this.score[biddingPlayer] = bidderScore
+
+//        this.score.replace(biddingPlayer, bidderScore)
         this.score.round()
         this.roundHasEnded = true
         this.eventPublisher.publish(RoundEvent.ROUND_ENDED)
@@ -83,8 +87,11 @@ class Round(private val players: List<Player>,
     }
 
     private fun addPoints(player: Player, points: Int) {
+        require(this.score.keys.contains(player))
         val previousScore = this.score[player]!!
-        this.score.replace(player, previousScore + points)
+        this.score[player] = previousScore + points
+
+//        this.score.replace(player, previousScore + points)
     }
 
     private fun nextPlayer() {
@@ -160,7 +167,7 @@ class Round(private val players: List<Player>,
                 toGive.values.all { card -> currentPlayer.has(card) } &&
                 this.gameIsLocked)
 
-        toGive.forEach { player, card -> hands[player]!!.cards.add(card) }
+        toGive.forEach { entry -> hands[entry.key]!!.cards.add(entry.value) }
         this.hands[currentPlayer]!!.cards.removeAll(toGive.values)
         this.eventPublisher.publish(RoundEvent.TALON_DISTRIBUTED)
 
@@ -224,9 +231,17 @@ class Round(private val players: List<Player>,
     fun MutableMap<Player, Hand>.empty() = this.values.all { hand -> hand.cards.isEmpty() }
 
     private fun MutableMap<Player, Int>.round() {
-        this.keys.forEach { player ->
-            val currentScore = this[player]!!.toDouble()
-            this.replace(player, round(currentScore).toInt())
+
+        val itr = this.keys.iterator()
+        while (itr.hasNext()) {
+            val key = itr.next()
+            val value = this[key]!!.toDouble()
+            this.set(key, round(value).toInt())
         }
+
+//        this.keys.forEach { player ->
+//            val currentScore = this[player]!!.toDouble()
+//            this.replace(player, round(currentScore).toInt())
+//        }
     }
 }

@@ -87,12 +87,25 @@ class Game(private var players: List<Player>,
         val threshold = this.gameStrategy.getLimitedScoringThreshold()
         val biddingPlayer = this.currentRound!!.biddingPlayer
 
-        for ((player, ranking) in ranking) {
-            if (!(this.ranking[player]!! >= threshold &&
+        val itr = this.ranking.iterator()
+        while (itr.hasNext()) {
+            val curr = itr.next()
+            val player = curr.key
+            val ranking = curr.value
+
+            if (!(ranking >= threshold &&
                     player != biddingPlayer)) {
-                this.ranking.replace(player, ranking + roundScore[player]!!)
+                this.ranking[player] = ranking + roundScore[player]!!
             }
         }
+
+//        for ((player, ranking) in ranking) {
+//            if (!(this.ranking[player]!! >= threshold &&
+//                    player != biddingPlayer)) {
+//                this.ranking.replace(player, ranking + roundScore[player]!!)
+//            }
+//        }
+
         checkForWinner()
     }
 
@@ -235,15 +248,4 @@ class Game(private var players: List<Player>,
 
     public fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
 
-    //EXTENSION FUNCTIONS
-
-//    private fun List<Player>.deepCopy(): MutableList<Player> {
-//        val result = mutableListOf<Player>()
-//
-//        .forEach { player ->
-//            result.add(Player(player.name))
-//        }
-//
-//        return result
-//    }
 }
