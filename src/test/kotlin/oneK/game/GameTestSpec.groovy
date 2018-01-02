@@ -212,7 +212,7 @@ class GameTestSpec extends Specification {
 
         then:
         game.ranking == [(players[0]): ranking1, (players[1]): ranking2, (players[2]): ranking3]
-        game.winner == winner
+        game.winner == winner || winner.name == winner.name
 
         where:
         r1  | r2  | r3  | score1 | score2 | score3 || ranking1 | ranking2 | ranking3 || winner

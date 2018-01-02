@@ -24,14 +24,29 @@ class Game(private var players: List<Player>,
            private val roundStrategy: RoundStrategy) : Serializable {
 
     //initialize after bidding
-    private var currentRound: Round? = null
-    private var currentBid = gameStrategy.getInitialBid()
-    private var currentPlayer = players[1]
+    var currentRound: Round? = null
+        private set(value) {
+            field = value
+        }
+    var currentBid = gameStrategy.getInitialBid()
+        private set(value) {
+            field = value
+        }
+    var currentPlayer = players[1]
+        private set(value) {
+            field = value
+        }
 
-    private var winner: Player? = null
+    var winner: Player? = null
+        private set(value) {
+            field = value
+        }
     private var ranking: MutableMap<Player, Int>
 
-    private var biddingEnded = false
+    var biddingEnded = false
+        private set(value) {
+            field = value
+        }
     //private var roundNumber = 1
 
     private var hands: LinkedHashMap<Player, Hand>
@@ -208,8 +223,6 @@ class Game(private var players: List<Player>,
         return result
     }
 
-    public fun getCurrentRound() = this.currentRound
-
 
     public fun nextGameStage(firstPlayer: Player) {
         require(this.winner == null && this.currentRound?.roundHasEnded ?: false)
@@ -241,6 +254,10 @@ class Game(private var players: List<Player>,
         if (bidders.values.filter { it }.size <= 1) endBidding()
         else nextPlayer()
     }
+
+    public fun getPlayerRanking(player: Player) = this.ranking[player]!!
+
+    public fun getPlayerHand(player: Player) = this.hands[player]!!
 
     public fun registerListener(listener: GameEventListener) {
         this.eventPublisher.addListener(listener)
