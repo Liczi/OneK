@@ -28,7 +28,7 @@ class Game(private var players: List<Player>,
         private set(value) {
             field = value
         }
-    var currentBid = gameStrategy.getInitialBid()
+    var currentBid: Int = -1
         private set(value) {
             field = value
         }
@@ -60,6 +60,8 @@ class Game(private var players: List<Player>,
     private var roundEventListener: RoundEventListener
 
     init {
+        this.currentBid = this.gameStrategy.getInitialBid()
+
         roundEventListener = object : RoundEventListener {
             override fun onEvent(event: RoundEvent) {
                 when (event) {
@@ -74,7 +76,7 @@ class Game(private var players: List<Player>,
         hands = linkedMapOf()
 
         shuffleAndAssign()
-        this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
+        this.eventPublisher.publish(GameEvent.BIDDING_STARTED)
 
         currentRound?.registerListener(roundEventListener)
     }
@@ -224,6 +226,10 @@ class Game(private var players: List<Player>,
     }
 
 
+    public fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
+
+    public fun getRankingValues() = this.players.map { this.ranking[it]!! }.toIntArray()
+
     public fun nextGameStage(firstPlayer: Player) {
         require(this.winner == null && this.currentRound?.roundHasEnded ?: false)
         //this.roundNumber++
@@ -239,7 +245,7 @@ class Game(private var players: List<Player>,
                 this.gameStrategy.canBid(hand, bid) &&
                 !biddingEnded &&
                 bid % 10 == 0 &&
-                currentBid - bid <= this.gameStrategy.getMaxBidStep() &&
+                bid - currentBid <= this.gameStrategy.getMaxBidStep() &&
                 bid <= gameStrategy.getUpperBidThreshold()
     }
 

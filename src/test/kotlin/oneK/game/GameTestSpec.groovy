@@ -242,11 +242,9 @@ class GameTestSpec extends Specification {
         byteArrayOutput.close()
 
         //DESERIALIZE
-        def gameDeserialized = null
-//        def fileIn = FileInputStream("/tmp/employee.ser")
         def byteArrayInput = new ByteArrayInputStream(byteArrayOutput.toByteArray())
         def input = new ObjectInputStream(byteArrayInput)
-        gameDeserialized = input.readObject() as Game
+        def gameDeserialized = input.readObject() as Game
         input.close()
         byteArrayInput.close()
 
@@ -256,7 +254,7 @@ class GameTestSpec extends Specification {
         game.ranking == gameDeserialized.ranking
         game.currentBid == gameDeserialized.currentBid
         gameDeserialized.hands.is(gameDeserialized.currentRound.hands)
-        game.currentRound.players == gameDeserialized.currentRound.players
+        game.currentRound.playerNames == gameDeserialized.currentRound.playerNames
         game.currentRound.gameIsLocked == gameDeserialized.currentRound.gameIsLocked
         game.currentRound.strategy.getTalons.invoke()[0] == gameDeserialized.currentRound.strategy.getTalons.invoke()[0]
     }

@@ -108,6 +108,10 @@ class Round(private val players: List<Player>,
     }
 
 
+    public fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
+
+    public fun getScoreValues() = this.players.map { this.score[it]!! }.toIntArray()
+
     public fun restart(restartingHand: Hand) {
         //we can restart game on our turn so the game not necessarily should be locked or unlocked
         //only additional req is that no cards were scored
