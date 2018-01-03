@@ -14,10 +14,6 @@ import java.io.IOException
 import java.io.Serializable
 import kotlin.math.round
 
-//TODO
-//Think about listeners concept (bomb, end of round, end of stage, restart...)
-//Maybe event system ?
-
 class Round(private val players: List<Player>,
             private val strategy: RoundStrategy,
             private var bid: Int,
@@ -26,7 +22,10 @@ class Round(private val players: List<Player>,
     private val table: LinkedHashMap<Player, Card>
     private var score: MutableMap<Player, Int>
 
-    private var gameIsLocked = true
+    var gameIsLocked = true
+        private set(value) {
+            field = value
+        }
     var roundHasEnded = false
     private var currentTrump: Color? = null
     var currentPlayer = players[0]
