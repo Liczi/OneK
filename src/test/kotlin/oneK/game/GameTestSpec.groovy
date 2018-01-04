@@ -4,6 +4,8 @@ import oneK.deck.Card
 import oneK.deck.Color
 import oneK.deck.Figure
 import oneK.deck.Hand
+import oneK.game.events.GameEvent
+import oneK.game.events.GameEventListener
 import oneK.player.Player
 import oneK.game.strategy.GameStrategy
 import oneK.round.events.RoundEvent
@@ -135,6 +137,23 @@ class GameTestSpec extends Specification {
         game.biddingEnded
         round.roundHasEnded
         game.ranking == [(players[0]): -100, (players[1]): 15]
+    }
+
+    def "bidding event test"() {
+        setup:
+        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def gameStrategy = new GameStrategy.Builder().build()
+        def players = [new Player("P1"), new Player("P2")]
+
+        def game = new Game(players, gameStrategy, roundStrategy)
+        def subscriber = Mock(GameEventListener)
+        game.registerListener(subscriber)
+
+        when:
+        game.bid(110)
+
+        then:
+        1 * subscriber.onEvent(GameEvent.PLAYER_CHANGED)
     }
 
     def "simple game and starting new round"() {

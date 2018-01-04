@@ -19,10 +19,14 @@ import java.util.*
 public val MAXIMUM_BID = 400
 public val GAME_GOAL = 1000
 
-class Game(private var players: List<Player>,
+class Game(players: List<Player>,
            private val gameStrategy: GameStrategy,
            private val roundStrategy: RoundStrategy) : Serializable {
 
+    var players = players
+        private set(value) {
+            field = value
+        }
     //initialize after bidding
     var currentRound: Round? = null
         private set(value) {
@@ -167,7 +171,7 @@ class Game(private var players: List<Player>,
 
         this.currentPlayer = players.elementAt(nextIndex)
         if (!bidders[currentPlayer]!!) return nextPlayer()
-        this.eventPublisher.publish(GameEvent.PLAYER_CHANGED)
+        else this.eventPublisher.publish(GameEvent.PLAYER_CHANGED)
     }
 
     private fun checkForWinner() {

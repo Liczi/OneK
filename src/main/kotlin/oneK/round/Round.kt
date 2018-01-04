@@ -37,7 +37,6 @@ class Round(private val players: List<Player>,
     @Transient
     private var eventPublisher: RoundEventPublisher = RoundEventPublisher()
 
-
     init {
         this.table = linkedMapOf()
         this.score = mutableMapOf(*(players.map { Pair(it, 0) }.toTypedArray()))
@@ -107,11 +106,11 @@ class Round(private val players: List<Player>,
     }
 
 
-    public fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
+    fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
 
-    public fun getScoreValues() = this.players.map { this.score[it]!! }.toIntArray()
+    fun getScoreValues() = this.players.map { this.score[it]!! }.toIntArray()
 
-    public fun restart(restartingHand: Hand) {
+    fun restart(restartingHand: Hand) {
         //we can restart game on our turn so the game not necessarily should be locked or unlocked
         //only additional req is that no cards were scored
         require(canRestart(restartingHand))
@@ -127,31 +126,31 @@ class Round(private val players: List<Player>,
         this.eventPublisher.publish(RoundEvent.ROUND_RESTARTED)
     }
 
-    public fun canRestart(hand: Hand): Boolean {
+    fun canRestart(hand: Hand): Boolean {
         return !this.strategy.isValid(hand) && score.values.all { it == 0 }
     }
 
     /**
      * Current player takes talon to the hand
      */
-    public fun pickTalon(talonIndex: Int) {
+    fun pickTalon(talonIndex: Int) {
         require(talonIndex in 0..(this.strategy.getTalonsQuantity() - 1) && this.gameIsLocked && !roundHasEnded)
         this.hands[currentPlayer]!!.cards.addAll(this.strategy.getTalons()[talonIndex])
         this.eventPublisher.publish(RoundEvent.TALON_PICKED)
     }
 
-    public fun canChangeBid(newBid: Int) = newBid in this.bid..MAXIMUM_BID &&
+    fun canChangeBid(newBid: Int) = newBid in this.bid..MAXIMUM_BID &&
             newBid % 10 == 0 &&
             this.gameIsLocked &&
             !roundHasEnded
 
-    public fun changeBid(newBid: Int) {
+    fun changeBid(newBid: Int) {
         require(canChangeBid(newBid))
         this.bid = newBid
         this.eventPublisher.publish(RoundEvent.BID_CHANGED)
     }
 
-    public fun activateBomb() {
+    fun activateBomb() {
         require(this.gameIsLocked && strategy.getBombAllowedBidThreshold() >= bid)
 
         val opponents = players.filter { it != currentPlayer }
@@ -164,7 +163,7 @@ class Round(private val players: List<Player>,
     /**
      * Current player distributes card, that he owns to other player
      */
-    public fun distributeCards(toGive: Map<Player, Card>) {
+    fun distributeCards(toGive: Map<Player, Card>) {
         require(!toGive.containsKey(currentPlayer) &&
                 toGive.size == this.hands.size - 1 &&
                 toGive.values.all { card -> currentPlayer.has(card) } &&
@@ -178,15 +177,19 @@ class Round(private val players: List<Player>,
         this.eventPublisher.publish(RoundEvent.ROUND_STARTED)
     }
 
+    fun canPlay(card: Card, player: Player): Boolean {
+        return player.has(card) && !this.table.containsKey(player) && !gameIsLocked
+    }
+
     /**
      * Current player plays specified card on the table
      */
-    public fun play(card: Card) {
-        require(currentPlayer.has(card) && !this.table.containsKey(currentPlayer) && !gameIsLocked)
+    fun play(card: Card) {
+        require(canPlay(card, currentPlayer))
 
         this.table.put(currentPlayer, card)
-        this.eventPublisher.publish(RoundEvent.CARD_PLAYED)
         this.hands[currentPlayer]!!.cards.remove(card)
+        this.eventPublisher.publish(RoundEvent.CARD_PLAYED)
         nextPlayer()
 
         if (this.table.size >= this.hands.size)
@@ -198,7 +201,7 @@ class Round(private val players: List<Player>,
     /**
      * Announces trump and plays specified card
      */
-    public fun triumph(card: Card) {
+    fun triumph(card: Card) {
         require(canPlayTriumph(card, currentPlayer))
 
         this.currentTrump = card.color
@@ -207,7 +210,7 @@ class Round(private val players: List<Player>,
         play(card)
     }
 
-    public fun canPlayTriumph(card: Card, player: Player): Boolean {
+    fun canPlayTriumph(card: Card, player: Player): Boolean {
         if (!((card.figure == Figure.KING || card.figure == Figure.QUEEN) &&
                 !gameIsLocked &&
                 table.isEmpty())) return false
@@ -220,13 +223,22 @@ class Round(private val players: List<Player>,
         return true
     }
 
-    public fun registerListener(listener: RoundEventListener) {
+    fun registerListener(listener: RoundEventListener) {
         this.eventPublisher.addListener(listener)
     }
 
-    public fun getHandOf(player: Player) = hands[player]
+    fun getHandOf(player: Player) = hands[player]
 
-    public fun getCurrentScore() = this.score
+    fun getCurrentScore() = this.score
+
+    fun getTalons() = this.strategy.getTalons()
+
+    fun getTableContents() = this.table.map { it.value }.toList()
+
+    fun handSizesAreEqual(): Boolean {
+        val model = this.hands[currentPlayer]!!.cards.size
+        return this.hands.entries.all { it.value.cards.size == model }
+    }
 
     //EXTENSION
     private fun Player.has(card: Card) = hands[currentPlayer]!!.contains(card)

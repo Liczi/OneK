@@ -17,9 +17,6 @@ interface RoundStrategy : Serializable {
     // false if game could be restarted
     var isValid: (Hand) -> Boolean
 
-    //todo show talon listener ?
-    //var getShowTalonThreshold: () -> Int
-
     class Builder {
 
         private val strategy: RoundStrategy
