@@ -16,8 +16,8 @@ import java.io.Serializable
 import java.util.*
 
 
-public val MAXIMUM_BID = 400
-public val GAME_GOAL = 1000
+val MAXIMUM_BID = 400
+val GAME_GOAL = 1000
 
 class Game(players: List<Player>,
            private val gameStrategy: GameStrategy,
@@ -119,6 +119,7 @@ class Game(players: List<Player>,
                 this.ranking[player] = ranking + roundScore[player]!!
             }
         }
+        eventPublisher.publish(GameEvent.RANKING_CHANGED)
 
 //        for ((player, ranking) in ranking) {
 //            if (!(this.ranking[player]!! >= threshold &&
@@ -230,11 +231,11 @@ class Game(players: List<Player>,
     }
 
 
-    public fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
+    fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
 
-    public fun getRankingValues() = this.players.map { this.ranking[it]!! }.toIntArray()
+    fun getRankingValues() = this.players.map { this.ranking[it]!! }.toIntArray()
 
-    public fun nextGameStage(firstPlayer: Player) {
+    fun nextGameStage(firstPlayer: Player) {
         require(this.winner == null && this.currentRound?.roundHasEnded ?: false)
         //this.roundNumber++
         this.clearRoundData()
@@ -244,7 +245,7 @@ class Game(players: List<Player>,
         this.eventPublisher.publish(GameEvent.BIDDING_STARTED)
     }
 
-    public fun canBid(hand: Hand, bid: Int): Boolean {
+    fun canBid(hand: Hand, bid: Int): Boolean {
         return bid > currentBid &&
                 this.gameStrategy.canBid(hand, bid) &&
                 !biddingEnded &&
@@ -253,26 +254,26 @@ class Game(players: List<Player>,
                 bid <= gameStrategy.getUpperBidThreshold()
     }
 
-    public fun bid(bid: Int) {
+    fun bid(bid: Int) {
         require(canBid(hands[currentPlayer]!!, bid))
         this.currentBid = bid
         nextPlayer()
     }
 
-    public fun fold() {
+    fun fold() {
         bidders.put(currentPlayer, false)
         if (bidders.values.filter { it }.size <= 1) endBidding()
         else nextPlayer()
     }
 
-    public fun getPlayerRanking(player: Player) = this.ranking[player]!!
+    fun getPlayerRanking(player: Player) = this.ranking[player]!!
 
-    public fun getPlayerHand(player: Player) = this.hands[player]!!
+    fun getPlayerHand(player: Player) = this.hands[player]!!
 
-    public fun registerListener(listener: GameEventListener) {
+    fun registerListener(listener: GameEventListener) {
         this.eventPublisher.addListener(listener)
     }
 
-    public fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
+    fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
 
 }

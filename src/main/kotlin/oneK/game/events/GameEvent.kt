@@ -5,5 +5,6 @@ enum class GameEvent {
     BIDDING_STARTED,
     BIDDING_ENDED,
     ROUND_INITIALIZED,
-    GAME_ENDED
+    GAME_ENDED,
+    RANKING_CHANGED
 }

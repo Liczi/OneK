@@ -1,7 +1,7 @@
 package oneK.round.events
 
 class RoundEventPublisher {
-    private val listeners: MutableList<RoundEventListener> = mutableListOf()
+    private val listeners: MutableSet<RoundEventListener> = mutableSetOf()
 
     public fun addListener(listener: RoundEventListener) {
         this.listeners.add(listener)
