@@ -15,7 +15,6 @@ import java.io.IOException
 import java.io.Serializable
 import java.util.*
 
-
 val MAXIMUM_BID = 400
 val GAME_GOAL = 1000
 
@@ -69,7 +68,9 @@ class Game(players: List<Player>,
         roundEventListener = object : RoundEventListener {
             override fun onEvent(event: RoundEvent) {
                 when (event) {
-                    RoundEvent.ROUND_ENDED -> handleEndRound()
+                    RoundEvent.ROUND_ENDED -> {
+                        handleEndRound()
+                    }
                     else -> return
                 }
             }
@@ -209,8 +210,12 @@ class Game(players: List<Player>,
         roundEventListener = object : RoundEventListener {
             override fun onEvent(event: RoundEvent) {
                 when (event) {
-                    RoundEvent.ROUND_ENDED -> handleEndRound()
-                    else -> return
+                    RoundEvent.ROUND_ENDED -> {
+                        handleEndRound()
+                    }
+                    else -> {
+                        return
+                    }
                 }
             }
         }

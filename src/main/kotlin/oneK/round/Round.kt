@@ -81,6 +81,7 @@ class Round(private val players: List<Player>,
         addPoints(winningPlayer, tableCardsValueSum)
         this.table.clear()
         this.currentPlayer = winningPlayer
+        this.eventPublisher.publish(RoundEvent.PLAYER_CHANGED)
         this.eventPublisher.publish(RoundEvent.STAGE_ENDED)
     }
 
@@ -178,7 +179,9 @@ class Round(private val players: List<Player>,
     }
 
     fun canPlay(card: Card, player: Player): Boolean {
-        return player.has(card) && !this.table.containsKey(player) && !gameIsLocked
+        return player.has(card) &&
+                !this.table.containsKey(player) &&
+                !gameIsLocked
     }
 
     /**

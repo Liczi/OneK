@@ -46,7 +46,7 @@ class RoundEventsTestSpec extends Specification {
         executed
     }
 
-    def "ROUND_ENDED should execute once"() {
+    def "Events should be executed valid number of times"() {
         setup:
         def hand1 = "KS, QS"
         def hand2 = "AS, AD"
@@ -71,7 +71,7 @@ class RoundEventsTestSpec extends Specification {
         then:
         1 * listener.onEvent(RoundEvent.ROUND_ENDED)
         2 * listener.onEvent(RoundEvent.STAGE_ENDED)
-        4 * listener.onEvent(RoundEvent.PLAYER_CHANGED)
+        6 * listener.onEvent(RoundEvent.PLAYER_CHANGED)
     }
 
     def "adding the same listener twice"() {
