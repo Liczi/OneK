@@ -208,9 +208,9 @@ class Round(private val players: List<Player>,
         require(canPlayTriumph(card, currentPlayer))
 
         this.currentTrump = card.color
-        this.eventPublisher.publish(RoundEvent.TRIUMPH_CHANGED)
         addPoints(currentPlayer, card.color.value)
         play(card)
+        this.eventPublisher.publish(RoundEvent.TRIUMPH_CHANGED)
     }
 
     fun canPlayTriumph(card: Card, player: Player): Boolean {
