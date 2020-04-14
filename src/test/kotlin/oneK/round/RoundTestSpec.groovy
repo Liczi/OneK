@@ -4,7 +4,7 @@ import oneK.deck.Card
 import oneK.deck.Color
 import oneK.deck.Hand
 import oneK.player.Player
-import oneK.round.strategy.RoundStrategy
+import oneK.round.strategy.Variant
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -12,7 +12,7 @@ class RoundTestSpec extends Specification {
     @Unroll
     def "when #card1, #card2, #card3 played, player#winnerIndex wins with value #cardsValue where trump is #currentTrump"() {
         setup:
-        def strategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def strategy = new Variant.Builder().setPlayersQuant(3).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def hands = [
                 (players[0]): Hand.fromString(hand1),
@@ -47,7 +47,7 @@ class RoundTestSpec extends Specification {
     @Unroll
     def "triumph should add points and change currentTriumph"() {
         setup:
-        def strategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def strategy = new Variant.Builder().setPlayersQuant(3).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def hands = [
                 (players[0]): Hand.fromString(hand1),
@@ -82,7 +82,7 @@ class RoundTestSpec extends Specification {
 
     def "activate bomb should add default value 60 to opponents' score"() {
         setup:
-        def strategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def strategy = new Variant.Builder().setPlayersQuant(3).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def round = new Round(players, strategy, 120, Mock(Map) as LinkedHashMap)
 
@@ -96,7 +96,7 @@ class RoundTestSpec extends Specification {
     }
 
     def "double change of trump"() {
-        def strategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def strategy = new Variant.Builder().setPlayersQuant(2).build()
         def players = [new Player("P1"), new Player("P2")]
         def hands = [
                 (players[0]): Hand.fromString("KS, QS, 9D"),
@@ -124,7 +124,7 @@ class RoundTestSpec extends Specification {
 
     def "round should restart properly"() {
         setup:
-        def strategy = new RoundStrategy.Builder().setPlayersQuant(3).setIsValid({ hand -> false }).build()
+        def strategy = new Variant.Builder().setPlayersQuant(3).setIsValid({ hand -> false }).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def h1 = Hand.fromString("AS, KS, QS")
         def h2 = Hand.fromString("AD, KD, QD")

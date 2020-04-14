@@ -9,7 +9,7 @@ import oneK.game.events.GameEventListener
 import oneK.player.Player
 import oneK.game.strategy.GameStrategy
 import oneK.round.events.RoundEvent
-import oneK.round.strategy.RoundStrategy
+import oneK.round.strategy.Variant
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -18,7 +18,7 @@ class GameTestSpec extends Specification {
     @Unroll
     def "should assign #talonCardsCount to talon and #playerCardsQuant to each player"(List<Player> players, int talonCardsCount, int playerCardsQuant) {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(players.size()).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(players.size()).build()
         def gameStrategy = new GameStrategy.Builder().build()
 
         def game = new Game(players, gameStrategy, roundStrategy)
@@ -47,7 +47,7 @@ class GameTestSpec extends Specification {
 
     def "talon should be distributed properly"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
 
@@ -74,7 +74,7 @@ class GameTestSpec extends Specification {
 
     def "bidding with 3 players under 120"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
 
@@ -93,7 +93,7 @@ class GameTestSpec extends Specification {
 
     def "bidding with 3 players over 120"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
 
@@ -114,7 +114,7 @@ class GameTestSpec extends Specification {
 
     def "simple game with 2 cards 2 players"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(2).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2")]
 
@@ -141,7 +141,7 @@ class GameTestSpec extends Specification {
 
     def "bidding event test"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(2).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2")]
 
@@ -158,7 +158,7 @@ class GameTestSpec extends Specification {
 
     def "simple game and starting new round"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(2).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(2).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2")]
 
@@ -195,7 +195,7 @@ class GameTestSpec extends Specification {
 
     def "bidding not allowed over 120 without triumph"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
 
@@ -216,7 +216,7 @@ class GameTestSpec extends Specification {
     @Unroll
     def "should handle round end and assign winner"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().setLimitedScoringThreshold(900).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
 
@@ -244,7 +244,7 @@ class GameTestSpec extends Specification {
 
     def "serialization shouldn't modify game object"() {
         setup:
-        def roundStrategy = new RoundStrategy.Builder().setPlayersQuant(3).build()
+        def roundStrategy = new Variant.Builder().setPlayersQuant(3).build()
         def gameStrategy = new GameStrategy.Builder().build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def game = new Game(players, gameStrategy, roundStrategy)

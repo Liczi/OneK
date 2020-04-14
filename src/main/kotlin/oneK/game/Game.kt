@@ -10,17 +10,19 @@ import oneK.player.Player
 import oneK.round.Round
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
-import oneK.round.strategy.RoundStrategy
+import oneK.round.strategy.Variant
 import java.io.IOException
 import java.io.Serializable
-import java.util.*
+import java.util.* // TODO ...
 
+// TODO wrong place for these constants
 val MAXIMUM_BID = 400
 val GAME_GOAL = 1000
 
+//TODO prepare full documentation (what is implemented, future work, how mechanics can be changed through Variants
 class Game(players: List<Player>,
            private val gameStrategy: GameStrategy,
-           private val roundStrategy: RoundStrategy) : Serializable {
+           private val variant: Variant) : Serializable {
 
     var players = players
         private set(value) {
@@ -149,7 +151,7 @@ class Game(players: List<Player>,
     private fun startRound(players: List<Player>) {
         require(currentRound == null && biddingEnded)
 
-        this.currentRound = Round(players, roundStrategy, currentBid, hands)
+        this.currentRound = Round(players, variant, currentBid, hands)
         this.currentRound!!.registerListener(roundEventListener)
         this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
     }
@@ -198,9 +200,9 @@ class Game(players: List<Player>,
     }
 
     private fun assignTalonCards(cards: MutableList<Card>) {
-        val talonCardsQuant = roundStrategy.getTalonSize() * roundStrategy.getTalonsQuantity()
+        val talonCardsQuant = variant.getTalonSize() * variant.getTalonsQuantity()
         val talonCards = pickCards(talonCardsQuant, cards)
-        roundStrategy.setTalonCards(talonCards)
+        variant.setTalonCards(talonCards)
     }
 
     @Throws(IOException::class, ClassNotFoundException::class)

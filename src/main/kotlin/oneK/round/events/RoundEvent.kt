@@ -1,5 +1,6 @@
 package oneK.round.events
 
+//TODO change to separate RoundStage's events
 enum class RoundEvent {
     STAGE_ENDED,
     ROUND_STARTED,
