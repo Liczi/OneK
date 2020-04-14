@@ -10,21 +10,21 @@ import static oneK.deck.Figure.*
 import static oneK.deck.Color.*
 
 
-class VariantTestSpec extends Specification {
+class RoundVariantTestSpec extends Specification {
     def "builder should build default strategy"() {
         expect:
         built.getBombPoints.invoke() == constructed.getBombPoints.invoke()
         built.getBombAllowedBidThreshold.invoke() == constructed.getBombAllowedBidThreshold.invoke()
 
         where:
-        built = new Variant.Builder().build()
-        constructed = new DefaultVariant()
+        built = new RoundVariant.Builder().build()
+        constructed = new DefaultRoundRoundVariant()
     }
 
     def "builder should override default strategy"() {
         given:
-        def builder = new Variant.Builder()
-        def constructed = new DefaultVariant()
+        def builder = new RoundVariant.Builder()
+        def constructed = new DefaultRoundRoundVariant()
 
         when:
         builder.setBombPoints(100)
@@ -40,7 +40,7 @@ class VariantTestSpec extends Specification {
     @Unroll
     def "cards should be distributed to talons properly for #players players"(int players, String cards, HashSet<Card>[] talons) {
         expect:
-        def builder = new Variant.Builder()
+        def builder = new RoundVariant.Builder()
         def built = builder.setPlayersQuant(players).build()
         built.setTalonCards.invoke(Hand.fromString(cards).getCards())
         built.getTalons.invoke() == talons
@@ -61,9 +61,9 @@ class VariantTestSpec extends Specification {
 
         where:
         effect                                                || exception
-        new Variant.Builder().build().getTalons         || UninitializedPropertyAccessException
-        new Variant.Builder().build().getTalonSize      || UninitializedPropertyAccessException
-        new Variant.Builder().build().getTalonsQuantity || UninitializedPropertyAccessException
+        new RoundVariant.Builder().build().getTalons         || UninitializedPropertyAccessException
+        new RoundVariant.Builder().build().getTalonSize      || UninitializedPropertyAccessException
+        new RoundVariant.Builder().build().getTalonsQuantity || UninitializedPropertyAccessException
     }
 
     def "improper usage of strategy"() {
@@ -75,14 +75,14 @@ class VariantTestSpec extends Specification {
 
         where:
         effect                                                               | args
-        new Variant.Builder().setPlayersQuant(2).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
-        new Variant.Builder().setPlayersQuant(3).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
-        new Variant.Builder().setPlayersQuant(4).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
+        new RoundVariant.Builder().setPlayersQuant(2).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
+        new RoundVariant.Builder().setPlayersQuant(3).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
+        new RoundVariant.Builder().setPlayersQuant(4).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
     }
 
     def "isValid test"() {
         setup:
-        def strategy = new Variant.Builder()
+        def strategy = new RoundVariant.Builder()
                 .setIsValid({ hand -> hand.containsAll(Hand.fromString("9H,9C,9D,9S")) })
                 .build()
 

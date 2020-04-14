@@ -5,7 +5,7 @@ import oneK.deck.Hand
 import java.io.Serializable
 import java.lang.IllegalArgumentException
 
-interface Variant : Serializable {
+interface RoundVariant : Serializable {
     var getBombPoints: () -> Int
     var getBombAllowedBidThreshold: () -> Int
 
@@ -19,13 +19,13 @@ interface Variant : Serializable {
 
     class Builder {
 
-        private val strategy: Variant
+        private val strategy: RoundVariant
 
         init {
-            this.strategy = DefaultVariant()
+            this.strategy = DefaultRoundRoundVariant()
         }
 
-        fun build(): Variant = this.strategy
+        fun build(): RoundVariant = this.strategy
 
         fun setBombPoints(points: Int): Builder {
             this.strategy.getBombPoints = { points }

@@ -3,7 +3,7 @@ package oneK.round.strategy
 import oneK.deck.Card
 import oneK.deck.Hand
 
-class DefaultVariant : Variant {
+class DefaultRoundRoundVariant : RoundVariant {
     override var getBombPoints: () -> Int = { 60 }
     override var getBombAllowedBidThreshold: () -> Int = { 120 }
     override var setTalonCards: (HashSet<Card>) -> Unit = { cards ->

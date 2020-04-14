@@ -4,7 +4,7 @@ import oneK.deck.Hand
 import java.io.Serializable
 
 // TODO builder without `set` prefix
-interface GameStrategy : Serializable {
+interface GameVariant : Serializable {
 
     var getUpperBidThreshold: () -> Int
     var getInitialBid: () -> Int
@@ -13,24 +13,24 @@ interface GameStrategy : Serializable {
     var getLimitedScoringThreshold: () -> Int
 
     class Builder {
-        private val strategy: GameStrategy
+        private val variant: GameVariant
 
         init {
-            this.strategy = DefaultGameStrategy()
+            this.variant = DefaultGameVariant()
         }
 
         public fun setUpperBidThreshold(threshold: Int): Builder {
-            this.strategy.getUpperBidThreshold = { threshold }
+            this.variant.getUpperBidThreshold = { threshold }
             return this
         }
 
         public fun setInitialBid(bid: Int): Builder {
-            this.strategy.getInitialBid = { bid }
+            this.variant.getInitialBid = { bid }
             return this
         }
 
         public fun setMaxBidStep(step: Int): Builder {
-            this.strategy.getMaxBidStep = { step }
+            this.variant.getMaxBidStep = { step }
             return this
         }
 
@@ -38,7 +38,7 @@ interface GameStrategy : Serializable {
          * You never know what is in stash - must be checked
          */
         public fun setCanBid(canBid: (Hand, Int) -> Boolean): Builder {
-            this.strategy.canBid = canBid
+            this.variant.canBid = canBid
             return this
         }
 
@@ -46,12 +46,12 @@ interface GameStrategy : Serializable {
 //        public fun setSubmitScores(submitScores: )
 
         public fun setLimitedScoringThreshold(threshold: Int): Builder {
-            this.strategy.getUpperBidThreshold = { threshold }
+            this.variant.getUpperBidThreshold = { threshold }
             return this
         }
 
-        public fun build(): GameStrategy {
-            return this.strategy
+        public fun build(): GameVariant {
+            return this.variant
         }
     }
 }

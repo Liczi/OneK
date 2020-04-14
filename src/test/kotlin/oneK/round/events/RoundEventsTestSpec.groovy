@@ -6,7 +6,7 @@ import oneK.deck.Figure
 import oneK.deck.Hand
 import oneK.player.Player
 import oneK.round.Round
-import oneK.round.strategy.Variant
+import oneK.round.strategy.RoundVariant
 import org.jetbrains.annotations.NotNull
 import spock.lang.Specification
 
@@ -50,7 +50,7 @@ class RoundEventsTestSpec extends Specification {
         setup:
         def hand1 = "KS, QS"
         def hand2 = "AS, AD"
-        def strategy = new Variant.Builder().setPlayersQuant(2).build()
+        def strategy = new RoundVariant.Builder().setPlayersQuant(2).build()
         def players = [new Player("P1"), new Player("P2")]
         def hands = [
                 (players[0]): Hand.fromString(hand1),

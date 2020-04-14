@@ -5,12 +5,12 @@ import oneK.deck.Hand
 import oneK.game.events.GameEvent
 import oneK.game.events.GameEventListener
 import oneK.game.events.GameEventPublisher
-import oneK.game.strategy.GameStrategy
+import oneK.game.strategy.GameVariant
 import oneK.player.Player
 import oneK.round.Round
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
-import oneK.round.strategy.Variant
+import oneK.round.strategy.RoundVariant
 import java.io.IOException
 import java.io.Serializable
 import java.util.* // TODO ...
@@ -21,52 +21,37 @@ val GAME_GOAL = 1000
 
 //TODO prepare full documentation (what is implemented, future work, how mechanics can be changed through Variants
 class Game(players: List<Player>,
-           private val gameStrategy: GameStrategy,
-           private val variant: Variant) : Serializable {
+           eventPublisher: GameEventPublisher,
+           private val biddingService: BiddingService,
+           private val gameVariant: GameVariant,
+           private val roundVariant: RoundVariant) : Serializable {
 
-    var players = players
-        private set(value) {
-            field = value
-        }
+    //TODO add empty constructor with satisfied dependencies
+    var winner: Player? = null
+
+
     //initialize after bidding
     var currentRound: Round? = null
         private set(value) {
             field = value
         }
-    var currentBid: Int = -1
-        private set(value) {
-            field = value
-        }
-    var currentPlayer = players[1]
-        private set(value) {
-            field = value
-        }
 
-    var winner: Player? = null
-        private set(value) {
-            field = value
-        }
     private var ranking: MutableMap<Player, Int>
 
-    var biddingEnded = false
-        private set(value) {
-            field = value
-        }
     //private var roundNumber = 1
 
     private var hands: LinkedHashMap<Player, Hand>
-    private var bidders: MutableMap<Player, Boolean>
 
+    //    TODO extract to parent abstract class
+//    registerListener...
     @Transient
-    private var eventPublisher: GameEventPublisher = GameEventPublisher()
+    private var eventPublisher: GameEventPublisher = eventPublisher
 
     //todo handle events
     @Transient
     private var roundEventListener: RoundEventListener
 
     init {
-        this.currentBid = this.gameStrategy.getInitialBid()
-
         roundEventListener = object : RoundEventListener {
             override fun onEvent(event: RoundEvent) {
                 when (event) {
@@ -79,7 +64,6 @@ class Game(players: List<Player>,
         }
 
         ranking = mutableMapOf(*(players.map { Pair(it, 0) }.toTypedArray())) //todo make sure reading from state is not overriding
-        bidders = newBidders()
         hands = linkedMapOf()
 
         shuffleAndAssign()
@@ -88,27 +72,28 @@ class Game(players: List<Player>,
         currentRound?.registerListener(roundEventListener)
     }
 
+    //    TODO will be deleted
+//    just create a new state object
     private fun clearRoundData() {
         currentRound = null
-        currentBid = gameStrategy.getInitialBid()
-        currentPlayer = players[1]
+        biddingService.currentBid = gameVariant.getInitialBid()
+        biddingService.currentPlayer = biddingService.players[1]
 
-        bidders = newBidders()
+        biddingService.bidders = biddingService.newBidders()
         hands = linkedMapOf()
-        biddingEnded = false
+        biddingService.biddingEnded = false
     }
 
-    private fun newBidders() = mutableMapOf(*players.map { Pair(it, true) }.toTypedArray())
 
     private fun shuffleAndAssign() {
         val cards = Hand.getClassicDeck().shuffled().toMutableList()
         assignTalonCards(cards)
-        assignPlayerCards(cards, players)
+        assignPlayerCards(cards, biddingService.players)
     }
 
     private fun handleEndRound() {
         val roundScore = this.currentRound!!.getCurrentScore()
-        val threshold = this.gameStrategy.getLimitedScoringThreshold()
+        val threshold = this.gameVariant.getLimitedScoringThreshold()
         val biddingPlayer = this.currentRound!!.biddingPlayer
 
         val itr = this.ranking.iterator()
@@ -118,7 +103,7 @@ class Game(players: List<Player>,
             val ranking = curr.value
 
             if (!(ranking >= threshold &&
-                    player != biddingPlayer)) {
+                            player != biddingPlayer)) {
                 this.ranking[player] = ranking + roundScore[player]!!
             }
         }
@@ -134,55 +119,31 @@ class Game(players: List<Player>,
         checkForWinner()
     }
 
-    private fun endBidding() {
-        val biddingEntries = bidders.filter { entry -> entry.value }
-        require(biddingEntries.size == 1)
-        val biddingWinner = biddingEntries.keys.first()
-        this.currentPlayer = biddingWinner
+    fun fold() {
+        biddingService.fold()
+//        TODO extract this responsibility (EVENT)?
+        if (biddingService.biddingEnded) this.startRound(listPlayersFrom(biddingService.currentPlayer, biddingService.players)
+        )
 
-        val newOrder = listPlayersFrom(biddingWinner)
+    }
 
-        this.biddingEnded = true
-        this.eventPublisher.publish(GameEvent.BIDDING_ENDED)
-
-        this.startRound(newOrder)
+    fun bid(bid: Int) {
+        biddingService.bid(hands[biddingService.currentPlayer]!!, bid)
     }
 
     private fun startRound(players: List<Player>) {
-        require(currentRound == null && biddingEnded)
+        require(currentRound == null && biddingService.biddingEnded)
 
-        this.currentRound = Round(players, variant, currentBid, hands)
+        this.currentRound = Round(players, roundVariant, biddingService.currentBid, hands)
         this.currentRound!!.registerListener(roundEventListener)
         this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
-    }
-
-    private fun listPlayersFrom(first: Player): MutableList<Player> {
-        val newOrder = mutableListOf(first)
-        var index = players.indexOf(first)
-        var count = 1
-        while (count < players.size) {
-            index++
-            if (index >= players.size) index = 0
-            newOrder.add(players[index])
-            count++
-        }
-        return newOrder
-    }
-
-    private fun nextPlayer() {
-        val currentIndex = players.indexOf(currentPlayer)
-        val nextIndex = if (currentIndex == players.size - 1) 0 else currentIndex + 1
-
-        this.currentPlayer = players.elementAt(nextIndex)
-        if (!bidders[currentPlayer]!!) return nextPlayer()
-        else this.eventPublisher.publish(GameEvent.PLAYER_CHANGED)
     }
 
     private fun checkForWinner() {
         //todo consider multiple winners
         if (this.ranking.values.all { it < GAME_GOAL }) return
 
-        this.winner = this.ranking.entries.first { it.value >= GAME_GOAL }.key
+        winner = this.ranking.entries.first { it.value >= GAME_GOAL }.key
         this.eventPublisher.publish(GameEvent.GAME_ENDED)
     }
 
@@ -200,9 +161,9 @@ class Game(players: List<Player>,
     }
 
     private fun assignTalonCards(cards: MutableList<Card>) {
-        val talonCardsQuant = variant.getTalonSize() * variant.getTalonsQuantity()
+        val talonCardsQuant = roundVariant.getTalonSize() * roundVariant.getTalonsQuantity()
         val talonCards = pickCards(talonCardsQuant, cards)
-        variant.setTalonCards(talonCards)
+        roundVariant.setTalonCards(talonCards)
     }
 
     @Throws(IOException::class, ClassNotFoundException::class)
@@ -237,40 +198,20 @@ class Game(players: List<Player>,
         return result
     }
 
+    fun getPlayerNames() = biddingService.players.map { it.name }.toTypedArray()
 
-    fun getPlayerNames() = this.players.map { it.name }.toTypedArray()
+    fun getRankingValues() = biddingService.players.map { this.ranking[it]!! }.toIntArray()
 
-    fun getRankingValues() = this.players.map { this.ranking[it]!! }.toIntArray()
-
+    //    TODO delete state
+//    TODO just create new state object
     fun nextGameStage(firstPlayer: Player) {
-        require(this.winner == null && this.currentRound?.roundHasEnded ?: false)
+        require(winner == null && this.currentRound?.roundHasEnded ?: false)
         //this.roundNumber++
         this.clearRoundData()
-        this.players = listPlayersFrom(firstPlayer)
-        this.currentPlayer = players[1]
+        biddingService.players = listPlayersFrom(firstPlayer, biddingService.players)
+        biddingService.currentPlayer = biddingService.players[1]
         shuffleAndAssign()
         this.eventPublisher.publish(GameEvent.BIDDING_STARTED)
-    }
-
-    fun canBid(hand: Hand, bid: Int): Boolean {
-        return bid > currentBid &&
-                this.gameStrategy.canBid(hand, bid) &&
-                !biddingEnded &&
-                bid % 10 == 0 &&
-                bid - currentBid <= this.gameStrategy.getMaxBidStep() &&
-                bid <= gameStrategy.getUpperBidThreshold()
-    }
-
-    fun bid(bid: Int) {
-        require(canBid(hands[currentPlayer]!!, bid))
-        this.currentBid = bid
-        nextPlayer()
-    }
-
-    fun fold() {
-        bidders.put(currentPlayer, false)
-        if (bidders.values.filter { it }.size <= 1) endBidding()
-        else nextPlayer()
     }
 
     fun getPlayerRanking(player: Player) = this.ranking[player]!!

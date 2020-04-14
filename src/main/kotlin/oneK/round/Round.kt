@@ -9,13 +9,13 @@ import oneK.player.Player
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
 import oneK.round.events.RoundEventPublisher
-import oneK.round.strategy.Variant
+import oneK.round.strategy.RoundVariant
 import java.io.IOException
 import java.io.Serializable
 import kotlin.math.round
 
 class Round(private val players: List<Player>,
-            private val strategy: Variant,
+            private val strategy: RoundVariant,
             private var bid: Int,
             private var hands: LinkedHashMap<Player, Hand>) : Serializable {
 
