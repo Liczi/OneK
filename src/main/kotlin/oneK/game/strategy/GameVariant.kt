@@ -34,16 +34,10 @@ interface GameVariant : Serializable {
             return this
         }
 
-        /**
-         * You never know what is in stash - must be checked
-         */
         public fun setCanBid(canBid: (Hand, Int) -> Boolean): Builder {
             this.variant.canBid = canBid
             return this
         }
-
-        //todo ??
-//        public fun setSubmitScores(submitScores: )
 
         public fun setLimitedScoringThreshold(threshold: Int): Builder {
             this.variant.getUpperBidThreshold = { threshold }

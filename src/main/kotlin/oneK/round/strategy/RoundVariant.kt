@@ -14,8 +14,7 @@ interface RoundVariant : Serializable {
     var getTalonsQuantity: () -> Int
     var getTalons: () -> Array<HashSet<Card>>
 
-    // false if game could be restarted
-    var isValid: (Hand) -> Boolean
+    var qualifiesForRestart: (Hand) -> Boolean
 
     class Builder {
 
@@ -46,7 +45,7 @@ interface RoundVariant : Serializable {
                     this.strategy.getTalonSize = { 4 }
                     this.strategy.getTalonsQuantity = { 1 }
                 }
-                else -> throw IllegalArgumentException("Too many players")
+                else -> throw IllegalArgumentException("Invalid players number. Supported is 2, 3 or 4 players.")
             }
 
             return this
@@ -57,8 +56,8 @@ interface RoundVariant : Serializable {
             return this
         }
 
-        fun setIsValid(isValid: (Hand) -> Boolean): Builder {
-            this.strategy.isValid = isValid
+        fun setQualifiesForRestart(qualifiesForRestart: (Hand) -> Boolean): Builder {
+            this.strategy.qualifiesForRestart = qualifiesForRestart
             return this
         }
 

@@ -8,11 +8,12 @@ import oneK.game.events.GameEventPublisher
 import oneK.game.strategy.GameVariant
 import oneK.player.Player
 import oneK.round.Round
+import oneK.round.StrifeService
+import oneK.round.SummaryService
 import oneK.round.events.RoundEvent
 import oneK.round.events.RoundEventListener
+import oneK.round.events.RoundEventPublisher
 import oneK.round.strategy.RoundVariant
-import java.io.IOException
-import java.io.Serializable
 import java.util.* // TODO ...
 
 // TODO wrong place for these constants
@@ -20,11 +21,15 @@ val MAXIMUM_BID = 400
 val GAME_GOAL = 1000
 
 //TODO prepare full documentation (what is implemented, future work, how mechanics can be changed through Variants
-class Game(players: List<Player>,
-           eventPublisher: GameEventPublisher,
-           private val biddingService: BiddingService,
-           private val gameVariant: GameVariant,
-           private val roundVariant: RoundVariant) : Serializable {
+class GameService(players: List<Player>,
+                  eventPublisher: GameEventPublisher,
+                  private val biddingService: BiddingService,
+                  private val gameVariant: GameVariant,
+                  private val roundVariant: RoundVariant) {
+
+//    TODO change lateinit to constrained state
+    private lateinit var strifeService: StrifeService
+    private lateinit var summaryService: SummaryService
 
     //TODO add empty constructor with satisfied dependencies
     var winner: Player? = null
@@ -44,11 +49,9 @@ class Game(players: List<Player>,
 
     //    TODO extract to parent abstract class
 //    registerListener...
-    @Transient
     private var eventPublisher: GameEventPublisher = eventPublisher
 
     //todo handle events
-    @Transient
     private var roundEventListener: RoundEventListener
 
     init {
@@ -92,7 +95,7 @@ class Game(players: List<Player>,
     }
 
     private fun handleEndRound() {
-        val roundScore = this.currentRound!!.getCurrentScore()
+        val roundScore = this.summaryService.getCurrentScore()
         val threshold = this.gameVariant.getLimitedScoringThreshold()
         val biddingPlayer = this.currentRound!!.biddingPlayer
 
@@ -134,7 +137,10 @@ class Game(players: List<Player>,
     private fun startRound(players: List<Player>) {
         require(currentRound == null && biddingService.biddingEnded)
 
-        this.currentRound = Round(players, roundVariant, biddingService.currentBid, hands)
+        val eventPublisher = RoundEventPublisher()
+        this.summaryService = SummaryService(players, players[0], biddingService.currentBid, eventPublisher)
+        this.strifeService = StrifeService(players, players[0], hands, this.summaryService, eventPublisher)
+        this.currentRound = Round(players, players[0], this.strifeService, this.summaryService, roundVariant, biddingService.currentBid, hands, eventPublisher)
         this.currentRound!!.registerListener(roundEventListener)
         this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
     }
@@ -166,24 +172,6 @@ class Game(players: List<Player>,
         roundVariant.setTalonCards(talonCards)
     }
 
-    @Throws(IOException::class, ClassNotFoundException::class)
-    private fun readObject(`in`: java.io.ObjectInputStream) {
-        `in`.defaultReadObject()
-        eventPublisher = GameEventPublisher()
-        roundEventListener = object : RoundEventListener {
-            override fun onEvent(event: RoundEvent) {
-                when (event) {
-                    RoundEvent.ROUND_ENDED -> {
-                        handleEndRound()
-                    }
-                    else -> {
-                        return
-                    }
-                }
-            }
-        }
-    }
-
     private fun pickCards(quant: Int, cards: MutableList<Card>): HashSet<Card> {
         var i = 0
         val result = hashSetOf<Card>()
@@ -200,6 +188,7 @@ class Game(players: List<Player>,
 
     fun getPlayerNames() = biddingService.players.map { it.name }.toTypedArray()
 
+//    TODO delete ?
     fun getRankingValues() = biddingService.players.map { this.ranking[it]!! }.toIntArray()
 
     //    TODO delete state

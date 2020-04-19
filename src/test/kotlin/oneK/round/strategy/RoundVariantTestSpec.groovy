@@ -80,15 +80,15 @@ class RoundVariantTestSpec extends Specification {
         new RoundVariant.Builder().setPlayersQuant(4).build().setTalonCards | [new Card(ACE, SPADES)] as HashSet
     }
 
-    def "isValid test"() {
+    def "qualifiesForRestart test"() {
         setup:
         def strategy = new RoundVariant.Builder()
-                .setIsValid({ hand -> hand.containsAll(Hand.fromString("9H,9C,9D,9S")) })
+                .setQualifiesForRestart({ hand -> hand.containsAll(Hand.fromString("9H,9C,9D,9S")) })
                 .build()
 
         when:
-        def r1 = strategy.isValid().invoke(Hand.fromString("9H,9C,9D,9S, AS, KD"))
-        def r2 = strategy.isValid().invoke(Hand.fromString("9H,9C,9D,AS"))
+        def r1 = strategy.getQualifiesForRestart().invoke(Hand.fromString("9H,9C,9D,9S, AS, KD"))
+        def r2 = strategy.getQualifiesForRestart().invoke(Hand.fromString("9H,9C,9D,AS"))
 
         then:
         r1

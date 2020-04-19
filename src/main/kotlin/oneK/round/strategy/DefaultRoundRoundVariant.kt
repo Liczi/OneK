@@ -19,5 +19,5 @@ class DefaultRoundRoundVariant : RoundVariant {
     override var getTalonSize: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalonsQuantity: () -> Int = { throw UninitializedPropertyAccessException() }
     override var getTalons: () -> Array<HashSet<Card>> = { throw UninitializedPropertyAccessException() }
-    override var isValid = { _: Hand -> true }
+    override var qualifiesForRestart = { _: Hand -> false }
 }

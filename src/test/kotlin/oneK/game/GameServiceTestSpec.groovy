@@ -15,7 +15,7 @@ import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class GameTestSpec extends Specification {
+class GameServiceTestSpec extends Specification {
 
 
     @Unroll
@@ -26,12 +26,12 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
 
         biddingService.biddingEnded = true
         game.startRound(players)
         def round = game.currentRound
-        def talons = round.strategy.getTalons.invoke().flatten()
+        def talons = round.variant.getTalons.invoke().flatten()
 
         expect:
         //TALONS
@@ -59,12 +59,12 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
 
         biddingService.biddingEnded = true
         game.startRound(players)
         def round = game.currentRound
-        round.strategy.getTalons.invoke().flatten()
+        round.variant.getTalons.invoke().flatten()
 
         when:
         round.pickTalon(0)
@@ -89,7 +89,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
 
         when:
         game.bid(110)
@@ -110,7 +110,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         game.hands.replace(players[0], Hand.fromString("KS, QS"))
 
         when:
@@ -133,7 +133,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         game.hands.replace(players[0], Hand.fromString("KS, QS"))
         game.hands.replace(players[1], Hand.fromString("AS, QD"))
 
@@ -141,7 +141,7 @@ class GameTestSpec extends Specification {
         when:
         game.fold()
         def round = game.getCurrentRound()
-        round.gameIsLocked = false
+        round.strifeService.gameIsLocked = false
 
         round.triumph(new Card(Figure.KING, Color.SPADES))
         round.play(new Card(Figure.ACE, Color.SPADES))
@@ -162,7 +162,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         def subscriber = Mock(GameEventListener)
         game.registerListener(subscriber)
 
@@ -181,7 +181,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         def h1 = Hand.fromString("KS, QS")
         def h2 = Hand.fromString("AS, QD")
 
@@ -220,7 +220,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         game.hands.replace(players[0], Hand.fromString("9S"))
 
         when:
@@ -243,7 +243,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         biddingService.biddingEnded = true
         game.ranking = [(players[0]): r1, (players[1]): r2, (players[2]): r3]
         game.startRound(players)
@@ -274,7 +274,7 @@ class GameTestSpec extends Specification {
 
         def eventPublisher = new GameEventPublisher()
         def biddingService = new BiddingService(players, gameVariant, eventPublisher)
-        def game = new Game(players, eventPublisher, biddingService, gameVariant, roundVariant)
+        def game = new GameService(players, eventPublisher, biddingService, gameVariant, roundVariant)
         game.fold()
         game.fold()
 
@@ -290,7 +290,7 @@ class GameTestSpec extends Specification {
         //DESERIALIZE
         def byteArrayInput = new ByteArrayInputStream(byteArrayOutput.toByteArray())
         def input = new ObjectInputStream(byteArrayInput)
-        def gameDeserialized = input.readObject() as Game
+        def gameDeserialized = input.readObject() as GameService
         input.close()
         byteArrayInput.close()
 
@@ -300,6 +300,6 @@ class GameTestSpec extends Specification {
         gameDeserialized.hands.is(gameDeserialized.currentRound.hands)
         game.currentRound.playerNames == gameDeserialized.currentRound.playerNames
         game.currentRound.gameIsLocked == gameDeserialized.currentRound.gameIsLocked
-        game.currentRound.strategy.getTalons.invoke()[0] == gameDeserialized.currentRound.strategy.getTalons.invoke()[0]
+        game.currentround.variant.getTalons.invoke()[0] == gameDeserialized.currentround.variant.getTalons.invoke()[0]
     }
 }

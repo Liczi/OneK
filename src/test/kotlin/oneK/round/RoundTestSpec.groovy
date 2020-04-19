@@ -124,7 +124,7 @@ class RoundTestSpec extends Specification {
 
     def "round should restart properly"() {
         setup:
-        def strategy = new RoundVariant.Builder().setPlayersQuant(3).setIsValid({ hand -> false }).build()
+        def strategy = new RoundVariant.Builder().setPlayersQuant(3).setQualifiesForRestart({ hand -> false }).build()
         def players = [new Player("P1"), new Player("P2"), new Player("P3")]
         def h1 = Hand.fromString("AS, KS, QS")
         def h2 = Hand.fromString("AD, KD, QD")

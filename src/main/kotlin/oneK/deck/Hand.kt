@@ -2,9 +2,6 @@ package oneK.deck
 
 import java.io.Serializable
 
-/**
- * Created by Jakub Licznerski on 03.11.2017.
- */
 class Hand : Serializable {
 
     val cards: HashSet<Card>
