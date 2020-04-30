@@ -72,7 +72,7 @@ class GameService(players: List<Player>,
         shuffleAndAssign()
         this.eventPublisher.publish(GameEvent.BIDDING_STARTED)
 
-        currentRound?.registerListener(roundEventListener)
+//        TODO currentRound?.registerListener(roundEventListener)
     }
 
     //    TODO will be deleted
@@ -140,8 +140,8 @@ class GameService(players: List<Player>,
         val eventPublisher = RoundEventPublisher()
         this.summaryService = SummaryService(players, players[0], biddingService.currentBid, eventPublisher)
         this.strifeService = StrifeService(players, players[0], hands, this.summaryService, eventPublisher)
-        this.currentRound = Round(players, players[0], this.strifeService, this.summaryService, roundVariant, biddingService.currentBid, hands, eventPublisher)
-        this.currentRound!!.registerListener(roundEventListener)
+//        TODO this.currentRound = Round(players, players[0], this.strifeService, this.summaryService, roundVariant, biddingService.currentBid, hands, eventPublisher)
+//        TODO this.currentRound!!.registerListener(roundEventListener)
         this.eventPublisher.publish(GameEvent.ROUND_INITIALIZED)
     }
 
@@ -194,7 +194,7 @@ class GameService(players: List<Player>,
     //    TODO delete state
 //    TODO just create new state object
     fun nextGameStage(firstPlayer: Player) {
-        require(winner == null && this.currentRound?.roundHasEnded ?: false)
+//        TODO  require(winner == null && this.currentRound?.roundHasEnded ?: false)
         //this.roundNumber++
         this.clearRoundData()
         biddingService.players = listPlayersFrom(firstPlayer, biddingService.players)
@@ -211,6 +211,6 @@ class GameService(players: List<Player>,
         this.eventPublisher.addListener(listener)
     }
 
-    fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
+//    fun registerListener(listener: RoundEventListener) = this.currentRound?.registerListener(listener)
 
 }

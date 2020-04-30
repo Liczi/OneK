@@ -3,18 +3,20 @@ package oneK.v2.validation
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.v2.state.*
-import oneK.v2.variant.Variant
 
 interface GameValidator {
-    //    TODO change to extension functions on gameState
-//    add singleton DefaultGameValidator
-//    fun GameState.canStart(gameState: GameState): State.BiddingState
-    fun canBid(bid: Int, gameState: GameState, variant: Variant): Boolean
-    fun canFold(gameState: GameState, player: Player): Boolean
-    fun canActivateBomb(gameState: GameState): Boolean
-    fun canRestart(state: State.Bidding): Boolean
-    fun canChangeBid(gameState: GameState, newBid: Int): Boolean
-    fun canConfirmBid(gameState: GameState): Boolean
-    fun canPlay(gameState: GameState, card: Card): Boolean
-    fun canTriumph(gameState: GameState, card: Card): Boolean
+    // TODO change if to when statements with error message
+    fun canStart(state: State.Summary): State.Bidding?
+
+    fun canBid(bid: Int, state: State.Bidding): State.Bidding?
+
+    fun canPickTalon(state: State.Review): State.Review?
+    fun canDistributeCards(toGive: Map<Player, Card>, state: State.Review): State.Review?
+    fun canActivateBomb(state: State.Review): State.Review?
+    fun canRestart(state: State.Review): State.Review?
+    fun canChangeBid(newBid: Int, state: State.Review): State.Review?
+    fun canConfirmBid(state: State.Review): State.Review?
+
+    fun canPlay(card: Card, state: State.Strife): State.Strife?
+    fun canTriumph(card: Card, state: State.Strife): State.Strife?
 }

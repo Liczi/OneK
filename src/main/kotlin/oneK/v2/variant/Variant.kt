@@ -1,11 +1,11 @@
 package oneK.v2.variant
 
 import oneK.deck.Card
-import oneK.deck.Hand
-import java.lang.IllegalArgumentException
+import oneK.v2.Hand
 
 interface Variant {
-//TODO minBidStep ???
+    //TODO minBidStep ???
+    var getGameGoal: () -> Int
     var getUpperBidThreshold: () -> Int
     var getInitialBid: () -> Int
     var getMaxBidStep: () -> Int
@@ -13,10 +13,8 @@ interface Variant {
     var getLimitedScoringThreshold: () -> Int
     var getBombPoints: () -> Int
     var getBombAllowedBidThreshold: () -> Int
-    var setTalonCards: (HashSet<Card>) -> Unit
-    var getTalonSize: () -> Int
+    var getTalonCards: (Collection<Card>) -> List<Set<Card>>
     var getTalonsQuantity: () -> Int
-    var getTalons: () -> Array<HashSet<Card>>
     var qualifiesForRestart: (Hand) -> Boolean
 
     class Builder {
@@ -24,6 +22,11 @@ interface Variant {
 
         init {
             this.variant = DefaultVariant()
+        }
+
+        fun gameGoal(goal: Int): Builder {
+            this.variant.getGameGoal = { goal }
+            return this
         }
 
         fun upperBidThreshold(threshold: Int): Builder {
@@ -56,28 +59,13 @@ interface Variant {
             return this
         }
 
-        fun playersQuant(players: Int): Builder {
-            when (players) {
-                2 -> {
-                    this.variant.getTalonSize = { 2 }
-                    this.variant.getTalonsQuantity = { 2 }
-                }
-                3 -> {
-                    this.variant.getTalonSize = { 3 }
-                    this.variant.getTalonsQuantity = { 1 }
-                }
-                4 -> {
-                    this.variant.getTalonSize = { 4 }
-                    this.variant.getTalonsQuantity = { 1 }
-                }
-                else -> throw IllegalArgumentException("Invalid players number. Supported is 2, 3 or 4 players.")
-            }
-
+        fun bombAllowedBidThreshold(threshold: Int): Builder {
+            this.variant.getBombAllowedBidThreshold = { threshold }
             return this
         }
 
-        fun bombAllowedBidThreshold(threshold: Int): Builder {
-            this.variant.getBombAllowedBidThreshold = { threshold }
+        fun talonsQuantity(quantity: Int): Builder {
+            this.variant.getTalonsQuantity = { quantity }
             return this
         }
 

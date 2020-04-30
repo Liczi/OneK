@@ -4,6 +4,7 @@ import oneK.deck.Color.*
 import oneK.deck.Figure.*
 import java.io.Serializable
 
+//TODO refactor kotlin way
 /**
  * Created by Jakub Licznerski on 03.11.2017.
  */
