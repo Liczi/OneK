@@ -15,6 +15,7 @@ interface Variant {
     var getBombAllowedBidThreshold: () -> Int
     var getTalonCards: (Collection<Card>) -> List<Set<Card>>
     var getTalonsQuantity: () -> Int
+    var getTalonCardsQuantity: () -> Int
     var qualifiesForRestart: (Hand) -> Boolean
 
     class Builder {
@@ -66,6 +67,11 @@ interface Variant {
 
         fun talonsQuantity(quantity: Int): Builder {
             this.variant.getTalonsQuantity = { quantity }
+            return this
+        }
+
+        fun talonCardsQuantity(quantity: Int): Builder {
+            this.variant.getTalonCardsQuantity = { quantity }
             return this
         }
 

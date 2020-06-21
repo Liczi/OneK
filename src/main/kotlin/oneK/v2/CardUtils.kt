@@ -3,9 +3,9 @@ package oneK.v2
 import oneK.deck.Card
 import oneK.deck.Figure
 
-fun Hand.contains(card: Card) = this.cards.any { it == card }
-
-fun Hand.containsAll(hand: Hand) = this.cards.containsAll(hand.cards)
+//fun Hand.contains(card: Card) = this.cards.any { it == card }
+//
+//fun Hand.containsAll(hand: Hand) = this.cards.containsAll(hand.cards)
 
 
 //TODO for sanity use regex or delegate Card.fromString to accept the whole splitted segment
@@ -29,8 +29,6 @@ fun Set<Card>.hasTriumph(): Boolean {
 
     return kings.any { queens.contains(it) }
 }
-
-fun Hand.hasTriumph(): Boolean = this.cards.hasTriumph()
 
 fun Collection<Card>.splitCardsToEqualSets(setsCount: Int): List<Set<Card>> {
     require(this.size % setsCount == 0)

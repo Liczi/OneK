@@ -1,26 +1,42 @@
 package service
 
-import oneK.player.Player
-import oneK.v2.getClassicDeck
-import oneK.v2.service.TwoPlayerBiddingTest
+import oneK.v2.service.TestStateHolder
 import oneK.v2.service.DefaultSummaryServiceImpl.performStart
+import oneK.v2.service.TestPlayersHolder
 import oneK.v2.state.State
 import oneK.v2.variant.DefaultVariant
+import oneK.v2.variant.Variant
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-internal class DefaultSummaryServiceImplTest : TwoPlayerBiddingTest() {
+class DefaultSummaryServiceImplTest {
 
-    //    TODO add nested class responsible for 3 players test
-//    TODO sort out initial players order - in tests we may assume we start with the given order not to confuse
-    @Test
-    fun `should properly perform start`() {
-        val summaryState = State.Summary(players)
-        val deck = getClassicDeck().take(8)
+    @Nested
+    inner class TwoPlayer : TestStateHolder.Bidding(TestPlayersHolder.TwoPlayer()) {
+        @Test
+        fun `should properly perform start`() {
+            val summaryState = State.Summary(listOf(getPlayers()[1], getPlayers()[0]))
 
-        val biddingState = summaryState.performStart(deck, DefaultVariant())
+            val biddingState = summaryState.performStart(getDeck(), DefaultVariant())
 
-        assertThat(biddingState).isEqualTo(initialBiddingState)
+            assertThat(biddingState.biddersOrder.current()).isEqualTo(initialBiddingState.biddersOrder[0])
+            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
+        }
     }
 
+    @Nested
+    inner class ThreePlayer : TestStateHolder.Bidding(TestPlayersHolder.ThreePlayer()) {
+        @Test
+        fun `should properly perform start`() {
+            val summaryState = State.Summary(listOf(getPlayers()[2], getPlayers()[0], getPlayers()[1]))
+
+//            TODO extract to constant
+            val variant = Variant.Builder().talonsQuantity(1).talonCardsQuantity(3).build()
+            val biddingState = summaryState.performStart(getDeck(), variant)
+
+            assertThat(biddingState.biddersOrder.current()).isEqualTo(initialBiddingState.biddersOrder[0])
+            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
+        }
+    }
 }

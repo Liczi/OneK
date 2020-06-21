@@ -36,7 +36,7 @@ private class ValidatedGameImpl(
         return state.performBid(bid)
     }
 
-    override fun doFold(state: State.Bidding): FoldingEffect { // general state (could be either bidding or review
+    override fun doFold(state: State.Bidding): FoldingEffect {
         state.performFold()
         return if (state.isBiddingCompleted()) {
             state.transitionToReviewState()
@@ -79,6 +79,7 @@ private class ValidatedGameImpl(
         TODO()
     }
 
+//    TODO needs to be outside this private class
     class Factory {
         fun default(): ValidatedGame {
             val variant = DefaultVariant()

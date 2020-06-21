@@ -1,16 +1,25 @@
 package oneK.v2.state
 
 //TODO add predicate!!!
-class RepeatableOrder<T>(private val order: List<T>): List<T> by order {
+class RepeatableOrder<T> private constructor(private val order: List<T>, private val currentInd: Int = 0) :
+    List<T> by order {
     private val lastInd = order.size - 1
-    private var currentInd = 0
 
-    fun next() {
-        this.currentInd = if (currentInd < lastInd) currentInd + 1 else 0
+    fun next(): RepeatableOrder<T> {
+        val currentInd = if (this.currentInd < lastInd) this.currentInd + 1 else 0
+        return RepeatableOrder(order, currentInd)
     }
 
-    fun previous() {
-        this.currentInd = if (currentInd > 0) currentInd - 1 else lastInd
+    //    TODO refactor
+    fun next(newCurrent: T): RepeatableOrder<T> {
+        val newOrder = order.mapIndexed { index, elem -> if (index == currentInd) newCurrent else elem }
+        val currentInd = if (this.currentInd < lastInd) this.currentInd + 1 else 0
+        return RepeatableOrder(newOrder, currentInd)
+    }
+
+    fun previous(): RepeatableOrder<T> {
+        val currentInd = if (currentInd > 0) currentInd - 1 else lastInd
+        return RepeatableOrder(order, currentInd)
     }
 
     fun current(): T = order[currentInd]
@@ -33,5 +42,13 @@ class RepeatableOrder<T>(private val order: List<T>): List<T> by order {
         return result
     }
 
+    override fun toString(): String {
+        return "RepeatableOrder(order=$order, currentInd=$currentInd)"
+    }
 
+    companion object {
+        fun <T> of(order: List<T>): RepeatableOrder<T> {
+            return RepeatableOrder(order)
+        }
+    }
 }

@@ -6,14 +6,13 @@ import oneK.v2.Hand
 import oneK.v2.hasTriumph
 import oneK.v2.splitCardsToEqualSets
 
-const val TALON_SIZE = 4
 
 class DefaultVariant : Variant {
     override var getGameGoal = { 1000 }
     override var getUpperBidThreshold = { MAXIMUM_BID }
     override var getInitialBid = { 100 }
     override var getMaxBidStep = { 10 }
-    override var canBid: (Set<Card>, Int) -> Boolean = { cards, bid ->
+    override var canBid: (Hand, Int) -> Boolean = { cards, bid ->
         bid <= 120 || cards.hasTriumph()
     }
     override var getLimitedScoringThreshold = { 900 }
@@ -24,6 +23,7 @@ class DefaultVariant : Variant {
     override var getTalonCards: (Collection<Card>) -> List<Set<Card>> = { cards ->
         cards.splitCardsToEqualSets(this.getTalonsQuantity())
     }
+    override var getTalonCardsQuantity = { 4 }
 
     override var qualifiesForRestart = { _: Hand -> false }
 }
