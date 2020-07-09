@@ -5,8 +5,7 @@ import oneK.player.Player
 import oneK.v2.state.*
 
 interface GameValidator {
-    // TODO change if to when statements with error message
-    fun canStart(state: State.Summary): State.Bidding?
+    fun canStart(state: State.Summary): State.Summary?
 
     fun canBid(bid: Int, state: State.Bidding): State.Bidding?
 

@@ -19,5 +19,5 @@ internal object DefaultBiddingServiceImpl : BiddingService {
         this.biddersOrder.current().copy(lastAction = action)
 
     private fun State.Bidding.endTurnWith(action: BiddingAction): State.Bidding =
-        this.copy(biddersOrder = this.biddersOrder.next(performAction(action)))
+        this.copy(biddersOrder = this.biddersOrder.replaceCurrentAndNext(performAction(action)))
 }

@@ -1,6 +1,5 @@
 package oneK.v2.state
 
-//TODO change package
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.v2.action.BiddingAction

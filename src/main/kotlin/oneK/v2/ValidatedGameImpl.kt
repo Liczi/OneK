@@ -6,7 +6,7 @@ import oneK.v2.service.*
 import oneK.v2.state.*
 import oneK.v2.validation.DefaultGameValidator
 import oneK.v2.validation.GameValidator
-import oneK.v2.variant.DefaultVariant
+import oneK.v2.variant.DefaultTwoPlayerVariant
 import oneK.v2.variant.Variant
 
 //TODO for starters keep games in cache
@@ -24,6 +24,7 @@ private class ValidatedGameImpl(
 //    STATE HOLDER (per game - gameUuid, needed for ranking incrementation
     //    read state from memory (should be consistent for all players thus cannot be passed in requests)
 
+//    TODO on the level of server, check if the game is memory effective - if not include Flyweight pattern or state caching - proper hashing function is needed
 
     override fun doStart(state: State.Summary): State.Bidding {
         val shuffledDeck = getClassicDeck().shuffled()
@@ -44,7 +45,6 @@ private class ValidatedGameImpl(
             FoldingEffect.NoTransition
         }
     }
-
 
     override fun doPickTalon(talonInd: Int): State.Review {
         TODO("Not yet implemented")
@@ -78,31 +78,28 @@ private class ValidatedGameImpl(
     override fun doTriumph(card: Card): State.Strife {
         TODO()
     }
-
-//    TODO needs to be outside this private class
-    class Factory {
-        fun default(): ValidatedGame {
-            val variant = DefaultVariant()
-            return ValidatedGameImpl(
-                DefaultGameValidator(variant),
-                variant,
-                DefaultSummaryServiceImpl,
-                DefaultBiddingServiceImpl,
-                ReviewService,
-                StrifeService
-            )
-        }
-    }
 }
 
+object GameFactory {
+    fun default(): ValidatedGame {
+        val variant = DefaultTwoPlayerVariant()
+        return ValidatedGameImpl(
+            DefaultGameValidator(variant),
+            variant,
+            DefaultSummaryServiceImpl,
+            DefaultBiddingServiceImpl,
+            ReviewService,
+            StrifeService
+        )
+    }
+}
 //TODO possibly extract extensions
-
-
 
 private fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
     TODO("Not yet implemented")
 }
 
 private fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransition {
-    TODO("Not yet implemented")
+//    return FoldingEffect.ReviewTransition(this.biddersOrder.map {  })
+    TODO()
 }

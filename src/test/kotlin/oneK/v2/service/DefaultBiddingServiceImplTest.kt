@@ -3,13 +3,13 @@ package service
 import oneK.v2.isBiddingCompleted
 import oneK.v2.service.DefaultBiddingServiceImpl.performBid
 import oneK.v2.service.DefaultBiddingServiceImpl.performFold
-import oneK.v2.service.TestPlayersHolder
-import oneK.v2.service.TestStateHolder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import testsuits.TestStateHolder
+import testsuits.TwoPlayer
 
-internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TestPlayersHolder.TwoPlayer()) {
+internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TwoPlayer()) {
 
     //    TODO add nested class responsible for 3 players test - add reset function (in parent class)
     //    TODO add more test cases for bidding stage - test ValidatedGame
@@ -20,7 +20,7 @@ internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TestPlaye
             .performBid(110)
             .performFold()
 
-        assertThat(state.biddersOrder.current().player).isEqualTo(getPlayers()[1])
+        assertThat(state.biddersOrder.current().player).isEqualTo(players[1])
         assertTrue(state.isBiddingCompleted())
     }
 
@@ -30,7 +30,7 @@ internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TestPlaye
             .performBid(100)
             .performFold()
 
-        assertThat(state.biddersOrder.current().player).isEqualTo(getPlayers()[0])
+        assertThat(state.biddersOrder.current().player).isEqualTo(players[0])
         assertTrue(state.isBiddingCompleted())
     }
 }

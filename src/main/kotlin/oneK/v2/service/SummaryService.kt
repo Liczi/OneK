@@ -1,7 +1,6 @@
 package oneK.v2.service
 
 import oneK.deck.Card
-import oneK.v2.rotate
 import oneK.v2.splitCardsToEqualSets
 import oneK.v2.state.Bidder
 import oneK.v2.state.RepeatableOrder
@@ -17,10 +16,10 @@ internal object DefaultSummaryServiceImpl : SummaryService {
         val talonSize = variant.getTalonCardsQuantity()
         val talon = variant.getTalonCards(deck.take(talonSize))
         val playersHands = deck.drop(talonSize).splitCardsToEqualSets(this.order.size)
-        val bidders = playersHands
-            .zip(this.order.rotate())
-            .map { (cards, player) -> Bidder(cards, player) }
+        val bidders = this.order
+            .zip(playersHands)
+            .map { (player, cards) -> Bidder(cards, player) }
 
-        return State.Bidding(RepeatableOrder.of(bidders), talon)
+        return State.Bidding(RepeatableOrder.of(bidders, this.order.currentInd), talon)
     }
 }

@@ -12,11 +12,7 @@ internal class BiddingStateValidatorImpl(private val variant: Variant) : Bidding
     override fun canBid(bid: Int, state: State.Bidding): State.Bidding? {
         return state.ensureValid {
             val currentBid = state.currentBid(variant.getInitialBid())
-            bid > currentBid &&
-                    variant.canBid(state.biddersOrder.current().cards, bid) &&
-                    bid % 10 == 0 && // TODO min bid state ???
-                    bid - currentBid <= variant.getMaxBidStep() &&
-                    bid <= variant.getUpperBidThreshold()
+            isValidBid(bid, currentBid, state.biddersOrder.current().cards, variant)
         }
     }
 }

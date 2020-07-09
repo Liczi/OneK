@@ -7,7 +7,7 @@ import oneK.v2.hasTriumph
 import oneK.v2.splitCardsToEqualSets
 
 
-class DefaultVariant : Variant {
+class DefaultTwoPlayerVariant: Variant {
     override var getGameGoal = { 1000 }
     override var getUpperBidThreshold = { MAXIMUM_BID }
     override var getInitialBid = { 100 }
@@ -27,3 +27,8 @@ class DefaultVariant : Variant {
 
     override var qualifiesForRestart = { _: Hand -> false }
 }
+
+fun DefaultThreePlayerVariant(): Variant = Variant.Builder()
+    .talonsQuantity(1)
+    .talonCardsQuantity(3)
+    .build()

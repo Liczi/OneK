@@ -6,14 +6,14 @@ import oneK.deck.Figure
 //fun Hand.contains(card: Card) = this.cards.any { it == card }
 //
 //fun Hand.containsAll(hand: Hand) = this.cards.containsAll(hand.cards)
-
+private val ALL_NINES = "9S,9C,9D,9H".toCardSet()
 
 //TODO for sanity use regex or delegate Card.fromString to accept the whole splitted segment
 fun String.toCardSet(): Set<Card> {
     if (this.isBlank()) return emptySet()
     val cards = this.split(",".toRegex())
     val cardsList = cards
-        .map { it.trim() }
+        .map(String::trim)
         .map { Card.fromString(it[0], it[1]) }
     return cardsList.filterNotNull().toSet()
 }
@@ -29,6 +29,9 @@ fun Set<Card>.hasTriumph(): Boolean {
 
     return kings.any { queens.contains(it) }
 }
+
+fun Set<Card>.containsAllNines(): Boolean = this.containsAll(ALL_NINES)
+
 
 fun Collection<Card>.splitCardsToEqualSets(setsCount: Int): List<Set<Card>> {
     require(this.size % setsCount == 0)

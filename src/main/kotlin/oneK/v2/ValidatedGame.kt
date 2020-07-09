@@ -56,7 +56,7 @@ abstract class ValidatedGame(
         TODO()
     }
 
-    fun confirmBid(): State.Strife {
+    fun confirm(): State.Strife {
         TODO()
     }
 

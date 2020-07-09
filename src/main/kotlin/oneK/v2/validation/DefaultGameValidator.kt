@@ -2,16 +2,16 @@ package oneK.v2.validation
 
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.v2.state.GameState
 import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
-class DefaultGameValidator(variant: Variant) : GameValidator, BiddingValidator by BiddingStateValidatorImpl(variant) {
-//    TODO make all methods be implemented by delegates
+//TODO avoid creating validator objects as they should be stateless
+class DefaultGameValidator(variant: Variant) :
+    GameValidator,
+    SummaryValidator by SummaryValidatorImpl(variant),
+    BiddingValidator by BiddingStateValidatorImpl(variant) {
 
-    override fun canStart(state: State.Summary): State.Bidding? {
-        TODO("Not yet implemented")
-    }
+//    TODO make all methods be implemented by delegates
 
     override fun canPickTalon(state: State.Review): State.Review? {
         TODO("Not yet implemented")

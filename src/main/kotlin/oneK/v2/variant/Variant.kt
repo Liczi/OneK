@@ -22,7 +22,7 @@ interface Variant {
         private val variant: Variant
 
         init {
-            this.variant = DefaultVariant()
+            this.variant = DefaultTwoPlayerVariant()
         }
 
         fun gameGoal(goal: Int): Builder {
