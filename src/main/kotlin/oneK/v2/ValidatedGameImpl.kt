@@ -46,11 +46,11 @@ private class ValidatedGameImpl(
         }
     }
 
-    override fun doPickTalon(talonInd: Int): State.Review {
+    override fun doPickTalon(talonIndex: Int): State.Review {
         TODO("Not yet implemented")
     }
 
-    override fun doDistributeCards(toGive: Map<Player, Card>) {
+    override fun doDistributeCards(toGive: Map<Player, Card>): State.Review {
         TODO("Not yet implemented")
     }
 

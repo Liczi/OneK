@@ -5,7 +5,7 @@ import oneK.player.Player
 import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
-//TODO avoid creating validator objects as they should be stateless
+// TODO add objects being default validators for specific variants e.g. TwoPlayerSummaryValidator - decreases object creation per each game obj creation, or use cached game instances
 class DefaultGameValidator(variant: Variant) :
     GameValidator,
     SummaryValidator by SummaryValidatorImpl(variant),

@@ -9,9 +9,9 @@ fun isValidBid(
     cards: Set<Card>,
     variant: Variant
 ): Boolean {
-    return bid > currentBid &&
-            variant.canBid(cards, bid) &&
-            bid % 10 == 0 && // TODO min bid state ???
-            bid - currentBid <= variant.getMaxBidStep() &&
-            bid <= variant.getUpperBidThreshold()
+    return bid > currentBid
+            && variant.canBid(cards, bid)
+            && bid % 10 == 0
+            && bid - currentBid <= variant.getMaxBidStep() // TODO min bid state ???
+            && bid <= variant.getUpperBidThreshold()
 }

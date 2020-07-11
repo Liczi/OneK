@@ -21,6 +21,7 @@ internal class ValidatedGameImplTest : TwoPlayer() {
         assertNull(currentBidder.lastAction)
     }
 
+//TODO add tests for state validation conditions
 //    TODO make work
     @Test
     fun `should transition to review`() {

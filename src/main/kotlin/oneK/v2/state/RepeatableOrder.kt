@@ -1,11 +1,6 @@
 package oneK.v2.state
 
-//TODO add predicate!!!
-//TODO fix logic to use the current index when accounting for
-class RepeatableOrder<T> private constructor(
-    private val order: List<T>,
-    val currentInd: Int = 0
-) : List<T> by order {
+class RepeatableOrder<T> private constructor(private val order: List<T>, val currentInd: Int = 0) : List<T> by order {
 
     private val lastInd = order.size - 1
 
@@ -31,7 +26,7 @@ class RepeatableOrder<T> private constructor(
         return "RepeatableOrder(order=$order, currentInd=$currentInd)"
     }
 
-    fun replaceCurrentAndNext(): RepeatableOrder<T> {
+    fun next(): RepeatableOrder<T> {
         val currentInd = nextIndex()
         return RepeatableOrder(order, currentInd)
     }

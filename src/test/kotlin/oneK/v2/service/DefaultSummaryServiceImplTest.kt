@@ -18,7 +18,7 @@ class DefaultSummaryServiceImplTest {
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
         @Test
         fun `should properly perform start`() {
-            val summaryState = State.Summary(RepeatableOrder.of(players).replaceCurrentAndNext())
+            val summaryState = State.Summary(RepeatableOrder.of(players).next())
 
             val biddingState = summaryState.performStart(getDeck(), DefaultTwoPlayerVariant())
 
@@ -31,7 +31,7 @@ class DefaultSummaryServiceImplTest {
     inner class ThreePlayerTest : TestStateHolder.Bidding(ThreePlayer()) {
         @Test
         fun `should properly perform start`() {
-            val summaryState = State.Summary(RepeatableOrder.of(players).replaceCurrentAndNext().replaceCurrentAndNext())
+            val summaryState = State.Summary(RepeatableOrder.of(players).next().next())
 
             val biddingState = summaryState.performStart(getDeck(), DefaultThreePlayerVariant())
 

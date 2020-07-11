@@ -3,6 +3,7 @@ package oneK.v2.variant
 import oneK.deck.Card
 import oneK.v2.Hand
 
+//TODO make Variant an abstract class with val fields, builder constructs new objects based on default variant
 interface Variant {
     //TODO minBidStep ???
     var getGameGoal: () -> Int

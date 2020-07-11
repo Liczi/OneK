@@ -13,8 +13,8 @@ abstract class ValidatedGame(
     protected abstract fun doBid(state: State.Bidding, bid: Int): State.Bidding
     protected abstract fun doFold(state: State.Bidding): FoldingEffect
 
-    protected abstract fun doPickTalon(talonInd: Int): State.Review
-    protected abstract fun doDistributeCards(toGive: Map<Player, Card>)
+    protected abstract fun doPickTalon(talonIndex: Int): State.Review
+    protected abstract fun doDistributeCards(toGive: Map<Player, Card>): State.Review
     protected abstract fun doActivateBomb(): State.Summary
     protected abstract fun doRestart(state: State.Bidding): State.Bidding
     protected abstract fun doChangeBid(newBid: Int): State.Review
@@ -23,7 +23,7 @@ abstract class ValidatedGame(
     protected abstract fun doPlay(card: Card): PlayingEffect
     protected abstract fun doTriumph(card: Card): State.Strife
 
-    //    TODO validate state and call can* function if exists then call do*
+    //    TODO validate state and call can* function if exists then call do* - add proper abstraction for that
     fun start(state: State.Summary): State.Bidding =
             validator.canStart(state)
                     ?.let { doStart(state) }
@@ -36,7 +36,7 @@ abstract class ValidatedGame(
 
     fun fold(state: State.Bidding): FoldingEffect = doFold(state)
 
-    fun pickTalon(talonInd: Int): State.Review {
+    fun pickTalon(talonIndex: Int): State.Review {
         TODO()
     }
 

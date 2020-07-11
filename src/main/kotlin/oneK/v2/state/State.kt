@@ -9,7 +9,8 @@ sealed class State {
     data class Review(
         val playersOrder: RepeatableOrder<Reviewer>,
         val initialBid: Int,
-        val toGive: Map<Player, Card> = emptyMap(),
+        val talon: Choice<Set<Card>>,
+        val toGive: Map<Player, Card>? = null,
         val changedBid: Int? = null
     ) : State()
 
