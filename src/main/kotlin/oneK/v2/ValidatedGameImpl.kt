@@ -88,7 +88,7 @@ object GameFactory {
             variant,
             DefaultSummaryServiceImpl,
             DefaultBiddingServiceImpl,
-            ReviewService,
+            DefaultReviewServiceImpl,
             StrifeService
         )
     }

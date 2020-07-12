@@ -1,5 +1,5 @@
 import oneK.v2.GameFactory
-import oneK.v2.action.BiddingAction
+import oneK.v2.state.BiddingAction
 import oneK.v2.state.FoldingEffect
 import testsuits.TwoPlayer
 import oneK.v2.state.RepeatableOrder
@@ -15,9 +15,9 @@ internal class ValidatedGameImplTest : TwoPlayer() {
     fun `should transition to bidding`() {
         val newState = game.start(State.Summary(RepeatableOrder.of(players)))
 
-        val currentBidder = newState.biddersOrder.current()
+        val currentBidder = newState.order.current()
         assertThat(currentBidder.player).isEqualTo(players[1])
-        assertThat((newState.biddersOrder[0].lastAction as BiddingAction.Bid).amount).isEqualTo(100)
+        assertThat((newState.order[0].lastAction as BiddingAction.Bid).amount).isEqualTo(100)
         assertNull(currentBidder.lastAction)
     }
 

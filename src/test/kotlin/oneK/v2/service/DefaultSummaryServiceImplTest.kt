@@ -22,7 +22,7 @@ class DefaultSummaryServiceImplTest {
 
             val biddingState = summaryState.performStart(getDeck(), DefaultTwoPlayerVariant())
 
-            assertThat(biddingState.biddersOrder.current().player).isEqualTo(players[1])
+            assertThat(biddingState.order.current().player).isEqualTo(players[1])
             assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
         }
     }
@@ -35,7 +35,7 @@ class DefaultSummaryServiceImplTest {
 
             val biddingState = summaryState.performStart(getDeck(), DefaultThreePlayerVariant())
 
-            assertThat(biddingState.biddersOrder.current().player).isEqualTo(players[2])
+            assertThat(biddingState.order.current().player).isEqualTo(players[2])
             assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
         }
     }

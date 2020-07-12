@@ -4,10 +4,11 @@ import oneK.deck.Card
 import oneK.player.Player
 import oneK.v2.containsAllNines
 import oneK.v2.state.Choice
+import oneK.v2.state.Reviewer
 import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
-//TODO add tests
+//TODO test this class thoroughly
 interface ReviewValidator {
     fun canPickTalon(state: State.Review, talonIndex: Int): State.Review?
     fun canActivateBomb(state: State.Review): State.Review?
@@ -32,24 +33,29 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
 
     override fun canRestart(state: State.Review): State.Review? {
         return state.ensureValid {
-            state.playersOrder.current().cards.containsAllNines()
+            state.talon is Choice.NotTaken
+                    && state.toGive == null
+                    && state.order.current().cards.containsAllNines()
         }
     }
 
     override fun canChangeBid(state: State.Review, newBid: Int): State.Review? {
         return state.ensureValid {
             state.changedBid == null
-                    && isValidBid(newBid, state.initialBid, state.playersOrder.current().cards, variant)
+                    && isValidBid(newBid, state.initialBid, state.order.current().cards, variant)
         }
     }
 
-    //    TODO combinatorial explosion in 3-player variant
+    //    TODO combinatorial explosion in 3-player variant while generating possible actions
     override fun canDistributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review? {
         return state.ensureValid {
+            val allButCurrentPlayer = { (state.order - state.order.current()).map(Reviewer::player) }
+
             state.toGive == null
-                    && toGive.size == state.playersOrder.size - 1
+                    && state.talon is Choice.Taken
                     && toGive.values.toSet().size == toGive.size
-                    && state.playersOrder.current().cards.containsAll(toGive.values)
+                    && toGive.keys.containsAll(allButCurrentPlayer())
+                    && state.order.current().cards.containsAll(toGive.values)
         }
     }
 

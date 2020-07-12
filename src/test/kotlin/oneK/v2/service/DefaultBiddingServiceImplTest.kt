@@ -20,7 +20,7 @@ internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TwoPlayer
             .performBid(110)
             .performFold()
 
-        assertThat(state.biddersOrder.current().player).isEqualTo(players[1])
+        assertThat(state.order.current().player).isEqualTo(players[1])
         assertTrue(state.isBiddingCompleted())
     }
 
@@ -30,7 +30,7 @@ internal class DefaultBiddingServiceImplTest : TestStateHolder.Bidding(TwoPlayer
             .performBid(100)
             .performFold()
 
-        assertThat(state.biddersOrder.current().player).isEqualTo(players[0])
+        assertThat(state.order.current().player).isEqualTo(players[0])
         assertTrue(state.isBiddingCompleted())
     }
 }

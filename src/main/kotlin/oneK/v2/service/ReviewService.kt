@@ -2,12 +2,15 @@ package oneK.v2.service
 
 import oneK.deck.Card
 import oneK.player.Player
+import oneK.v2.state.Bidder
+import oneK.v2.state.Reviewer
 import oneK.v2.state.State
+import oneK.v2.state.Strifer
 
 interface ReviewService {
     fun State.Review.performPickTalon(talonIndex: Int): State.Review
     fun State.Review.performActivateBomb(): State.Review
-    fun State.Review.performRestart(): State.Review
+    fun State.Review.performRestart(): State.Bidding
     fun State.Review.performChangeBid(newBid: Int): State.Review
     fun State.Review.performDistributeCards(toGive: Map<Player, Card>): State.Review
     fun State.Review.performConfirm(): State.Strife
@@ -15,26 +18,48 @@ interface ReviewService {
 
 internal object DefaultReviewServiceImpl : ReviewService {
     override fun State.Review.performPickTalon(talonIndex: Int): State.Review {
-        TODO("Not yet implemented")
+        val talon = this.talon.take(talonIndex)
+        val reviewer = this.order.current()
+        return this.copy(
+            order = this.order.replaceCurrent(reviewer.copy(cards = reviewer.cards + talon.value)),
+            talon = talon
+        )
     }
 
     override fun State.Review.performActivateBomb(): State.Review {
         TODO("Not yet implemented")
     }
 
-    override fun State.Review.performRestart(): State.Review {
-        TODO("Not yet implemented")
+    override fun State.Review.performRestart(): State.Bidding {
+        return State.Bidding(
+            order = this.order.map { (cards, player) -> Bidder(cards, player) },
+            talon = this.talon
+        )
     }
 
     override fun State.Review.performChangeBid(newBid: Int): State.Review {
-        TODO("Not yet implemented")
+        return this.copy(changedBid = newBid)
     }
 
     override fun State.Review.performDistributeCards(toGive: Map<Player, Card>): State.Review {
-        TODO("Not yet implemented")
+        val reviewer = this.order.current()
+        return this.copy(
+            order = this.order
+                .replaceCurrent(reviewer.copy(cards = reviewer.cards - toGive.values))
+                .mapNotCurrent { (cards, player) ->
+                    Reviewer(
+                        cards = cards + toGive.getValue(player),
+                        player = player
+                    )
+                },
+            toGive = toGive
+        )
     }
 
     override fun State.Review.performConfirm(): State.Strife {
-        TODO("Not yet implemented")
+        return State.Strife(
+            order = this.order.map { (cards, player) -> Strifer(cards, player) },
+            bid = this.changedBid ?: this.initialBid
+        )
     }
 }

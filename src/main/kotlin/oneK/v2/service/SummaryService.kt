@@ -20,6 +20,6 @@ internal object DefaultSummaryServiceImpl : SummaryService {
             .zip(playersHands)
             .map { (player, cards) -> Bidder(cards, player) }
 
-        return State.Bidding(RepeatableOrder.of(bidders, this.order.currentInd), talon)
+        return State.Bidding(bidders, talon)
     }
 }
