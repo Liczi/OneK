@@ -16,7 +16,9 @@ internal object DefaultBiddingServiceImpl : BiddingService {
     override fun State.Bidding.performFold(): State.Bidding = endTurnWith(BiddingAction.Fold)
 
     private fun State.Bidding.endTurnWith(action: BiddingAction): State.Bidding =
-        this.copy(order = this.order.replaceCurrentAndNext(performAction(action)))
+        this.copy(
+            order = this.order.replaceCurrentAndNextUntilNot(performAction(action)) { it.lastAction is BiddingAction.Fold }
+        )
 
     private fun State.Bidding.performAction(action: BiddingAction): Bidder =
         this.order.current().copy(lastAction = action)

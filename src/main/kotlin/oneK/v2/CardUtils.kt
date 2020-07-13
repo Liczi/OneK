@@ -3,6 +3,7 @@ package oneK.v2
 import oneK.deck.Card
 import oneK.deck.Figure
 
+//TODO internal ?
 //fun Hand.contains(card: Card) = this.cards.any { it == card }
 //
 //fun Hand.containsAll(hand: Hand) = this.cards.containsAll(hand.cards)

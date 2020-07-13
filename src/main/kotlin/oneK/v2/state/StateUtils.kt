@@ -1,7 +1,21 @@
-package oneK.v2.validation
+package oneK.v2.state
 
 import oneK.deck.Card
 import oneK.v2.variant.Variant
+
+fun State.Bidding.isBiddingCompleted() =
+    this.order
+        .map(Bidder::lastAction)
+        .filterIsInstance<BiddingAction.Fold>()
+        .size <= 1
+
+fun State.Bidding.currentBid(): Int =
+    this.order
+        .asSequence()
+        .map(Bidder::lastAction)
+        .filterIsInstance<BiddingAction.Bid>()
+        .map(BiddingAction.Bid::amount)
+        .max() ?: 0
 
 fun isValidBid(
     bid: Int,

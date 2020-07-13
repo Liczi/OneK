@@ -6,43 +6,19 @@ import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
 // TODO add objects being default validators for specific variants e.g. TwoPlayerSummaryValidator - decreases object creation per each game obj creation, or use cached game instances
+// TODO move this file to joint defaults declaration
 class DefaultGameValidator(variant: Variant) :
     GameValidator,
     SummaryValidator by SummaryValidatorImpl(variant),
-    BiddingValidator by BiddingStateValidatorImpl(variant) {
+    BiddingValidator by BiddingStateValidatorImpl(variant),
+    ReviewValidator by ReviewStateValidatorImpl(variant) {
 
-//    TODO make all methods be implemented by delegates
-
-    override fun canPickTalon(state: State.Review): State.Review? {
+    //    TODO make all methods be implemented by delegates
+    override fun canPlay(state: State.Strife, card: Card): State.Strife? {
         TODO("Not yet implemented")
     }
 
-    override fun canDistributeCards(toGive: Map<Player, Card>, state: State.Review): State.Review? {
+    override fun canTriumph(state: State.Strife, card: Card): State.Strife? {
         TODO("Not yet implemented")
     }
-
-    override fun canActivateBomb(state: State.Review): State.Review? {
-        TODO("Not yet implemented")
-    }
-
-    override fun canRestart(state: State.Review): State.Review? {
-        TODO("Not yet implemented")
-    }
-
-    override fun canChangeBid(newBid: Int, state: State.Review): State.Review? {
-        TODO("Not yet implemented")
-    }
-
-    override fun canConfirmBid(state: State.Review): State.Review? {
-        TODO("Not yet implemented")
-    }
-
-    override fun canPlay(card: Card, state: State.Strife): State.Strife? {
-        TODO("Not yet implemented")
-    }
-
-    override fun canTriumph(card: Card, state: State.Strife): State.Strife? {
-        TODO("Not yet implemented")
-    }
-
 }

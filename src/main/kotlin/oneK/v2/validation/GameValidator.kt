@@ -9,13 +9,13 @@ interface GameValidator {
 
     fun canBid(bid: Int, state: State.Bidding): State.Bidding?
 
-    fun canPickTalon(state: State.Review): State.Review?
-    fun canDistributeCards(toGive: Map<Player, Card>, state: State.Review): State.Review?
+    fun canPickTalon(state: State.Review, talonIndex: Int): State.Review?
+    fun canDistributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review?
     fun canActivateBomb(state: State.Review): State.Review?
     fun canRestart(state: State.Review): State.Review?
-    fun canChangeBid(newBid: Int, state: State.Review): State.Review?
-    fun canConfirmBid(state: State.Review): State.Review?
+    fun canChangeBid(state: State.Review, newBid: Int): State.Review?
+    fun canConfirm(state: State.Review): State.Review?
 
-    fun canPlay(card: Card, state: State.Strife): State.Strife?
-    fun canTriumph(card: Card, state: State.Strife): State.Strife?
+    fun canPlay(state: State.Strife, card: Card): State.Strife?
+    fun canTriumph(state: State.Strife, card: Card): State.Strife?
 }

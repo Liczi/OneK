@@ -1,6 +1,6 @@
 package service
 
-import oneK.v2.isBiddingCompleted
+import oneK.v2.state.isBiddingCompleted
 import oneK.v2.service.DefaultBiddingServiceImpl.performBid
 import oneK.v2.service.DefaultBiddingServiceImpl.performFold
 import org.assertj.core.api.Assertions.assertThat

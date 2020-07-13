@@ -3,6 +3,7 @@ package oneK.v2.validation
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.v2.containsAllNines
+import oneK.v2.state.isValidBid
 import oneK.v2.state.Choice
 import oneK.v2.state.Reviewer
 import oneK.v2.state.State
@@ -42,7 +43,12 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
     override fun canChangeBid(state: State.Review, newBid: Int): State.Review? {
         return state.ensureValid {
             state.changedBid == null
-                    && isValidBid(newBid, state.initialBid, state.order.current().cards, variant)
+                    && isValidBid(
+                newBid,
+                state.initialBid,
+                state.order.current().cards,
+                variant
+            )
         }
     }
 

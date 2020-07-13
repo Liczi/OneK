@@ -28,8 +28,8 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
     }
 
     fun next(): RepeatableOrder<T> {
-        val currentInd = nextIndex()
-        return this.copy(order = this.order, currentInd = currentInd)
+        val newInd = nextIndex(this.currentInd)
+        return this.copy(order = this.order, currentInd = newInd)
     }
 
     fun replaceCurrent(newCurrent: T): RepeatableOrder<T> {
@@ -37,15 +37,15 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
         return this.copy(order = newOrder)
     }
 
-    fun replaceCurrentAndNext(newCurrent: T): RepeatableOrder<T> {
+    fun replaceCurrentAndNextUntilNot(newCurrent: T, condition: (T) -> Boolean): RepeatableOrder<T> {
         val newOrder = order.replaceCurrent(newCurrent)
-        val currentInd = nextIndex()
-        return this.copy(order = newOrder, currentInd = currentInd)
+        val newInd = nextUntilNot(condition)
+        return this.copy(order = newOrder, currentInd = newInd)
     }
 
     fun previous(): RepeatableOrder<T> {
-        val currentInd = if (currentInd > 0) currentInd - 1 else lastInd
-        return this.copy(order = this.order, currentInd = currentInd)
+        val newInd = if (currentInd > 0) currentInd - 1 else lastInd
+        return this.copy(order = this.order, currentInd = newInd)
     }
 
     fun current(): T = order[currentInd]
@@ -77,7 +77,15 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
     private fun List<T>.replaceCurrent(newCurrent: T) =
         this.mapIndexed { index, elem -> if (index == currentInd) newCurrent else elem }
 
-    private fun nextIndex(): Int = if (this.currentInd < lastInd) this.currentInd + 1 else 0
+    private fun nextIndex(currentInd: Int): Int = if (currentInd < lastInd) currentInd + 1 else 0
+
+    private fun nextUntilNot(condition: (T) -> Boolean): Int {
+        var currentIndex = nextIndex(currentInd)
+        while (condition(order[currentIndex])) {
+            currentIndex = nextIndex(currentIndex)
+        }
+        return currentIndex
+    }
 
     companion object {
         fun <T> of(order: List<T>): RepeatableOrder<T> {

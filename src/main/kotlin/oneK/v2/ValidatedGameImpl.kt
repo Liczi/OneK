@@ -18,7 +18,8 @@ private class ValidatedGameImpl(
     private val biddingService: BiddingService,
     private val reviewService: ReviewService,
     private val strifeService: StrifeService
-) : ValidatedGame(validator), SummaryService by summaryService, BiddingService by biddingService {
+) : ValidatedGame(validator), SummaryService by summaryService, BiddingService by biddingService,
+    ReviewService by reviewService {
 
 //    TODO ????? delete or implement
 //    STATE HOLDER (per game - gameUuid, needed for ranking incrementation
@@ -38,44 +39,47 @@ private class ValidatedGameImpl(
     }
 
     override fun doFold(state: State.Bidding): FoldingEffect {
-        state.performFold()
-        return if (state.isBiddingCompleted()) {
-            state.transitionToReviewState()
-        } else {
-            FoldingEffect.NoTransition
-        }
+        return state
+            .performFold()
+            .let {
+                if (it.isBiddingCompleted()) {
+                    it.transitionToReviewState()
+                } else {
+                    FoldingEffect.NoTransition
+                }
+            }
     }
 
-    override fun doPickTalon(talonIndex: Int): State.Review {
+    override fun doPickTalon(state: State.Review, talonIndex: Int): State.Review {
+        return state.performPickTalon(talonIndex)
+    }
+
+    override fun doDistributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review {
+        return state.performDistributeCards(toGive)
+    }
+
+    override fun doActivateBomb(state: State.Review): State.Summary {
         TODO("Not yet implemented")
     }
 
-    override fun doDistributeCards(toGive: Map<Player, Card>): State.Review {
-        TODO("Not yet implemented")
+    override fun doRestart(state: State.Review): State.Bidding {
+        return state.performRestart()
     }
 
-    override fun doActivateBomb(): State.Summary {
-        TODO()
+    override fun doChangeBid(state: State.Review, newBid: Int): State.Review {
+        return state.performChangeBid(newBid)
     }
 
-    override fun doRestart(state: State.Bidding): State.Bidding {
-        TODO("Not yet implemented")
+    override fun doConfirm(state: State.Review): State.Strife {
+        return state.performConfirm()
     }
 
-    override fun doChangeBid(newBid: Int): State.Review {
-        TODO()
-    }
-
-    override fun doConfirmBid(): State.Strife {
-        TODO()
-    }
-
-    override fun doPlay(card: Card): PlayingEffect {
+    override fun doPlay(state: State.Strife, card: Card): PlayingEffect {
 //                return PlayingEffect.StrifeTransition(StrifeState())
         TODO()
     }
 
-    override fun doTriumph(card: Card): State.Strife {
+    override fun doTriumph(state: State.Strife, card: Card): State.Strife {
         TODO()
     }
 }
@@ -92,14 +96,4 @@ object GameFactory {
             StrifeService
         )
     }
-}
-//TODO possibly extract extensions
-
-private fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
-    TODO("Not yet implemented")
-}
-
-private fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransition {
-//    return FoldingEffect.ReviewTransition(this.biddersOrder.map {  })
-    TODO()
 }
