@@ -37,9 +37,9 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
         return this.copy(order = newOrder)
     }
 
-    fun replaceCurrentAndNextUntilNot(newCurrent: T, condition: (T) -> Boolean): RepeatableOrder<T> {
+    fun replaceCurrentAndNextUntil(newCurrent: T, condition: (T) -> Boolean): RepeatableOrder<T> {
         val newOrder = order.replaceCurrent(newCurrent)
-        val newInd = nextUntilNot(condition)
+        val newInd = nextUntil(condition)
         return this.copy(order = newOrder, currentInd = newInd)
     }
 
@@ -68,6 +68,17 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
             currentInd = this.currentInd
         )
 
+    fun firstOrNull(predicate: (T) -> Boolean): T? {
+        var currentIndex = this.currentInd
+        for (i in this.order.indices) {
+            val current = this.order[currentIndex]
+            if (predicate(current))
+                return current
+            currentIndex = nextIndex(currentIndex)
+        }
+        return null
+    }
+
     private fun <R> copy(order: List<R>, currentInd: Int = this.currentInd): RepeatableOrder<R> =
         RepeatableOrder(
             order = order,
@@ -79,12 +90,15 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
 
     private fun nextIndex(currentInd: Int): Int = if (currentInd < lastInd) currentInd + 1 else 0
 
-    private fun nextUntilNot(condition: (T) -> Boolean): Int {
-        var currentIndex = nextIndex(currentInd)
-        while (condition(order[currentIndex])) {
-            currentIndex = nextIndex(currentIndex)
-        }
-        return currentIndex
+    //    TODO is loop-based implementation better? - optimization
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun nextUntil(condition: (T) -> Boolean): Int {
+        return order.indices
+            .scan(this.currentInd) { acc, _ -> nextIndex(acc) }
+            .drop(1)
+            .map { Pair(it, this.order[it]) }
+            .first { condition(it.second) }
+            .first
     }
 
     companion object {

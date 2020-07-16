@@ -7,7 +7,7 @@ interface SummaryValidator {
     fun canStart(state: State.Summary): State.Summary?
 }
 
-class SummaryValidatorImpl(private val variant: Variant) : SummaryValidator, StateValidator() {
+class SummaryStateValidatorImpl(private val variant: Variant) : SummaryValidator, StateValidator() {
     override fun canStart(state: State.Summary): State.Summary? {
         return state.ensureValid {
             state.ranking.none { it.value >= variant.getGameGoal() }

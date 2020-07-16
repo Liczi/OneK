@@ -48,8 +48,12 @@ publishing {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += "-Xopt-in=kotlin.ExperimentalStdlibApi"
+    }
 }
+
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }

@@ -35,12 +35,15 @@ internal class ValidatedGameImplTest {
             val reviewState = (newState as FoldingEffect.ReviewTransition).state
             assertThat(reviewState.initialBid).isEqualTo(120)
             assertThat(reviewState.order.current().player).isEqualTo(players[0])
-            assertThat(reviewState.talon.take(0).value).containsExactlyInAnyOrderElementsOf(biddingState.talon[0])
-            assertThat(reviewState.talon.take(1).value).containsExactlyInAnyOrderElementsOf(biddingState.talon[1])
+            assertThat(reviewState.talon.take(0).value)
+                .containsExactlyInAnyOrderElementsOf(biddingState.talon[0])
+            assertThat(reviewState.talon.take(1).value)
+                .containsExactlyInAnyOrderElementsOf(biddingState.talon[1])
             assertThat(reviewState.order.flatMap { it.cards })
                 .containsExactlyInAnyOrderElementsOf(biddingState.order.flatMap { it.cards })
         }
     }
 
 //    TODO add 3 Player test
+//    TODO extract similar logic to top level methods/fields
 }

@@ -1,7 +1,6 @@
 package oneK.v2.validation
 
 import oneK.deck.Card
-import oneK.player.Player
 import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
@@ -9,7 +8,7 @@ import oneK.v2.variant.Variant
 // TODO move this file to joint defaults declaration
 class DefaultGameValidator(variant: Variant) :
     GameValidator,
-    SummaryValidator by SummaryValidatorImpl(variant),
+    SummaryValidator by SummaryStateValidatorImpl(variant),
     BiddingValidator by BiddingStateValidatorImpl(variant),
     ReviewValidator by ReviewStateValidatorImpl(variant) {
 

@@ -12,7 +12,7 @@ import testsuits.TestStateHolder
 import testsuits.ThreePlayer
 import testsuits.TwoPlayer
 
-class DefaultSummaryServiceImplTest {
+internal class DefaultSummaryServiceImplTest {
 
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
@@ -23,7 +23,7 @@ class DefaultSummaryServiceImplTest {
             val biddingState = summaryState.performStart(getDeck(), DefaultTwoPlayerVariant())
 
             assertThat(biddingState.order.current().player).isEqualTo(players[1])
-            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
+            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialState.talon)
         }
     }
 
@@ -36,7 +36,7 @@ class DefaultSummaryServiceImplTest {
             val biddingState = summaryState.performStart(getDeck(), DefaultThreePlayerVariant())
 
             assertThat(biddingState.order.current().player).isEqualTo(players[2])
-            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialBiddingState.talon)
+            assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialState.talon)
         }
     }
 }

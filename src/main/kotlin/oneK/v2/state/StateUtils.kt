@@ -6,7 +6,7 @@ import oneK.v2.variant.Variant
 fun State.Bidding.isBiddingCompleted() =
     this.order
         .map(Bidder::lastAction)
-        .filterIsInstance<BiddingAction.Fold>()
+        .filterNot { it is BiddingAction.Fold }
         .size <= 1
 
 fun State.Bidding.currentBid(): Int =
@@ -29,3 +29,8 @@ fun isValidBid(
             && bid - currentBid <= variant.getMaxBidStep() // TODO min bid state ???
             && bid <= variant.getUpperBidThreshold()
 }
+
+fun State.Strife.currentCardsUnordered(): List<Card> =
+    this.order.mapNotNull { it.lastAction?.card }
+
+fun State.Strife.firstCard(): Card? = this.order.firstOrNull { it.lastAction != null }?.lastAction?.card

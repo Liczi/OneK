@@ -1,5 +1,4 @@
-package oneK.v2
-
+import oneK.v2.rotate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
