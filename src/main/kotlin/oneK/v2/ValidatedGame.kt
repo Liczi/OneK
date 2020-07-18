@@ -30,7 +30,7 @@ abstract class ValidatedGame(
             ?: illegalState(state)
 
     fun bid(state: State.Bidding, bid: Int): State.Bidding =
-        validator.canBid(bid, state)
+        validator.canBid(state, bid)
             ?.let { doBid(it, bid) }
             ?: illegalState(state)
 

@@ -13,6 +13,7 @@ internal class SummaryValidatorImplTest {
 
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Summary(TwoPlayer()) {
+
         @Test
         fun `should allow start for initial summary state`() {
             assertNotNull(validator.canStart(initialState))
@@ -27,6 +28,7 @@ internal class SummaryValidatorImplTest {
 
     @Nested
     inner class ThreePlayerTest : TestStateHolder.Summary(ThreePlayer()) {
+
         @Test
         fun `should allow start for initial summary state`() {
             assertNotNull(validator.canStart(initialState))

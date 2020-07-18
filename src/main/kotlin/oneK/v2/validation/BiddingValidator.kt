@@ -6,11 +6,11 @@ import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
 interface BiddingValidator {
-    fun canBid(bid: Int, state: State.Bidding): State.Bidding?
+    fun canBid(state: State.Bidding, bid: Int): State.Bidding?
 }
 
 internal class BiddingStateValidatorImpl(private val variant: Variant) : BiddingValidator, StateValidator() {
-    override fun canBid(bid: Int, state: State.Bidding): State.Bidding? {
+    override fun canBid(state: State.Bidding, bid: Int): State.Bidding? {
         return state.ensureValid {
             val currentBid = state.currentBid()
             isValidBid(bid, currentBid, state.order.current().cards, variant)

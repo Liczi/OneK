@@ -7,7 +7,7 @@ import oneK.v2.state.*
 interface GameValidator {
     fun canStart(state: State.Summary): State.Summary?
 
-    fun canBid(bid: Int, state: State.Bidding): State.Bidding?
+    fun canBid(state: State.Bidding, bid: Int): State.Bidding?
 
     fun canPickTalon(state: State.Review, talonIndex: Int): State.Review?
     fun canDistributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review?

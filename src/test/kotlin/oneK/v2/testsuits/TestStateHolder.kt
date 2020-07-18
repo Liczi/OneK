@@ -4,6 +4,7 @@ import oneK.deck.Card
 import oneK.player.Player
 import oneK.v2.state.*
 import oneK.v2.toCardSet
+import oneK.v2.validation.BiddingStateValidatorImpl
 import oneK.v2.validation.ReviewStateValidatorImpl
 import oneK.v2.validation.StrifeStateValidatorImpl
 import oneK.v2.validation.SummaryStateValidatorImpl
@@ -29,6 +30,7 @@ internal abstract class TestStateHolder {
 
     abstract class Bidding(private val playersHolder: TestPlayersHolder) : TestStateHolder(),
         TestPlayersHolder by playersHolder {
+        protected val validator = BiddingStateValidatorImpl(variant)
 
         private val playerCards = getPlayerCards(this.players)
         private val talon = getTalon(this.players)

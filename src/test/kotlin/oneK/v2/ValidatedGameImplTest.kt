@@ -14,6 +14,7 @@ internal class ValidatedGameImplTest {
 
     @Nested
     inner class TwoPlayerTest : TwoPlayer() {
+
         @Test
         fun `should transition to bidding`() {
             val newState = game.start(State.Summary(RepeatableOrder.of(players)))

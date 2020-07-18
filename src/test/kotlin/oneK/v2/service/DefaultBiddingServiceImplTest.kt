@@ -13,9 +13,9 @@ import testsuits.TwoPlayer
 
 internal class DefaultBiddingServiceImplTest {
     //TODO add tests for above 120 bids
-    //    TODO add more test cases for bidding stage
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
+
         @Test
         fun `should complete bidding with first player folding`() {
             val state = initialState
@@ -40,6 +40,7 @@ internal class DefaultBiddingServiceImplTest {
 
     @Nested
     inner class ThreePlayerTest : TestStateHolder.Bidding(ThreePlayer()) {
+
         @Test
         fun `should complete bidding with first and second player folding`() {
             val state = initialState

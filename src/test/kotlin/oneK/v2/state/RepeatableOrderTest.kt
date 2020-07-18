@@ -14,6 +14,7 @@ internal class RepeatableOrderTest {
 
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
+
         @Test
         fun `should return next player for given condition`() {
             performTestForAvailableIndices(this.initialState.order)
@@ -22,6 +23,7 @@ internal class RepeatableOrderTest {
 
     @Nested
     inner class ThreePlayerTest : TestStateHolder.Bidding(ThreePlayer()) {
+
         @Test
         fun `should return next player for given condition`() {
             performTestForAvailableIndices(this.initialState.order)

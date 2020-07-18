@@ -16,6 +16,7 @@ internal class DefaultSummaryServiceImplTest {
 
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
+
         @Test
         fun `should properly perform start`() {
             val summaryState = State.Summary(RepeatableOrder.of(players).next())
@@ -29,6 +30,7 @@ internal class DefaultSummaryServiceImplTest {
 
     @Nested
     inner class ThreePlayerTest : TestStateHolder.Bidding(ThreePlayer()) {
+
         @Test
         fun `should properly perform start`() {
             val summaryState = State.Summary(RepeatableOrder.of(players).next().next())

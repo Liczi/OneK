@@ -43,12 +43,7 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
     override fun canChangeBid(state: State.Review, newBid: Int): State.Review? {
         return state.ensureValid {
             state.changedBid == null
-                    && isValidBid(
-                newBid,
-                state.initialBid,
-                state.order.current().cards,
-                variant
-            )
+                    && isValidBid(newBid, state.initialBid, state.order.current().cards, variant)
         }
     }
 
