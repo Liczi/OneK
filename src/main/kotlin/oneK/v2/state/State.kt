@@ -15,7 +15,11 @@ sealed class State {
         val changedBid: Int? = null
     ) : State()
 
-    data class Strife(val order: RepeatableOrder<Strifer>, val bid: Int, val currentTriumph: Color? = null) : State()
+    data class Strife(
+        val order: RepeatableOrder<Strifer>,
+        val bid: Int,
+        val currentTriumph: Color? = null
+    ) : State()
 
     data class Summary(
         val order: RepeatableOrder<Player>,

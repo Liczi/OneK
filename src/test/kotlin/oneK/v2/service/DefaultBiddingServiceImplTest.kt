@@ -1,6 +1,6 @@
 package service
 
-import oneK.v2.state.isBiddingCompleted
+import oneK.v2.state.allCardsPlayed
 import oneK.v2.service.DefaultBiddingServiceImpl.performBid
 import oneK.v2.service.DefaultBiddingServiceImpl.performFold
 import org.assertj.core.api.Assertions.assertThat
@@ -24,7 +24,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[1])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
 
         @Test
@@ -34,7 +34,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
     }
 
@@ -51,7 +51,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[2])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
 
         @Test
@@ -62,7 +62,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
 
         @Test
@@ -75,7 +75,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
 
         @Test
@@ -87,7 +87,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[2])
-            assertTrue(state.isBiddingCompleted())
+            assertTrue(state.allCardsPlayed())
         }
     }
 }

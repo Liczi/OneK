@@ -3,7 +3,6 @@ package oneK.v2.service
 import oneK.deck.Card
 import oneK.v2.splitCardsToEqualSets
 import oneK.v2.state.Bidder
-import oneK.v2.state.RepeatableOrder
 import oneK.v2.state.State
 import oneK.v2.variant.Variant
 
@@ -12,6 +11,7 @@ interface SummaryService {
 }
 
 internal object DefaultSummaryServiceImpl : SummaryService {
+
     override fun State.Summary.performStart(deck: List<Card>, variant: Variant): State.Bidding {
         val talonSize = variant.getTalonCardsQuantity()
         val talon = variant.getTalonCards(deck.take(talonSize))

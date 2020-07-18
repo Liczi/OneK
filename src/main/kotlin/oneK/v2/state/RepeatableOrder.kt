@@ -37,6 +37,12 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
         return this.copy(order = newOrder)
     }
 
+    fun replaceCurrentAndNext(newCurrent: T): RepeatableOrder<T> {
+        val newOrder = order.replaceCurrent(newCurrent)
+        val newInd = nextIndex(this.currentInd)
+        return this.copy(order = newOrder, currentInd = newInd)
+    }
+
     fun replaceCurrentAndNextUntil(newCurrent: T, condition: (T) -> Boolean): RepeatableOrder<T> {
         val newOrder = order.replaceCurrent(newCurrent)
         val newInd = nextUntil(condition)
@@ -78,6 +84,12 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
         }
         return null
     }
+
+    fun withCurrent(newCurrent: T): RepeatableOrder<T> =
+        this.copy(
+            order = this.order,
+            currentInd = this.indexOf(newCurrent)
+        )
 
     private fun <R> copy(order: List<R>, currentInd: Int = this.currentInd): RepeatableOrder<R> =
         RepeatableOrder(

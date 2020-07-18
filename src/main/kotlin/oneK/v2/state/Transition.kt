@@ -11,5 +11,7 @@ internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransi
 }
 
 internal fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
+    val strifeRanking = this.accountForStriferConstraint() //todo implement
+//    appy accounted ranking to summary state - consider using points within Summarer ? class
     TODO("Not yet implemented")
 }

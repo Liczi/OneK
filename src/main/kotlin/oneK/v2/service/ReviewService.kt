@@ -17,6 +17,7 @@ interface ReviewService {
 }
 
 internal object DefaultReviewServiceImpl : ReviewService {
+
     override fun State.Review.performPickTalon(talonIndex: Int): State.Review {
         val talon = this.talon.take(talonIndex)
         val reviewer = this.order.current()

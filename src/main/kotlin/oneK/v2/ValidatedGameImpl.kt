@@ -11,6 +11,7 @@ import oneK.v2.variant.Variant
 
 //TODO for starters keep games in cache
 //or store game variant as enum with default for now
+//TODO add proper test cases
 private class ValidatedGameImpl(
     validator: GameValidator,
     private val variant: Variant,
@@ -19,7 +20,7 @@ private class ValidatedGameImpl(
     private val reviewService: ReviewService,
     private val strifeService: StrifeService
 ) : ValidatedGame(validator), SummaryService by summaryService, BiddingService by biddingService,
-    ReviewService by reviewService {
+    ReviewService by reviewService, StrifeService by strifeService {
 
 //    TODO ????? delete or implement
 //    STATE HOLDER (per game - gameUuid, needed for ranking incrementation
@@ -42,10 +43,10 @@ private class ValidatedGameImpl(
         return state
             .performFold()
             .let {
-                if (it.isBiddingCompleted()) {
+                if (it.allCardsPlayed()) {
                     it.transitionToReviewState()
                 } else {
-                    FoldingEffect.NoTransition
+                    FoldingEffect.NoTransition(it)
                 }
             }
     }
@@ -75,12 +76,19 @@ private class ValidatedGameImpl(
     }
 
     override fun doPlay(state: State.Strife, card: Card): PlayingEffect {
-//                return PlayingEffect.StrifeTransition(StrifeState())
-        TODO()
+        return state
+            .performPlay(card)
+            .let {
+                when {
+                    it.allCardsPlayed() -> it.transitionToSummaryState()
+                    it.isBoardFull() -> PlayingEffect.NoTransition(it.addPointsAndClearBoard())
+                    else -> PlayingEffect.NoTransition(it)
+                }
+            }
     }
 
     override fun doTriumph(state: State.Strife, card: Card): State.Strife {
-        TODO()
+        return state.performTriumph(card)
     }
 }
 
@@ -93,7 +101,7 @@ object GameFactory {
             DefaultSummaryServiceImpl,
             DefaultBiddingServiceImpl,
             DefaultReviewServiceImpl,
-            StrifeService
+            DefaultStrifeServiceImpl
         )
     }
 }
