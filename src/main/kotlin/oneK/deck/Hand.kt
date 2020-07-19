@@ -25,21 +25,22 @@ class Hand : Serializable {
         return kings.any { queens.map { it.color }.contains(it.color) }
     }
 
+    //    TODO delete unused
     companion object {
         @JvmStatic
-        fun fromString(hand: String): Hand? {
+        fun fromString(hand: String): Hand {
             if (hand.trim() == "") return Hand(hashSetOf())
             val cards = hand.split(",".toRegex())
             val cardsList = cards
-                    .map { it.trim() }
-                    .map { Card.fromString(it[0], it[1]) }
-            return if (cardsList.contains(null)) null else Hand(cardsList.requireNoNulls().toHashSet())
+                .map { it.trim() }
+                .map { Card.fromString(it[0], it[1]) }
+            return Hand(cardsList.requireNoNulls().toHashSet())
         }
 
         @JvmStatic
         fun getClassicDeck(): HashSet<Card> {
             val cards = "9S,9C,9D,9H,JS,JC,JD,JH,QS,QC,QD,QH,KS,KC,KD,KH,TS,TC,TD,TH,AS,AC,AD,AH"
-            return fromString(cards)!!.cards
+            return fromString(cards).cards
         }
     }
 

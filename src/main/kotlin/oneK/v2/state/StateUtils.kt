@@ -1,15 +1,16 @@
 package oneK.v2.state
 
 import oneK.deck.Card
+import oneK.player.Player
 import oneK.v2.variant.Variant
 
-fun State.Bidding.allCardsPlayed(): Boolean =
+internal fun State.Bidding.allCardsPlayed(): Boolean =
     this.order
         .map(Bidder::lastAction)
         .filterNot { it is BiddingAction.Fold }
         .size <= 1
 
-fun State.Bidding.currentBid(): Int =
+internal fun State.Bidding.currentBid(): Int =
     this.order
         .asSequence()
         .map(Bidder::lastAction)
@@ -17,7 +18,7 @@ fun State.Bidding.currentBid(): Int =
         .map(BiddingAction.Bid::amount)
         .max() ?: 0
 
-fun isValidBid(
+internal fun isValidBid(
     bid: Int,
     currentBid: Int,
     cards: Set<Card>,
@@ -30,23 +31,19 @@ fun isValidBid(
             && bid <= variant.getUpperBidThreshold()
 }
 
-fun State.Strife.allCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
+internal fun State.Strife.allCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
 
-fun State.Strife.isBoardFull(): Boolean = this.order.mapNotNull(Strifer::lastAction).isEmpty()
+internal fun State.Strife.isBoardFull(): Boolean = this.order.mapNotNull(Strifer::lastAction).isEmpty()
 
-fun State.Strife.currentCardsUnordered(): List<Card> = this.order.mapNotNull { it.lastAction?.card }
+internal fun State.Strife.currentCardsUnordered(): List<Card> = this.order.mapNotNull { it.lastAction?.card }
 
-fun State.Strife.firstCard(): Card? = this.order.firstOrNull { it.lastAction != null }?.lastAction?.card
+internal fun State.Strife.firstCard(): Card? = this.order.firstOrNull { it.lastAction != null }?.lastAction?.card
 
-fun State.Strife.accountForStriferConstraint(): Map<Strifer, Int> = TODO()
-//    this.order.map {  }.mapValues { (strifer, points) ->
-//        if (strifer.isConstrained)
-//            if (this.bid > points) -this.bid else this.bid
-//        else
-//            points
-//    }
+internal fun State.Strife.accountForStriferConstraint(): RepeatableOrder<Pair<Player, Int>> =
+    this.order
+        .map { Pair(it.player, if (this.bid > it.points) -this.bid else this.bid) }
 
-fun State.Strife.addPointsAndClearBoard(): State.Strife {
+internal fun State.Strife.addPointsAndClearBoard(): State.Strife {
     val winner = this.getWinner()
     val points = this.order.map { it.lastAction?.card?.figure?.value ?: 0 }.sum()
     return this.copy(
@@ -59,7 +56,7 @@ fun State.Strife.addPointsAndClearBoard(): State.Strife {
     )
 }
 
-fun State.Strife.getWinner(): Strifer {
+internal fun State.Strife.getWinner(): Strifer {
     val firstCard = this.firstCard()
     return this.order
         .filter { it.lastAction?.card?.color == firstCard?.color }

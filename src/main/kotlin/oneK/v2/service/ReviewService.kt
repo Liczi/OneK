@@ -2,10 +2,7 @@ package oneK.v2.service
 
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.v2.state.Bidder
-import oneK.v2.state.Reviewer
-import oneK.v2.state.State
-import oneK.v2.state.Strifer
+import oneK.v2.state.*
 
 interface ReviewService {
     fun State.Review.performPickTalon(talonIndex: Int): State.Review
@@ -34,7 +31,8 @@ internal object DefaultReviewServiceImpl : ReviewService {
     override fun State.Review.performRestart(): State.Bidding {
         return State.Bidding(
             order = this.order.map { (cards, player) -> Bidder(cards, player) },
-            talon = this.talon
+            talon = this.talon,
+            ranking = this.ranking
         )
     }
 
@@ -60,7 +58,8 @@ internal object DefaultReviewServiceImpl : ReviewService {
     override fun State.Review.performConfirm(): State.Strife {
         return State.Strife(
             order = this.order.map { (cards, player) -> Strifer(cards, player) },
-            bid = this.changedBid ?: this.initialBid
+            bid = this.changedBid ?: this.initialBid,
+            ranking = this.ranking
         )
     }
 }

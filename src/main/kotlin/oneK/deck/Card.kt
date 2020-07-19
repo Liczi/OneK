@@ -3,6 +3,7 @@ package oneK.deck
 import oneK.deck.Color.*
 import oneK.deck.Figure.*
 import java.io.Serializable
+
 //TODO move to proper package
 //TODO refactor kotlin way
 /**
@@ -12,7 +13,7 @@ data class Card(val figure: Figure, val color: Color) : Serializable {
 
     companion object {
         @JvmStatic
-        fun fromString(figureString: Char, colorString: Char): Card? {
+        fun fromString(figureString: Char, colorString: Char): Card {
             val figure = when (figureString) {
                 '9' -> NINE
                 'T' -> TEN
@@ -20,7 +21,7 @@ data class Card(val figure: Figure, val color: Color) : Serializable {
                 'Q' -> QUEEN
                 'K' -> KING
                 'A' -> ACE
-                else -> return null
+                else -> error("Invalid figure literal")
             }
 
             val color = when (colorString) {
@@ -28,7 +29,7 @@ data class Card(val figure: Figure, val color: Color) : Serializable {
                 'D' -> DIAMONDS
                 'C' -> CLUBS
                 'S' -> SPADES
-                else -> return null
+                else -> error("Invalid color literal")
             }
             return Card(figure, color)
         }
@@ -45,5 +46,5 @@ data class Card(val figure: Figure, val color: Color) : Serializable {
 
     //Implementation based on Josh Bloch's Effective Java
     override fun hashCode() =
-            37 * figure.value.xor(figure.value.ushr(32)) + color.value.xor(color.value.ushr(32))
+        37 * figure.value.xor(figure.value.ushr(32)) + color.value.xor(color.value.ushr(32))
 }

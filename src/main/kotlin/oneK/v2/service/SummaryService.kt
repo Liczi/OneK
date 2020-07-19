@@ -20,6 +20,10 @@ internal object DefaultSummaryServiceImpl : SummaryService {
             .zip(playersHands)
             .map { (player, cards) -> Bidder(cards, player) }
 
-        return State.Bidding(bidders, talon)
+        return State.Bidding(
+            order = bidders,
+            talon = talon,
+            ranking = this.ranking
+        )
     }
 }
