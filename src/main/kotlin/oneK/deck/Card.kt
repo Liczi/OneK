@@ -4,13 +4,10 @@ import oneK.deck.Color.*
 import oneK.deck.Figure.*
 import java.io.Serializable
 
-//TODO move to proper package
 //TODO refactor kotlin way
-/**
- * Created by Jakub Licznerski on 03.11.2017.
- */
-data class Card(val figure: Figure, val color: Color) : Serializable {
+data class Card(val figure: Figure, val color: Color) {
 
+//    TODO move to Color and Figure classes, use string not single characters in this factory method
     companion object {
         @JvmStatic
         fun fromString(figureString: Char, colorString: Char): Card {
