@@ -12,27 +12,25 @@ interface StrifeService {
 internal object DefaultStrifeServiceImpl : StrifeService {
 
     override fun State.Strife.performPlay(card: Card): State.Strife {
-        val current = this.order.current()
         return this.copy(
-            order = this.order.replaceCurrentAndNext(
-                current.copy(
-                    cards = current.cards - card,
+            order = this.order.replaceCurrentAndNext {
+                it.copy(
+                    cards = it.cards - card,
                     lastAction = StrifeAction.Play(card)
                 )
-            )
+            }
         )
     }
 
     override fun State.Strife.performTriumph(card: Card): State.Strife {
-        val current = this.order.current()
         return this.copy(
-            order = this.order.replaceCurrentAndNext(
-                current.copy(
-                    cards = current.cards - card,
+            order = this.order.replaceCurrentAndNext {
+                it.copy(
+                    cards = it.cards - card,
                     lastAction = StrifeAction.Triumph(card),
-                    points = current.points + card.color.value
+                    points = it.points + card.color.value
                 )
-            ),
+            },
             currentTriumph = card.color
         )
     }

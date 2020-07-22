@@ -12,14 +12,13 @@ import oneK.testsuits.ThreePlayer
 import oneK.testsuits.TwoPlayer
 
 internal class DefaultBiddingServiceImplTest {
-    //TODO add tests for above 120 bids
+
     @Nested
     inner class TwoPlayerTest : TestStateHolder.Bidding(TwoPlayer()) {
 
         @Test
         fun `should complete bidding with first player folding`() {
             val state = initialState
-                .performBid(100)
                 .performBid(110)
                 .performFold()
 
@@ -30,7 +29,6 @@ internal class DefaultBiddingServiceImplTest {
         @Test
         fun `should complete bidding with second player folding`() {
             val state = initialState
-                .performBid(100)
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
@@ -44,7 +42,6 @@ internal class DefaultBiddingServiceImplTest {
         @Test
         fun `should complete bidding with first and second player folding`() {
             val state = initialState
-                .performBid(100)
                 .performBid(110)
                 .performBid(120)
                 .performFold()
@@ -57,7 +54,6 @@ internal class DefaultBiddingServiceImplTest {
         @Test
         fun `should complete bidding with second and third player folding`() {
             val state = initialState
-                .performBid(100)
                 .performFold()
                 .performFold()
 
@@ -68,7 +64,6 @@ internal class DefaultBiddingServiceImplTest {
         @Test
         fun `should skip a player who folded between bids`() {
             val state = initialState
-                .performBid(100)
                 .performFold()
                 .performBid(110)
                 .performBid(120)
@@ -81,7 +76,6 @@ internal class DefaultBiddingServiceImplTest {
         @Test
         fun `should skip two players who folded between bids`() {
             val state = initialState
-                .performBid(100)
                 .performFold()
                 .performBid(110)
                 .performFold()

@@ -49,8 +49,8 @@ internal abstract class TestStateHolder(
 
         protected val initialState = State.Bidding(
             order = RepeatableOrder.of(
-                playerCards.map { (player, cardsString) -> Bidder(cardsString, player) }
-            ),
+                order = playerCards.map { (player, cardsString) -> Bidder(cardsString, player) }
+            ).replaceCurrentAndNext { it.copy(lastAction = BiddingAction.Bid(100)) },
             talon = this.talon,
             ranking = this.players.associateWith { 0 }
         )
@@ -97,12 +97,9 @@ internal abstract class TestStateHolder(
         protected val initialState = State.Strife(
             order = RepeatableOrder.of(
                 getPlayerCards(this.players).map { (player, cardsString) ->
-                    Strifer(
-                        cardsString,
-                        player
-                    )
+                    Strifer(cardsString, player)
                 }
-            ),
+            ).replaceCurrent { it.copy(isConstrained = true) },
             bid = 100,
             ranking = this.players.associateWith { 0 }
         )

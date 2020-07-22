@@ -20,9 +20,8 @@ internal object DefaultReviewServiceImpl : ReviewService {
 
     override fun State.Review.performPickTalon(talonIndex: Int): State.Review {
         val talon = this.talon.take(talonIndex)
-        val reviewer = this.order.current()
         return this.copy(
-            order = this.order.replaceCurrent(reviewer.copy(cards = reviewer.cards + talon.value)),
+            order = this.order.replaceCurrent { it.copy(cards = it.cards + talon.value) },
             talon = talon
         )
     }
@@ -44,10 +43,9 @@ internal object DefaultReviewServiceImpl : ReviewService {
     }
 
     override fun State.Review.performDistributeCards(toGive: Map<Player, Card>): State.Review {
-        val reviewer = this.order.current()
         return this.copy(
             order = this.order
-                .replaceCurrent(reviewer.copy(cards = reviewer.cards - toGive.values))
+                .replaceCurrent { it.copy(cards = it.cards - toGive.values) }
                 .mapNotCurrent { (cards, player) ->
                     Reviewer(
                         cards = cards + toGive.getValue(player),

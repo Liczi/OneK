@@ -17,6 +17,7 @@ import oneK.variant.Variant
 //TODO for starters keep games in cache
 //or store game oneK.variant as enum with default for now
 //TODO add proper test cases
+//TODO assign ID to state and keep it in cache
 private class ValidatedGameImpl(
     validator: GameValidator,
     private val variant: Variant,

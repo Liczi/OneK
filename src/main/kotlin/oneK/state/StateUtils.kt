@@ -34,7 +34,8 @@ internal fun isValidBid(
 internal fun State.Strife.allCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
 
 internal fun State.Strife.isBoardFull(): Boolean = this.order.mapNotNull(
-    Strifer::lastAction).isEmpty()
+    Strifer::lastAction
+).isEmpty()
 
 internal fun State.Strife.currentCardsUnordered(): List<Card> = this.order.mapNotNull { it.lastAction?.card }
 
@@ -42,7 +43,9 @@ internal fun State.Strife.firstCard(): Card? = this.order.firstOrNull { it.lastA
 
 internal fun State.Strife.accountForStriferConstraint(): RepeatableOrder<Pair<Player, Int>> =
     this.order
-        .map { Pair(it.player, if (this.bid > it.points) -this.bid else this.bid) }
+        .map { Pair(it.player, if (it.isConstrained) it.points.accountForConstraint(this.bid) else it.points) }
+
+private fun Int.accountForConstraint(bid: Int): Int = if (bid > this) -bid else bid
 
 internal fun State.Strife.addPointsAndClearBoard(): State.Strife {
     val winner = this.getWinner()
