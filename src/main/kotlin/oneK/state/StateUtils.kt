@@ -33,9 +33,7 @@ internal fun isValidBid(
 
 internal fun State.Strife.allCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
 
-internal fun State.Strife.isBoardFull(): Boolean = this.order.mapNotNull(
-    Strifer::lastAction
-).isEmpty()
+internal fun State.Strife.isBoardFull(): Boolean = this.order.all { it.lastAction != null }
 
 internal fun State.Strife.currentCardsUnordered(): List<Card> = this.order.mapNotNull { it.lastAction?.card }
 
@@ -48,22 +46,27 @@ internal fun State.Strife.accountForStriferConstraint(): RepeatableOrder<Pair<Pl
 private fun Int.accountForConstraint(bid: Int): Int = if (bid > this) -bid else bid
 
 internal fun State.Strife.addPointsAndClearBoard(): State.Strife {
-    val winner = this.getWinner()
+    val winner = this.getWinner().player
     val points = this.order.map { it.lastAction?.card?.figure?.value ?: 0 }.sum()
     return this.copy(
         order = this.order.map {
             it.copy(
                 lastAction = null,
-                points = it.points + if (it == winner) points else 0
+                points = it.points + if (it.player == winner) points else 0
             )
-        }.withCurrent(winner)
+        }.withCurrent { it.player == winner }
     )
 }
 
 internal fun State.Strife.getWinner(): Strifer {
     val firstCard = this.firstCard()
     return this.order
-        .filter { it.lastAction?.card?.color == firstCard?.color }
-        .maxBy { it.lastAction?.card?.figure?.value ?: 0 }
+        .filter { it.lastAction?.card?.color == this.currentTriumph }
+        .maxBy { lastCardValue(it) }
+        ?: this.order
+            .filter { it.lastAction?.card?.color == firstCard?.color }
+            .maxBy { lastCardValue(it) }
         ?: error("Unable to determine winner")
 }
+
+private fun lastCardValue(it: Strifer) = it.lastAction?.card?.figure?.value ?: 0

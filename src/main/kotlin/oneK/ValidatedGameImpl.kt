@@ -86,7 +86,7 @@ private class ValidatedGameImpl(
             .performPlay(card)
             .let {
                 when {
-                    it.allCardsPlayed() -> it.transitionToSummaryState()
+                    it.allCardsPlayed() -> it.addPointsAndClearBoard().transitionToSummaryState()
                     it.isBoardFull() -> PlayingEffect.NoTransition(it.addPointsAndClearBoard())
                     else -> PlayingEffect.NoTransition(it)
                 }

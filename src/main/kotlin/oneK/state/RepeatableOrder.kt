@@ -85,10 +85,10 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
         return null
     }
 
-    fun withCurrent(newCurrent: T): RepeatableOrder<T> =
+    fun withCurrent(predicate: (T) -> Boolean): RepeatableOrder<T> =
         this.copy(
             order = this.order,
-            currentInd = this.indexOf(newCurrent)
+            currentInd = this.indexOfFirst(predicate)
         )
 
     private fun <R> copy(order: List<R>, currentInd: Int = this.currentInd): RepeatableOrder<R> =

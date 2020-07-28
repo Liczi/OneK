@@ -23,17 +23,14 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
-//    testImplementation "org.codehaus.groovy:groovy-all:2.4.12"
-//    testImplementation "org.spockframework:spock-core:1.1-groovy-2.4"
     testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
     testImplementation "io.mockk:mockk:1.10.0"
     testImplementation "org.assertj:assertj-core:3.11.1"
 }
 
 sourceSets {
-//    TODO change to proper source dir
-    main.kotlin.srcDirs += 'src/main/kotlin/oneK/v2'
-    test.groovy.srcDirs += 'src/test/kotlin/oneK/v2'
+    main.kotlin.srcDirs += 'src/main/kotlin/oneK'
+    test.groovy.srcDirs += 'src/test/kotlin/oneK'
 }
 
 publishing {
