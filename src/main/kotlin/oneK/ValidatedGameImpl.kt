@@ -3,21 +3,12 @@ package oneK
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.service.*
-import oneK.service.DefaultBiddingServiceImpl
-import oneK.service.DefaultReviewServiceImpl
-import oneK.service.DefaultStrifeServiceImpl
-import oneK.service.DefaultSummaryServiceImpl
 import oneK.state.*
-import oneK.state.allCardsPlayed
 import oneK.validation.DefaultGameValidator
 import oneK.validation.GameValidator
 import oneK.variant.DefaultTwoPlayerVariant
 import oneK.variant.Variant
 
-//TODO for starters keep games in cache
-//or store game oneK.variant as enum with default for now
-//TODO add proper test cases
-//TODO assign ID to state and keep it in cache
 private class ValidatedGameImpl(
     validator: GameValidator,
     private val variant: Variant,
@@ -27,12 +18,6 @@ private class ValidatedGameImpl(
     private val strifeService: StrifeService
 ) : ValidatedGame(validator), SummaryService by summaryService, BiddingService by biddingService,
     ReviewService by reviewService, StrifeService by strifeService {
-
-//    TODO ????? delete or implement
-//    STATE HOLDER (per game - gameUuid, needed for ranking incrementation
-    //    read oneK.state from memory (should be consistent for all players thus cannot be passed in requests)
-
-//    TODO on the level of server, check if the game is memory effective - if not include Flyweight pattern or oneK.state caching - proper hashing function is needed
 
     override fun doStart(state: State.Summary): State.Bidding {
         val shuffledDeck = getClassicDeck().shuffled()
@@ -49,7 +34,7 @@ private class ValidatedGameImpl(
         return state
             .performFold()
             .let {
-                if (it.allCardsPlayed()) {
+                if (it.isAllCardsPlayed()) {
                     it.transitionToReviewState()
                 } else {
                     FoldingEffect.NoTransition(it)
@@ -86,7 +71,7 @@ private class ValidatedGameImpl(
             .performPlay(card)
             .let {
                 when {
-                    it.allCardsPlayed() -> it.addPointsAndClearBoard().transitionToSummaryState()
+                    it.isAllCardsPlayed() -> it.addPointsAndClearBoard().transitionToSummaryState()
                     it.isBoardFull() -> PlayingEffect.NoTransition(it.addPointsAndClearBoard())
                     else -> PlayingEffect.NoTransition(it)
                 }

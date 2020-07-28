@@ -32,63 +32,63 @@ internal class ValidatedGameStrifeTest {
                 )
             )
         }
+    }
 
-        @Nested
-        inner class TwoPlayerTest : TestStateHolder.Strife(TwoPlayer(), listOf("QH, KH, 9H", "AH, AC, 9C")) {
+    @Nested
+    inner class TwoPlayerTriumphTest : TestStateHolder.Strife(TwoPlayer(), listOf("QH, KH, 9H", "AH, AC, 9C")) {
 
-            @Test
-            fun `should switch players correctly`() {
-                val state = initialState
-                    .let { (game.play(it, Card.fromString('K', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.SummaryTransition).state }
+        @Test
+        fun `should switch players correctly`() {
+            val state = initialState
+                .let { (game.play(it, Card.fromString('K', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.SummaryTransition).state }
 
-                assertThat(state).isEqualToComparingFieldByField(
-                    State.Summary(
-                        order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to -100, players[1] to 30)
-                    )
+            assertThat(state).isEqualToComparingFieldByField(
+                State.Summary(
+                    order = RepeatableOrder.of(listOf(players[1], players[0])),
+                    ranking = mapOf(players[0] to -100, players[1] to 30)
                 )
-            }
+            )
+        }
 
-            @Test
-            fun `should use triumph card correctly`() {
-                val state = initialState
-                    .let { game.triumph(it, Card.fromString('K', 'H')) }
-                    .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.SummaryTransition).state }
+        @Test
+        fun `should use triumph card correctly`() {
+            val state = initialState
+                .let { game.triumph(it, Card.fromString('K', 'H')) }
+                .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.SummaryTransition).state }
 
-                assertThat(state).isEqualToComparingFieldByField(
-                    State.Summary(
-                        order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to 100, players[1] to 20)
-                    )
+            assertThat(state).isEqualToComparingFieldByField(
+                State.Summary(
+                    order = RepeatableOrder.of(listOf(players[1], players[0])),
+                    ranking = mapOf(players[0] to 100, players[1] to 20)
                 )
-            }
+            )
+        }
 
-            @Test
-            fun `should not win with off color card`() {
-                val state = initialState
-                    .let { (game.play(it, Card.fromString('K', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
-                    .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.SummaryTransition).state }
+        @Test
+        fun `should not win with off color card`() {
+            val state = initialState
+                .let { (game.play(it, Card.fromString('K', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('A', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'C')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('Q', 'H')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('A', 'C')) as PlayingEffect.NoTransition).state }
+                .let { (game.play(it, Card.fromString('9', 'H')) as PlayingEffect.SummaryTransition).state }
 
-                assertThat(state).isEqualToComparingFieldByField(
-                    State.Summary(
-                        order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to -100, players[1] to 30)
-                    )
+            assertThat(state).isEqualToComparingFieldByField(
+                State.Summary(
+                    order = RepeatableOrder.of(listOf(players[1], players[0])),
+                    ranking = mapOf(players[0] to -100, players[1] to 30)
                 )
-            }
+            )
         }
     }
 }

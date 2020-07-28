@@ -2,12 +2,10 @@ package oneK.deck
 
 import oneK.deck.Color.*
 import oneK.deck.Figure.*
-import java.io.Serializable
 
-//TODO refactor kotlin way
 data class Card(val figure: Figure, val color: Color) {
 
-//    TODO move to Color and Figure classes, use string not single characters in this factory method
+    //    TODO move to Color and Figure classes, use string not single characters in this factory method
     companion object {
         @JvmStatic
         fun fromString(figureString: Char, colorString: Char): Card {

@@ -1,6 +1,6 @@
 package oneK.service
 
-import oneK.state.allCardsPlayed
+import oneK.state.isAllCardsPlayed
 import oneK.service.DefaultBiddingServiceImpl.performBid
 import oneK.service.DefaultBiddingServiceImpl.performFold
 import org.assertj.core.api.Assertions.assertThat
@@ -23,7 +23,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[1])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
 
         @Test
@@ -32,7 +32,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
     }
 
@@ -48,7 +48,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[2])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
 
         @Test
@@ -58,7 +58,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
 
         @Test
@@ -70,7 +70,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[0])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
 
         @Test
@@ -81,7 +81,7 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
 
             assertThat(state.order.current().player).isEqualTo(players[2])
-            assertTrue(state.allCardsPlayed())
+            assertTrue(state.isAllCardsPlayed())
         }
     }
 }

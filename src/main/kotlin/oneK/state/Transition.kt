@@ -14,7 +14,7 @@ internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransi
 }
 
 internal fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
-    val newRanking = this.accountForStriferConstraint()
+    val newRanking = this.rankingAccountForConstraint()
         .map { (player, points) -> Pair(player, points.roundUpFromFive() + this.ranking.getOrDefault(player, 0)) }
         .toMap()
     return PlayingEffect.SummaryTransition(

@@ -1,15 +1,14 @@
 package oneK.validation
 
+import oneK.containsAllNines
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.containsAllNines
-import oneK.state.isValidBid
 import oneK.state.Choice
 import oneK.state.Reviewer
 import oneK.state.State
+import oneK.state.isValidBid
 import oneK.variant.Variant
 
-//TODO test this class thoroughly
 interface ReviewValidator {
     fun canPickTalon(state: State.Review, talonIndex: Int): State.Review?
     fun canActivateBomb(state: State.Review): State.Review?
@@ -34,7 +33,7 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
 
     override fun canRestart(state: State.Review): State.Review? {
         return state.ensureValid {
-            state.talon is Choice.NotTaken
+            state.talon is Choice.Taken
                     && state.toGive == null
                     && state.order.current().cards.containsAllNines()
         }

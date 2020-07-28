@@ -2,15 +2,14 @@ package oneK.validation
 
 import oneK.service.DefaultReviewServiceImpl.performDistributeCards
 import oneK.service.DefaultReviewServiceImpl.performPickTalon
+import oneK.testsuits.TestStateHolder
+import oneK.testsuits.TwoPlayer
 import oneK.toCardSet
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import oneK.testsuits.TestStateHolder
-import oneK.testsuits.TwoPlayer
 
-//TODO test restarting (pos + neg)
 internal class ReviewStateValidatorImplTest {
 
     @Nested
@@ -54,6 +53,26 @@ internal class ReviewStateValidatorImplTest {
                 .performDistributeCards(toGive)
 
             assertNotNull(validator.canConfirm(state))
+        }
+
+        @Test
+        fun `should not allow performing restart`() {
+            val state = initialState
+                .performPickTalon(0)
+
+            assertNull(validator.canRestart(state))
+        }
+    }
+
+    @Nested
+    inner class TwoPlayerRestartTest : TestStateHolder.Review(TwoPlayer(), listOf("9H, 9D", "TC, TD")) {
+
+        @Test
+        fun `should not allow performing restart`() {
+            val state = initialState
+                .performPickTalon(0)
+
+            assertNotNull(validator.canRestart(state))
         }
     }
 }

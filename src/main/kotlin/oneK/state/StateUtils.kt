@@ -4,7 +4,7 @@ import oneK.deck.Card
 import oneK.player.Player
 import oneK.variant.Variant
 
-internal fun State.Bidding.allCardsPlayed(): Boolean =
+internal fun State.Bidding.isAllCardsPlayed(): Boolean =
     this.order
         .map(Bidder::lastAction)
         .filterNot { it is BiddingAction.Fold }
@@ -26,12 +26,16 @@ internal fun isValidBid(
 ): Boolean {
     return bid > currentBid
             && variant.canBid(cards, bid)
-            && bid % 10 == 0
-            && bid - currentBid <= variant.getMaxBidStep() // TODO min bid oneK.state ???
+            && bid.isMultiplicityOfTen()
+            && bid.isValidStep(currentBid, variant)
             && bid <= variant.getUpperBidThreshold()
 }
 
-internal fun State.Strife.allCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
+private fun Int.isMultiplicityOfTen() = this % 10 == 0
+
+private fun Int.isValidStep(currentBid: Int, variant: Variant) = this - currentBid <= variant.getMaxBidStep()
+
+internal fun State.Strife.isAllCardsPlayed(): Boolean = this.order.all { it.cards.isEmpty() }
 
 internal fun State.Strife.isBoardFull(): Boolean = this.order.all { it.lastAction != null }
 
@@ -39,7 +43,7 @@ internal fun State.Strife.currentCardsUnordered(): List<Card> = this.order.mapNo
 
 internal fun State.Strife.firstCard(): Card? = this.order.firstOrNull { it.lastAction != null }?.lastAction?.card
 
-internal fun State.Strife.accountForStriferConstraint(): RepeatableOrder<Pair<Player, Int>> =
+internal fun State.Strife.rankingAccountForConstraint(): RepeatableOrder<Pair<Player, Int>> =
     this.order
         .map { Pair(it.player, if (it.isConstrained) it.points.accountForConstraint(this.bid) else it.points) }
 

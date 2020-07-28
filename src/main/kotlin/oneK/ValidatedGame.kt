@@ -25,7 +25,6 @@ abstract class ValidatedGame(
     protected abstract fun doPlay(state: State.Strife, card: Card): PlayingEffect
     protected abstract fun doTriumph(state: State.Strife, card: Card): State.Strife
 
-    //    TODO validate oneK.state and call can* function if exists then call do* - add proper abstraction for that
     fun start(state: State.Summary): State.Bidding =
         validator.canStart(state)
             ?.let { doStart(it) }
