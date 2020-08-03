@@ -16,4 +16,8 @@ class Player(val name: String) : Serializable {
     override fun hashCode(): Int {
         return uuid.hashCode()
     }
+
+    override fun toString(): String {
+        return "Player(name='$name')"
+    }
 }
