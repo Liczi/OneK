@@ -29,8 +29,8 @@ dependencies {
 }
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/main/kotlin/oneK'
-    test.groovy.srcDirs += 'src/test/kotlin/oneK'
+    main.kotlin.srcDirs += 'src/main/kotlin'
+    test.groovy.srcDirs += 'src/test/kotlin'
 }
 
 publishing {
