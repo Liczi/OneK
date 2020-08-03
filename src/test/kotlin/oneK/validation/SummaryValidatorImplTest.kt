@@ -1,13 +1,13 @@
 package oneK.validation
 
 import oneK.state.State
+import oneK.testsuits.TestStateHolder
+import oneK.testsuits.ThreePlayer
+import oneK.testsuits.TwoPlayer
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import oneK.testsuits.TestStateHolder
-import oneK.testsuits.ThreePlayer
-import oneK.testsuits.TwoPlayer
 
 internal class SummaryValidatorImplTest {
 

@@ -1,14 +1,14 @@
 package oneK.service
 
-import oneK.deck.Card
+import oneK.asCard
 import oneK.service.DefaultStrifeServiceImpl.performPlay
 import oneK.service.DefaultStrifeServiceImpl.performTriumph
 import oneK.state.StrifeAction
+import oneK.testsuits.TestStateHolder
+import oneK.testsuits.TwoPlayer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import oneK.testsuits.TestStateHolder
-import oneK.testsuits.TwoPlayer
 
 internal class DefaultStrifeServiceImplTest {
 
@@ -17,7 +17,7 @@ internal class DefaultStrifeServiceImplTest {
 
         @Test
         fun `should perform play card properly`() {
-            val card = Card.fromString('K', 'C')
+            val card = "KC".asCard()
             val newState = initialState.performPlay(card)
 
             val previous = newState.order.previous().current()
@@ -27,7 +27,7 @@ internal class DefaultStrifeServiceImplTest {
 
         @Test
         fun `should perform triumph properly`() {
-            val card = Card.fromString('K', 'C')
+            val card = "KC".asCard()
             val newState = initialState.performTriumph(card)
 
             val previous = newState.order.previous().current()

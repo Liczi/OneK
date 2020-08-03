@@ -1,9 +1,10 @@
 package oneK.testsuits
 
+import oneK.GameFactory
+import oneK.ValidatedGame
 import oneK.player.Player
-import oneK.variant.DefaultThreePlayerVariant
-import oneK.variant.DefaultTwoPlayerVariant
 import oneK.variant.Variant
+import oneK.variant.getVariantFor
 
 private val _players = listOf(
     Player("Zenek (0)"),
@@ -14,14 +15,17 @@ private val _players = listOf(
 interface TestPlayersHolder {
     val players: List<Player>
     val variant: Variant
+    val game: ValidatedGame
 }
 
-open class TwoPlayer : TestPlayersHolder {
+class TwoPlayer : TestPlayersHolder {
     override val players = _players.dropLast(1)
-    override val variant = DefaultTwoPlayerVariant()
+    override val variant = getVariantFor(2)
+    override val game = GameFactory.default(variant)
 }
 
-open class ThreePlayer : TestPlayersHolder {
+class ThreePlayer : TestPlayersHolder {
     override val players = _players.toList()
-    override val variant = DefaultThreePlayerVariant()
+    override val variant = getVariantFor(3)
+    override val game = GameFactory.default(variant)
 }

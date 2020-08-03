@@ -1,21 +1,20 @@
 package oneK.service
 
+import oneK.asCardSet
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.service.DefaultReviewServiceImpl.performChangeBid
 import oneK.service.DefaultReviewServiceImpl.performConfirm
 import oneK.service.DefaultReviewServiceImpl.performDistributeCards
 import oneK.service.DefaultReviewServiceImpl.performPickTalon
-import oneK.service.DefaultReviewServiceImpl.performRestart
 import oneK.state.Choice
 import oneK.state.State
-import oneK.toCardSet
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.ThreePlayer
 import oneK.testsuits.TwoPlayer
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 internal class DefaultReviewServiceImplTest {
 
@@ -30,17 +29,10 @@ internal class DefaultReviewServiceImplTest {
         }
 
         @Test
-        fun `should properly perform restart`() {
-            val newState = initialState.performRestart()
-
-            assertRestartedProperly(newState, initialState, 0..1)
-        }
-
-        @Test
         fun `should properly perform distribute cards`() {
             val toGive = players
                 .filter { it != players[0] }
-                .zip("9S".toCardSet()).toMap()
+                .zip("9S".asCardSet()).toMap()
             val newState = initialState
                 .performPickTalon(0)
                 .performDistributeCards(toGive)
@@ -52,7 +44,8 @@ internal class DefaultReviewServiceImplTest {
         fun `should assign initial bid if bid changed`() {
             val newState = initialState.performConfirm()
 
-            assertThat(newState.bid).isEqualTo(100)
+            assertThat(newState.bid)
+                .isEqualTo(100)
         }
 
         @Test
@@ -61,7 +54,8 @@ internal class DefaultReviewServiceImplTest {
                 .performChangeBid(120)
                 .performConfirm()
 
-            assertThat(newState.bid).isEqualTo(120)
+            assertThat(newState.bid)
+                .isEqualTo(120)
         }
     }
 
@@ -74,17 +68,10 @@ internal class DefaultReviewServiceImplTest {
         }
 
         @Test
-        fun `should properly perform restart`() {
-            val newState = initialState.performRestart()
-
-            assertRestartedProperly(newState, initialState, 0..0)
-        }
-
-        @Test
         fun `should properly perform distribute cards`() {
             val toGive = players
                 .filter { it != players[0] }
-                .zip("9S,9C".toCardSet()).toMap()
+                .zip("9S,9C".asCardSet()).toMap()
             val newState = initialState
                 .performPickTalon(0)
                 .performDistributeCards(toGive)
@@ -98,22 +85,15 @@ internal class DefaultReviewServiceImplTest {
         toGive: Map<Player, Card>
     ) {
         toGive.forEach { (player, card) ->
-            assertThat(newState.order.firstOrNull { it.player == player }?.cards).contains(card)
+            assertThat(newState.order.firstOrNull { it.player == player }?.cards)
+                .contains(card)
         }
-        assertThat(newState.talon).isInstanceOf(Choice.Taken::class.java)
-        assertThat(newState.order).allMatch { it.cards.size == newState.order.current().cards.size }
-        assertThat(newState.toGive).isNotNull
-    }
-
-    private fun assertRestartedProperly(newState: State.Bidding, initialState: State.Review, talonRange: IntRange) {
-        (talonRange).forEach {
-            assertThat(newState.talon[it])
-                .containsExactlyInAnyOrderElementsOf(initialState.talon.take(it).value)
-        }
-        assertThat(newState.order.map { it.cards }).isEqualTo(initialState.order.map { it.cards })
-        assertThat(newState.order.map { it.cards }.flatten())
-            .containsExactlyInAnyOrderElementsOf(initialState.order.map { it.cards }.flatten())
-        assertThat(newState.order.map { it.player }).isEqualTo(initialState.order.map { it.player })
+        assertThat(newState.talon)
+            .isInstanceOf(Choice.Taken::class.java)
+        assertThat(newState.order)
+            .allMatch { it.cards.size == newState.order.current().cards.size }
+        assertThat(newState.toGive)
+            .isNotNull
     }
 
     private fun assertTalonPickedProperly(talonInd: Int, initialState: State.Review) {
@@ -121,6 +101,7 @@ internal class DefaultReviewServiceImplTest {
         val talonCards = initialState.talon.take(talonInd).value
         assertThat((newState.talon as Choice.Taken).value)
             .containsExactlyElementsOf(talonCards)
-        assertThat(newState.order.current().cards).contains(*talonCards.toTypedArray())
+        assertThat(newState.order.current().cards)
+            .contains(*talonCards.toTypedArray())
     }
 }

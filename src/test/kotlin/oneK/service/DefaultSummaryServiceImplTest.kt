@@ -3,14 +3,12 @@ package oneK.service
 import oneK.service.DefaultSummaryServiceImpl.performStart
 import oneK.state.RepeatableOrder
 import oneK.state.State
-import oneK.variant.DefaultThreePlayerVariant
-import oneK.variant.DefaultTwoPlayerVariant
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.ThreePlayer
 import oneK.testsuits.TwoPlayer
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 internal class DefaultSummaryServiceImplTest {
 
@@ -21,9 +19,7 @@ internal class DefaultSummaryServiceImplTest {
         fun `should properly perform start`() {
             val summaryState = State.Summary(RepeatableOrder.of(players).next())
 
-            val biddingState = summaryState.performStart(getDeck(),
-                DefaultTwoPlayerVariant()
-            )
+            val biddingState = summaryState.performStart(getDeck(), variant)
 
             assertThat(biddingState.order.current().player).isEqualTo(players[1])
             assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialState.talon)
@@ -37,9 +33,7 @@ internal class DefaultSummaryServiceImplTest {
         fun `should properly perform start`() {
             val summaryState = State.Summary(RepeatableOrder.of(players).next().next())
 
-            val biddingState = summaryState.performStart(getDeck(),
-                DefaultThreePlayerVariant()
-            )
+            val biddingState = summaryState.performStart(getDeck(), variant)
 
             assertThat(biddingState.order.current().player).isEqualTo(players[2])
             assertThat(biddingState.talon).containsExactlyInAnyOrderElementsOf(initialState.talon)

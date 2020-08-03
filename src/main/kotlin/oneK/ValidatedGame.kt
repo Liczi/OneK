@@ -33,19 +33,19 @@ abstract class ValidatedGame(
     fun bid(state: State.Bidding, bid: Int): State.Bidding =
         validator.canBid(state, bid)
             ?.let { doBid(it, bid) }
-            ?: illegalState(state)
+            ?: illegalState(state, "bid" to bid)
 
     fun fold(state: State.Bidding): FoldingEffect = doFold(state)
 
     fun pickTalon(state: State.Review, talonIndex: Int): State.Review =
         validator.canPickTalon(state, talonIndex)
             ?.let { doPickTalon(it, talonIndex) }
-            ?: illegalState(state)
+            ?: illegalState(state, "talonIndex" to talonIndex)
 
     fun distributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review =
         validator.canDistributeCards(state, toGive)
             ?.let { doDistributeCards(it, toGive) }
-            ?: illegalState(state)
+            ?: illegalState(state, toGive)
 
     fun activateBomb(state: State.Review): State.Summary =
         validator.canActivateBomb(state)
@@ -61,7 +61,7 @@ abstract class ValidatedGame(
     fun changeBid(state: State.Review, newBid: Int): State.Review =
         validator.canChangeBid(state, newBid)
             ?.let { doChangeBid(it, newBid) }
-            ?: illegalState(state)
+            ?: illegalState(state, "newBid" to newBid)
 
     fun confirm(state: State.Review): State.Strife =
         validator.canConfirm(state)
@@ -71,14 +71,14 @@ abstract class ValidatedGame(
     fun play(state: State.Strife, card: Card): PlayingEffect =
         validator.canPlay(state, card)
             ?.let { doPlay(it, card) }
-            ?: illegalState(state)
+            ?: illegalState(state, "card" to card)
 
     fun triumph(state: State.Strife, card: Card): State.Strife =
         validator.canTriumph(state, card)
             ?.let { doTriumph(it, card) }
-            ?: illegalState(state)
+            ?: illegalState(state, "card" to card)
 
-    private fun <T> illegalState(state: State): T {
-        throw IllegalStateException("Illegal action on oneK.state: $state")
+    private fun <T> illegalState(state: State, vararg arguments: Any): T {
+        throw IllegalStateException("Illegal action on oneK.state: $state, arguments: ${arguments.joinToString()}")
     }
 }

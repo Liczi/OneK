@@ -14,7 +14,7 @@ internal object DefaultSummaryServiceImpl : SummaryService {
 
     override fun State.Summary.performStart(deck: List<Card>, variant: Variant): State.Bidding {
         val talonSize = variant.getTalonCardsQuantity()
-        val talon = variant.getTalonCards(deck.take(talonSize))
+        val talon = deck.take(talonSize).splitCardsToEqualSets(variant.getTalonsQuantity())
         val playersHands = deck.drop(talonSize).splitCardsToEqualSets(this.order.size)
         val bidders = this.order
             .zip(playersHands)

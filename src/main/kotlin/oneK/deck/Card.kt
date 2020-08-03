@@ -1,34 +1,6 @@
 package oneK.deck
 
-import oneK.deck.Color.*
-import oneK.deck.Figure.*
-
 data class Card(val figure: Figure, val color: Color) {
-
-    //    TODO move to Color and Figure classes, use string not single characters in this factory method
-    companion object {
-        @JvmStatic
-        fun fromString(figureString: Char, colorString: Char): Card {
-            val figure = when (figureString) {
-                '9' -> NINE
-                'T' -> TEN
-                'J' -> JACK
-                'Q' -> QUEEN
-                'K' -> KING
-                'A' -> ACE
-                else -> error("Invalid figure literal")
-            }
-
-            val color = when (colorString) {
-                'H' -> HEARTS
-                'D' -> DIAMONDS
-                'C' -> CLUBS
-                'S' -> SPADES
-                else -> error("Invalid color literal")
-            }
-            return Card(figure, color)
-        }
-    }
 
     override fun toString(): String = "$figure of $color"
 

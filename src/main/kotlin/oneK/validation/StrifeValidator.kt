@@ -23,8 +23,8 @@ class StrifeStateValidatorImpl(private val variant: Variant) : StrifeValidator, 
     override fun canTriumph(state: State.Strife, card: Card): State.Strife? {
         return state.ensureValid {
             state.currentPlayerHas(card)
-                    && (card.figure == Figure.KING || card.figure == Figure.QUEEN)
-                    && state.currentPlayerHas(Card(card.figure.mate(), card.color))
+                    && card.figure == Figure.QUEEN
+                    && state.currentPlayerHas(Card(Figure.KING, card.color))
                     && state.currentCardsUnordered().isEmpty()
         }
     }
@@ -33,8 +33,6 @@ class StrifeStateValidatorImpl(private val variant: Variant) : StrifeValidator, 
         firstCard?.let { first -> !this.order.current().cards.any { it.color == first.color } } ?: true
 
     private fun hasMatchingColor(firstCard: Card?, card: Card): Boolean = firstCard?.color?.equals(card.color) ?: true
-
-    private fun Figure.mate() = if (this == Figure.KING) Figure.QUEEN else Figure.KING
 
     private fun State.Strife.currentPlayerHas(card: Card) =
         this.order.current().cards.contains(card)

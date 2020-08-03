@@ -3,6 +3,7 @@ package oneK.validation
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.state.State
+import oneK.variant.Variant
 
 interface GameValidator {
     fun canStart(state: State.Summary): State.Summary?
@@ -19,3 +20,10 @@ interface GameValidator {
     fun canPlay(state: State.Strife, card: Card): State.Strife?
     fun canTriumph(state: State.Strife, card: Card): State.Strife?
 }
+
+class DefaultGameValidator(variant: Variant) :
+    GameValidator,
+    SummaryValidator by SummaryStateValidatorImpl(variant),
+    BiddingValidator by BiddingStateValidatorImpl(variant),
+    ReviewValidator by ReviewStateValidatorImpl(variant),
+    StrifeValidator by StrifeStateValidatorImpl(variant)

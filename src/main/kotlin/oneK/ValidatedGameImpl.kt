@@ -6,7 +6,6 @@ import oneK.service.*
 import oneK.state.*
 import oneK.validation.DefaultGameValidator
 import oneK.validation.GameValidator
-import oneK.variant.DefaultTwoPlayerVariant
 import oneK.variant.Variant
 
 private class ValidatedGameImpl(
@@ -55,7 +54,12 @@ private class ValidatedGameImpl(
     }
 
     override fun doRestart(state: State.Review): State.Bidding {
-        return state.performRestart()
+        return doStart(
+            State.Summary(
+                order = state.order.map { it.player },
+                ranking = state.ranking
+            )
+        )
     }
 
     override fun doChangeBid(state: State.Review, newBid: Int): State.Review {
@@ -84,8 +88,7 @@ private class ValidatedGameImpl(
 }
 
 object GameFactory {
-    fun default(): ValidatedGame {
-        val variant = DefaultTwoPlayerVariant()
+    fun default(variant: Variant): ValidatedGame {
         return ValidatedGameImpl(
             DefaultGameValidator(variant),
             variant,

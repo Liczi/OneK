@@ -28,7 +28,7 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
     }
 
     override fun canActivateBomb(state: State.Review): State.Review? {
-        return state.ensureValid { false } //todo for now disallow bombing
+        TODO("Not yet implemented")
     }
 
     override fun canRestart(state: State.Review): State.Review? {
@@ -42,12 +42,9 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
     override fun canChangeBid(state: State.Review, newBid: Int): State.Review? {
         return state.ensureValid {
             state.changedBid == null
-                    && isValidBid(
-                newBid,
-                state.initialBid,
-                state.order.current().cards,
-                variant
-            )
+                    && state.talon is Choice.Taken
+                    && state.toGive != null
+                    && isValidBid(newBid, state.initialBid, state.order.current().cards, variant)
         }
     }
 

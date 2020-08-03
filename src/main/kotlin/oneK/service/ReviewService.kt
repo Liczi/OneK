@@ -2,7 +2,6 @@ package oneK.service
 
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.state.Bidder
 import oneK.state.Reviewer
 import oneK.state.State
 import oneK.state.Strifer
@@ -10,7 +9,6 @@ import oneK.state.Strifer
 interface ReviewService {
     fun State.Review.performPickTalon(talonIndex: Int): State.Review
     fun State.Review.performActivateBomb(): State.Review
-    fun State.Review.performRestart(): State.Bidding
     fun State.Review.performChangeBid(newBid: Int): State.Review
     fun State.Review.performDistributeCards(toGive: Map<Player, Card>): State.Review
     fun State.Review.performConfirm(): State.Strife
@@ -28,14 +26,6 @@ internal object DefaultReviewServiceImpl : ReviewService {
 
     override fun State.Review.performActivateBomb(): State.Review {
         TODO("Not yet implemented")
-    }
-
-    override fun State.Review.performRestart(): State.Bidding {
-        return State.Bidding(
-            order = this.order.map { (cards, player) -> Bidder(cards, player) },
-            talon = this.talon,
-            ranking = this.ranking
-        )
     }
 
     override fun State.Review.performChangeBid(newBid: Int): State.Review {
@@ -58,7 +48,9 @@ internal object DefaultReviewServiceImpl : ReviewService {
 
     override fun State.Review.performConfirm(): State.Strife {
         return State.Strife(
-            order = this.order.map { (cards, player) -> Strifer(cards, player) },
+            order = this.order
+                .map { (cards, player) -> Strifer(cards, player) }
+                .replaceCurrent { it.copy(isConstrained = true) },
             bid = this.changedBid ?: this.initialBid,
             ranking = this.ranking
         )

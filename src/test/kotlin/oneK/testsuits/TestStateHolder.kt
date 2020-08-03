@@ -1,9 +1,9 @@
 package oneK.testsuits
 
+import oneK.asCardSet
 import oneK.deck.Card
 import oneK.player.Player
 import oneK.state.*
-import oneK.toCardSet
 import oneK.validation.BiddingStateValidatorImpl
 import oneK.validation.ReviewStateValidatorImpl
 import oneK.validation.StrifeStateValidatorImpl
@@ -14,9 +14,9 @@ internal abstract class TestStateHolder(
     talon: List<String>? = null
 ) {
 
-    private val _singleTalon = (talon ?: listOf("9S,9C,9D")).map(String::toCardSet)
-    private val _doubleTalon = (talon ?: listOf("9S,9C", "9D,9H")).map(String::toCardSet)
-    private val _cards = (cards ?: listOf("JS,JC", "JD,JH", "QS,QC")).map(String::toCardSet)
+    private val _singleTalon = (talon ?: listOf("9S,9C,9D")).map(String::asCardSet)
+    private val _doubleTalon = (talon ?: listOf("9S,9C", "9D,9H")).map(String::asCardSet)
+    private val _cards = (cards ?: listOf("JS,JC", "JD,JH", "QS,QC")).map(String::asCardSet)
 
     protected fun getPlayerCards(players: List<Player>): List<Pair<Player, Set<Card>>> = players.zip(_cards)
 

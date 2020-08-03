@@ -1,15 +1,15 @@
 package oneK.service
 
-import oneK.state.isAllCardsPlayed
 import oneK.service.DefaultBiddingServiceImpl.performBid
 import oneK.service.DefaultBiddingServiceImpl.performFold
+import oneK.state.isAllCardsPlayed
+import oneK.testsuits.TestStateHolder
+import oneK.testsuits.ThreePlayer
+import oneK.testsuits.TwoPlayer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import oneK.testsuits.TestStateHolder
-import oneK.testsuits.ThreePlayer
-import oneK.testsuits.TwoPlayer
 
 internal class DefaultBiddingServiceImplTest {
 
@@ -22,7 +22,8 @@ internal class DefaultBiddingServiceImplTest {
                 .performBid(110)
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[1])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[1])
             assertTrue(state.isAllCardsPlayed())
         }
 
@@ -31,7 +32,8 @@ internal class DefaultBiddingServiceImplTest {
             val state = initialState
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[0])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[0])
             assertTrue(state.isAllCardsPlayed())
         }
     }
@@ -47,7 +49,8 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[2])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[2])
             assertTrue(state.isAllCardsPlayed())
         }
 
@@ -57,7 +60,8 @@ internal class DefaultBiddingServiceImplTest {
                 .performFold()
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[0])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[0])
             assertTrue(state.isAllCardsPlayed())
         }
 
@@ -69,7 +73,8 @@ internal class DefaultBiddingServiceImplTest {
                 .performBid(120)
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[0])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[0])
             assertTrue(state.isAllCardsPlayed())
         }
 
@@ -80,7 +85,8 @@ internal class DefaultBiddingServiceImplTest {
                 .performBid(110)
                 .performFold()
 
-            assertThat(state.order.current().player).isEqualTo(players[2])
+            assertThat(state.order.current().player)
+                .isEqualTo(players[2])
             assertTrue(state.isAllCardsPlayed())
         }
     }

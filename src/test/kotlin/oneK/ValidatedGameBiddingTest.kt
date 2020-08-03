@@ -10,8 +10,6 @@ import org.junit.jupiter.api.Test
 
 internal open class ValidatedGameBiddingTest {
 
-    private val game = GameFactory.default()
-
     @Nested
     inner class DefaultCardsTest : TestStateHolder.Bidding(TwoPlayer()) {
 
@@ -23,8 +21,10 @@ internal open class ValidatedGameBiddingTest {
                 .let { game.fold(it) }
 
             val reviewState = (newState as FoldingEffect.ReviewTransition).state
-            assertThat(reviewState.initialBid).isEqualTo(120)
-            assertThat(reviewState.order.current().player).isEqualTo(players[0])
+            assertThat(reviewState.initialBid)
+                .isEqualTo(120)
+            assertThat(reviewState.order.current().player)
+                .isEqualTo(players[0])
             assertThat(reviewState.talon.take(0).value)
                 .containsExactlyInAnyOrderElementsOf(initialState.talon[0])
             assertThat(reviewState.talon.take(1).value)
@@ -51,8 +51,10 @@ internal open class ValidatedGameBiddingTest {
                 .let { game.fold(it) }
 
             val reviewState = (newState as FoldingEffect.ReviewTransition).state
-            assertThat(reviewState.initialBid).isEqualTo(160)
-            assertThat(reviewState.order.current().player).isEqualTo(players[2])
+            assertThat(reviewState.initialBid)
+                .isEqualTo(160)
+            assertThat(reviewState.order.current().player)
+                .isEqualTo(players[2])
         }
 
         @Test
@@ -62,8 +64,10 @@ internal open class ValidatedGameBiddingTest {
                 .let { game.fold(it) }
 
             val reviewState = (newState as FoldingEffect.ReviewTransition).state
-            assertThat(reviewState.initialBid).isEqualTo(100)
-            assertThat(reviewState.order.current().player).isEqualTo(players[0])
+            assertThat(reviewState.initialBid)
+                .isEqualTo(100)
+            assertThat(reviewState.order.current().player)
+                .isEqualTo(players[0])
         }
     }
 }

@@ -1,12 +1,12 @@
 package oneK.state
 
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
 import oneK.testsuits.TestPlayersHolder
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.ThreePlayer
 import oneK.testsuits.TwoPlayer
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 
 internal class RepeatableOrderTest {
 
@@ -32,7 +32,8 @@ internal class RepeatableOrderTest {
         this.players.indices
             .map { dummyReplaceAndNextUntil(initialOrder, it) }
             .forEachIndexed { index, newOrder ->
-                assertThat(newOrder.current().player).isEqualTo(this.players[index])
+                assertThat(newOrder.current().player)
+                    .isEqualTo(this.players[index])
             }
     }
 

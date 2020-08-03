@@ -2,11 +2,10 @@ package oneK.variant
 
 import oneK.deck.Card
 import oneK.hasTriumph
-import oneK.splitCardsToEqualSets
 
 private const val MAXIMUM_BID = 300
 
-class DefaultTwoPlayerVariant: Variant {
+private abstract class DefaultVariant : Variant {
     override var getGameGoal = { 1000 }
     override var getUpperBidThreshold = { MAXIMUM_BID }
     override var getInitialBid = { 100 }
@@ -17,15 +16,21 @@ class DefaultTwoPlayerVariant: Variant {
     override var getLimitedScoringThreshold = { 900 }
     override var getBombPoints: () -> Int = { 60 }
     override var getBombAllowedBidThreshold: () -> Int = { 120 }
+}
 
+private class DefaultTwoPlayerVariant : DefaultVariant() {
     override var getTalonsQuantity = { 2 }
-    override var getTalonCards: (Collection<Card>) -> List<Set<Card>> = { cards ->
-        cards.splitCardsToEqualSets(this.getTalonsQuantity())
-    }
     override var getTalonCardsQuantity = { 4 }
 }
 
-fun DefaultThreePlayerVariant(): Variant = Variant.Builder()
-    .talonsQuantity(1)
-    .talonCardsQuantity(3)
-    .build()
+private class DefaultThreePlayerVariant : DefaultVariant() {
+    override var getTalonsQuantity = { 1 }
+    override var getTalonCardsQuantity = { 3 }
+}
+
+fun getVariantFor(playersCount: Int): Variant =
+    when (playersCount) {
+        2 -> DefaultTwoPlayerVariant()
+        3 -> DefaultThreePlayerVariant()
+        else -> error("No variant for $playersCount player(s)")
+    }

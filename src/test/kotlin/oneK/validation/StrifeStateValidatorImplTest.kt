@@ -1,13 +1,13 @@
 package oneK.validation
 
-import oneK.deck.Card
+import oneK.asCard
 import oneK.service.DefaultStrifeServiceImpl.performPlay
+import oneK.testsuits.TestStateHolder
+import oneK.testsuits.TwoPlayer
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import oneK.testsuits.TestStateHolder
-import oneK.testsuits.TwoPlayer
 
 internal class StrifeStateValidatorImplTest {
 
@@ -16,38 +16,38 @@ internal class StrifeStateValidatorImplTest {
 
         @Test
         fun `should not allow playing a card which is not present`() {
-            assertNull(validator.canPlay(initialState, Card.fromString('A', 'D')))
+            assertNull(validator.canPlay(initialState, "AD".asCard()))
         }
 
         @Test
         fun `should not allow triumph if no mate present`() {
-            assertNull(validator.canTriumph(initialState, Card.fromString('Q', 'D')))
+            assertNull(validator.canTriumph(initialState, "QD".asCard()))
         }
 
         @Test
         fun `should allow playing a card which is not present`() {
-            assertNotNull(validator.canPlay(initialState, Card.fromString('A', 'C')))
+            assertNotNull(validator.canPlay(initialState, "AC".asCard()))
         }
 
         @Test
         fun `should allow triumph if no mate present`() {
-            assertNotNull(validator.canTriumph(initialState, Card.fromString('Q', 'C')))
+            assertNotNull(validator.canTriumph(initialState, "QC".asCard()))
         }
 
         @Test
         fun `should not allow playing off color`() {
             val newState = initialState
-                .performPlay(Card.fromString('Q', 'C'))
+                .performPlay("QC".asCard())
 
-            assertNull(validator.canPlay(newState, Card.fromString('Q', 'D')))
+            assertNull(validator.canPlay(newState, "QD".asCard()))
         }
 
         @Test
         fun `should allow playing off color`() {
             val newState = initialState
-                .performPlay(Card.fromString('9', 'H'))
+                .performPlay("9H".asCard())
 
-            assertNotNull(validator.canPlay(newState, Card.fromString('Q', 'D')))
+            assertNotNull(validator.canPlay(newState, "QD".asCard()))
         }
     }
 
