@@ -50,7 +50,7 @@ internal abstract class TestStateHolder(
         protected val initialState = State.Bidding(
             order = RepeatableOrder.of(
                 order = playerCards.map { (player, cardsString) -> Bidder(cardsString, player) }
-            ).replaceCurrentAndNext { it.copy(lastAction = BiddingAction.Bid(100)) },
+            ).replaceCurrentAndNext { it.copy(lastAction = Action.Bidding.Bid(100)) },
             talon = this.talon,
             ranking = this.players.associateWith { 0 }
         )

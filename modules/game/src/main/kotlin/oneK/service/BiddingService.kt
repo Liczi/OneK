@@ -1,7 +1,7 @@
 package oneK.service
 
+import oneK.state.Action
 import oneK.state.Bidder
-import oneK.state.BiddingAction
 import oneK.state.State
 
 interface BiddingService {
@@ -12,18 +12,18 @@ interface BiddingService {
 internal object DefaultBiddingServiceImpl : BiddingService {
 
     override fun State.Bidding.performBid(bid: Int): State.Bidding = endTurnWith(
-        BiddingAction.Bid(bid))
+        Action.Bidding.Bid(bid))
 
     override fun State.Bidding.performFold(): State.Bidding = endTurnWith(
-        BiddingAction.Fold)
+        Action.Bidding.Fold)
 
-    private fun State.Bidding.endTurnWith(action: BiddingAction): State.Bidding =
+    private fun State.Bidding.endTurnWith(action: Action.Bidding): State.Bidding =
         this.copy(
             order = this.order.replaceCurrentAndNextUntil(bidderWithAction(action)) { it.lastAction.isNotFold() }
         )
 
-    private fun State.Bidding.bidderWithAction(action: BiddingAction): Bidder =
+    private fun State.Bidding.bidderWithAction(action: Action.Bidding): Bidder =
         this.order.current().copy(lastAction = action)
 
-    private fun BiddingAction?.isNotFold() = (this is BiddingAction.Fold).not()
+    private fun Action.Bidding?.isNotFold() = (this is Action.Bidding.Fold).not()
 }

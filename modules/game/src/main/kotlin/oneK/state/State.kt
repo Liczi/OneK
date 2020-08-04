@@ -34,14 +34,14 @@ sealed class State {
     ) : State()
 }
 
-data class Bidder(val cards: Set<Card>, val player: Player, val lastAction: BiddingAction? = null)
+data class Bidder(val cards: Set<Card>, val player: Player, val lastAction: Action.Bidding? = null)
 
 data class Reviewer(val cards: Set<Card>, val player: Player)
 
 data class Strifer(
     val cards: Set<Card>,
     val player: Player,
-    val lastAction: StrifeAction? = null,
+    val lastAction: Action.Strife? = null,
     val points: Int = 0,
     val isConstrained: Boolean = false
 )

@@ -6,15 +6,15 @@ import oneK.variant.Variant
 internal fun State.Bidding.isAllCardsPlayed(): Boolean =
     this.order
         .map(Bidder::lastAction)
-        .filterNot { it is BiddingAction.Fold }
+        .filterNot { it is Action.Bidding.Fold }
         .size <= 1
 
 internal fun State.Bidding.currentBid(): Int =
     this.order
         .asSequence()
         .map(Bidder::lastAction)
-        .filterIsInstance<BiddingAction.Bid>()
-        .map(BiddingAction.Bid::amount)
+        .filterIsInstance<Action.Bidding.Bid>()
+        .map(Action.Bidding.Bid::amount)
         .max() ?: 0
 
 internal fun isValidBid(

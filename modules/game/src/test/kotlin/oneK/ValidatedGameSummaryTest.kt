@@ -1,6 +1,6 @@
 package oneK
 
-import oneK.state.BiddingAction
+import oneK.state.Action
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.TwoPlayer
 import org.assertj.core.api.Assertions.assertThat
@@ -17,7 +17,7 @@ internal class ValidatedGameSummaryTest : TestStateHolder.Summary(TwoPlayer()) {
         val currentBidder = newState.order.current()
         assertThat(currentBidder.player)
             .isEqualTo(players[1])
-        assertThat((newState.order[0].lastAction as BiddingAction.Bid).amount)
+        assertThat((newState.order[0].lastAction as Action.Bidding.Bid).amount)
             .isEqualTo(100)
         assertNull(currentBidder.lastAction)
     }

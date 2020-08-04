@@ -1,8 +1,8 @@
 package oneK.service
 
 import oneK.deck.Card
+import oneK.state.Action
 import oneK.state.State
-import oneK.state.StrifeAction
 
 interface StrifeService {
     fun State.Strife.performPlay(card: Card): State.Strife
@@ -16,7 +16,7 @@ internal object DefaultStrifeServiceImpl : StrifeService {
             order = this.order.replaceCurrentAndNext {
                 it.copy(
                     cards = it.cards - card,
-                    lastAction = StrifeAction.Play(card)
+                    lastAction = Action.Strife.Play(card)
                 )
             }
         )
@@ -27,7 +27,7 @@ internal object DefaultStrifeServiceImpl : StrifeService {
             order = this.order.replaceCurrentAndNext {
                 it.copy(
                     cards = it.cards - card,
-                    lastAction = StrifeAction.Triumph(card),
+                    lastAction = Action.Strife.Triumph(card),
                     points = it.points + card.color.value
                 )
             },

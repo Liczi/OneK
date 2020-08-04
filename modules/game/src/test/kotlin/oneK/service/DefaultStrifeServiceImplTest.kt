@@ -3,7 +3,7 @@ package oneK.service
 import oneK.asCard
 import oneK.service.DefaultStrifeServiceImpl.performPlay
 import oneK.service.DefaultStrifeServiceImpl.performTriumph
-import oneK.state.StrifeAction
+import oneK.state.Action
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.TwoPlayer
 import org.assertj.core.api.Assertions.assertThat
@@ -22,7 +22,7 @@ internal class DefaultStrifeServiceImplTest {
 
             val previous = newState.order.previous().current()
             assertThat(previous.cards).doesNotContain(card)
-            assertThat((previous.lastAction as StrifeAction.Play).card).isEqualTo(card)
+            assertThat((previous.lastAction as Action.Strife.Play).card).isEqualTo(card)
         }
 
         @Test
@@ -32,7 +32,7 @@ internal class DefaultStrifeServiceImplTest {
 
             val previous = newState.order.previous().current()
             assertThat(previous.cards).doesNotContain(card)
-            assertThat((previous.lastAction as StrifeAction.Triumph).card).isEqualTo(card)
+            assertThat((previous.lastAction as Action.Strife.Triumph).card).isEqualTo(card)
             assertThat(previous.points).isEqualTo(card.color.value)
         }
     }
