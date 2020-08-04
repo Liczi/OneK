@@ -7,15 +7,13 @@ import oneK.state.isValidStep
 import oneK.variant.Variant
 
 interface BiddingValidator {
-    fun canBid(state: State.Bidding, bid: Int): State.Bidding?
+    fun canBid(state: State.Bidding, bid: Int): Boolean
 }
 
-internal class BiddingStateValidatorImpl(private val variant: Variant) : BiddingValidator, StateValidator() {
-    override fun canBid(state: State.Bidding, bid: Int): State.Bidding? {
-        return state.ensureValid {
-            val currentBid = state.currentBid()
-            isValidBid(bid, currentBid, state.order.current().cards, variant)
-                    && bid.isValidStep(currentBid, variant)
-        }
+internal class BiddingStateValidatorImpl(private val variant: Variant) : BiddingValidator {
+    override fun canBid(state: State.Bidding, bid: Int): Boolean {
+        val currentBid = state.currentBid()
+        return isValidBid(bid, currentBid, state.order.current().cards, variant)
+                && bid.isValidStep(currentBid, variant)
     }
 }

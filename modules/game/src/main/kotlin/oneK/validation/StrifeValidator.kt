@@ -8,26 +8,20 @@ import oneK.state.firstCard
 import oneK.variant.Variant
 
 interface StrifeValidator {
-    fun canPlay(state: State.Strife, card: Card): State.Strife?
-    fun canTriumph(state: State.Strife, card: Card): State.Strife?
+    fun canPlay(state: State.Strife, card: Card): Boolean
+    fun canTriumph(state: State.Strife, card: Card): Boolean
 }
 
-class StrifeStateValidatorImpl(private val variant: Variant) : StrifeValidator, StateValidator() {
-    override fun canPlay(state: State.Strife, card: Card): State.Strife? {
-        return state.ensureValid {
-            state.currentPlayerHas(card)
-                    && state.firstCard().let { state.boardIsEmptyOrColorNotPresent(it) || hasMatchingColor(it, card) }
-        }
-    }
+class StrifeStateValidatorImpl(private val variant: Variant) : StrifeValidator {
+    override fun canPlay(state: State.Strife, card: Card): Boolean =
+        state.currentPlayerHas(card)
+                && state.firstCard().let { state.boardIsEmptyOrColorNotPresent(it) || hasMatchingColor(it, card) }
 
-    override fun canTriumph(state: State.Strife, card: Card): State.Strife? {
-        return state.ensureValid {
-            state.currentPlayerHas(card)
-                    && card.figure == Figure.QUEEN
-                    && state.currentPlayerHas(Card(Figure.KING, card.color))
-                    && state.currentCardsUnordered().isEmpty()
-        }
-    }
+    override fun canTriumph(state: State.Strife, card: Card): Boolean =
+        card.figure == Figure.QUEEN
+                && state.currentPlayerHas(Card(Figure.KING, card.color))
+                && state.currentPlayerHas(card)
+                && state.currentCardsUnordered().isEmpty()
 
     private fun State.Strife.boardIsEmptyOrColorNotPresent(firstCard: Card?) =
         firstCard?.let { first -> !this.order.current().cards.any { it.color == first.color } } ?: true

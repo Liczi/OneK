@@ -4,13 +4,10 @@ import oneK.state.State
 import oneK.variant.Variant
 
 interface SummaryValidator {
-    fun canStart(state: State.Summary): State.Summary?
+    fun canStart(state: State.Summary): Boolean
 }
 
-class SummaryStateValidatorImpl(private val variant: Variant) : SummaryValidator, StateValidator() {
-    override fun canStart(state: State.Summary): State.Summary? {
-        return state.ensureValid {
-            state.ranking.none { it.value >= variant.getGameGoal() }
-        }
-    }
+class SummaryStateValidatorImpl(private val variant: Variant) : SummaryValidator {
+
+    override fun canStart(state: State.Summary): Boolean = state.ranking.none { it.value >= variant.getGameGoal() }
 }

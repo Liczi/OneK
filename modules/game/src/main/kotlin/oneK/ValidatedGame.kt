@@ -26,57 +26,57 @@ abstract class ValidatedGame(
     protected abstract fun doTriumph(state: State.Strife, card: Card): State.Strife
 
     fun start(state: State.Summary): State.Bidding =
-        validator.canStart(state)
-            ?.let { doStart(it) }
-            ?: illegalState(state)
+        if (validator.canStart(state))
+            doStart(state)
+        else illegalState(state)
 
     fun bid(state: State.Bidding, bid: Int): State.Bidding =
-        validator.canBid(state, bid)
-            ?.let { doBid(it, bid) }
-            ?: illegalState(state, "bid" to bid)
+        if (validator.canBid(state, bid))
+            doBid(state, bid)
+        else illegalState(state, "bid" to bid)
 
     fun fold(state: State.Bidding): FoldingEffect = doFold(state)
 
     fun pickTalon(state: State.Review, talonIndex: Int): State.Review =
-        validator.canPickTalon(state, talonIndex)
-            ?.let { doPickTalon(it, talonIndex) }
-            ?: illegalState(state, "talonIndex" to talonIndex)
+        if (validator.canPickTalon(state, talonIndex))
+            doPickTalon(state, talonIndex)
+        else illegalState(state, "talonIndex" to talonIndex)
 
     fun distributeCards(state: State.Review, toGive: Map<Player, Card>): State.Review =
-        validator.canDistributeCards(state, toGive)
-            ?.let { doDistributeCards(it, toGive) }
-            ?: illegalState(state, toGive)
+        if (validator.canDistributeCards(state, toGive))
+            doDistributeCards(state, toGive)
+        else illegalState(state, toGive)
 
     fun activateBomb(state: State.Review): State.Summary =
-        validator.canActivateBomb(state)
-            ?.let { doActivateBomb(it) }
-            ?: illegalState(state)
+        if (validator.canActivateBomb(state))
+            doActivateBomb(state)
+        else illegalState(state)
 
 
     fun restart(state: State.Review): State.Bidding =
-        validator.canRestart(state)
-            ?.let { doRestart(it) }
-            ?: illegalState(state)
+        if (validator.canRestart(state))
+            doRestart(state)
+        else illegalState(state)
 
     fun changeBid(state: State.Review, newBid: Int): State.Review =
-        validator.canChangeBid(state, newBid)
-            ?.let { doChangeBid(it, newBid) }
-            ?: illegalState(state, "newBid" to newBid)
+        if (validator.canChangeBid(state, newBid))
+            doChangeBid(state, newBid)
+        else illegalState(state, "newBid" to newBid)
 
     fun confirm(state: State.Review): State.Strife =
-        validator.canConfirm(state)
-            ?.let { doConfirm(it) }
-            ?: illegalState(state)
+        if (validator.canConfirm(state))
+            doConfirm(state)
+        else illegalState(state)
 
     fun play(state: State.Strife, card: Card): PlayingEffect =
-        validator.canPlay(state, card)
-            ?.let { doPlay(it, card) }
-            ?: illegalState(state, "card" to card)
+        if (validator.canPlay(state, card))
+            doPlay(state, card)
+        else illegalState(state, "card" to card)
 
     fun triumph(state: State.Strife, card: Card): State.Strife =
-        validator.canTriumph(state, card)
-            ?.let { doTriumph(it, card) }
-            ?: illegalState(state, "card" to card)
+        if (validator.canTriumph(state, card))
+            doTriumph(state, card)
+        else illegalState(state, "card" to card)
 
     private fun <T> illegalState(state: State, vararg arguments: Any): T {
         throw IllegalStateException("Illegal action on oneK.state: $state, arguments: ${arguments.joinToString()}")
