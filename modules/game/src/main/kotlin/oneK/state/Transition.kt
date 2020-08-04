@@ -1,6 +1,8 @@
 package oneK.state
 
+import oneK.player.Player
 import oneK.rotate
+import java.lang.Integer.max
 
 internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransition {
     return FoldingEffect.ReviewTransition(
@@ -15,7 +17,7 @@ internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransi
 
 internal fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
     val newRanking = this.rankingAccountForConstraint()
-        .map { (player, points) -> Pair(player, points.roundUpFromFive() + this.ranking.getOrDefault(player, 0)) }
+        .map { (player, points) -> Pair(player, addPointsWithMinZero(points, player)) }
         .toMap()
     return PlayingEffect.SummaryTransition(
         State.Summary(
@@ -24,5 +26,8 @@ internal fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTrans
         )
     )
 }
+
+private fun State.Strife.addPointsWithMinZero(points: Int, player: Player) =
+    max(points.roundUpFromFive() + this.ranking.getOrDefault(player, 0), 0)
 
 private fun Int.roundUpFromFive(): Int = (if (this % 10 >= 5) (this + 5) else this) / 10 * 10

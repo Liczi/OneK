@@ -21,7 +21,8 @@ internal class SummaryValidatorImplTest {
 
         @Test
         fun `should disallow start gor a finished game`() {
-            val ranking = initialState.ranking.mapValues { it.value + this.players.indexOf(it.key) * 1000 }
+            val ranking = initialState.ranking
+                .mapValues { it.value + this.players.indexOf(it.key) * variant.getGameGoal() }
             assertFalse(validator.canStart(State.Summary(initialState.order, ranking)))
         }
     }

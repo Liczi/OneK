@@ -3,13 +3,11 @@ package oneK.variant
 import oneK.deck.Card
 import oneK.hasTriumph
 
-private const val MAXIMUM_BID = 300
-
 private abstract class DefaultVariant : Variant {
     override var getGameGoal = { 1000 }
-    override var getUpperBidThreshold = { MAXIMUM_BID }
+    override var getUpperBidThreshold = { 300 }
     override var getInitialBid = { 100 }
-    override var getMaxBidStep = { 10 }
+    override var getBidStep = { 10 }
     override var canBid: (Set<Card>, Int) -> Boolean = { cards, bid ->
         bid <= 120 || cards.hasTriumph()
     }

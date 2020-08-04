@@ -4,12 +4,12 @@ import oneK.deck.Card
 import oneK.player.Player
 import oneK.service.*
 import oneK.state.*
-import oneK.validation.DefaultGameValidator
-import oneK.validation.GameValidator
+import oneK.validation.DefaultValidator
+import oneK.validation.Validator
 import oneK.variant.Variant
 
 private class ValidatedGameImpl(
-    validator: GameValidator,
+    validator: Validator,
     private val variant: Variant,
     private val summaryService: SummaryService,
     private val biddingService: BiddingService,
@@ -90,7 +90,7 @@ private class ValidatedGameImpl(
 object GameFactory {
     fun default(variant: Variant): ValidatedGame {
         return ValidatedGameImpl(
-            DefaultGameValidator(variant),
+            DefaultValidator(variant),
             variant,
             DefaultSummaryServiceImpl,
             DefaultBiddingServiceImpl,

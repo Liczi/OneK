@@ -27,7 +27,7 @@ internal class ValidatedGameSummaryTest : TestStateHolder.Summary(TwoPlayer()) {
         assertThrows<IllegalStateException> {
             game.start(
                 initialState.copy(
-                    ranking = initialState.ranking + mapOf(players[1] to 1000)
+                    ranking = initialState.ranking + mapOf(players[1] to variant.getGameGoal())
                 )
             )
         }

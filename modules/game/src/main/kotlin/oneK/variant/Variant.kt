@@ -8,7 +8,7 @@ interface Variant {
     var getGameGoal: () -> Int
     var getUpperBidThreshold: () -> Int
     var getInitialBid: () -> Int
-    var getMaxBidStep: () -> Int
+    var getBidStep: () -> Int
     var canBid: (Set<Card>, Int) -> Boolean
     var getLimitedScoringThreshold: () -> Int
     var getBombPoints: () -> Int
@@ -39,8 +39,8 @@ interface Variant {
 //            return this
 //        }
 //
-//        fun maxBidStep(step: Int): Builder {
-//            this.variant.getMaxBidStep = { step }
+//        fun bidStep(step: Int): Builder {
+//            this.variant.getBidStep = { step }
 //            return this
 //        }
 //

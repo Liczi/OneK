@@ -5,7 +5,7 @@ import oneK.player.Player
 import oneK.state.State
 import oneK.variant.Variant
 
-interface GameValidator {
+interface Validator {
     fun canStart(state: State.Summary): Boolean
 
     fun canBid(state: State.Bidding, bid: Int): Boolean
@@ -21,8 +21,8 @@ interface GameValidator {
     fun canTriumph(state: State.Strife, card: Card): Boolean
 }
 
-class DefaultGameValidator(variant: Variant) :
-    GameValidator,
+class DefaultValidator(variant: Variant) :
+    Validator,
     SummaryValidator by SummaryStateValidatorImpl(variant),
     BiddingValidator by BiddingStateValidatorImpl(variant),
     ReviewValidator by ReviewStateValidatorImpl(variant),

@@ -22,8 +22,7 @@ internal class ReviewStateValidatorImpl(private val variant: Variant) : ReviewVa
 
     override fun canPickTalon(state: State.Review, talonIndex: Int): Boolean =
         state.talon is Choice.NotTaken
-                && talonIndex < state.talon.size
-                && talonIndex >= 0
+                && talonIndex in state.talon.indices
 
     override fun canActivateBomb(state: State.Review): Boolean {
         TODO("Not yet implemented")

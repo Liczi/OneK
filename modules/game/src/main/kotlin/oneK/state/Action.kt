@@ -17,7 +17,7 @@ sealed class Action {
     sealed class Review : Action() {
         data class Pick(val talonInd: Int) : Review()
         data class Change(val newBid: Int) : Review()
-        data class Distribute(val toGive: Map<Player, Card>)
+        data class Distribute(val toGive: Map<Player, Card>): Review()
         object Restart : Review()
         object Confirm : Review()
     }

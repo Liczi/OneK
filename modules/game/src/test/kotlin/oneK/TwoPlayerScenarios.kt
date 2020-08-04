@@ -37,7 +37,7 @@ internal class TwoPlayerScenarios : TestStateHolder.Bidding(
 
     @Test
     fun `first player should lose with second talon`() {
-        val summary = game.bid(initialState, 110)
+        val summary = game.bid(initialState.copy(ranking = mapOf(players[0] to 120, players[1] to 0)), 110)
             .let { game.bid(it, 120) }
             .let { (game.fold(it) as FoldingEffect.ReviewTransition).state }
             .let { game.pickTalon(it, 1) }
@@ -53,12 +53,12 @@ internal class TwoPlayerScenarios : TestStateHolder.Bidding(
             .let { (game.play(it, "AC".asCard()) as PlayingEffect.SummaryTransition).state }
 
         assertThat(summary.ranking)
-            .isEqualTo(mapOf(players[0] to -120, players[1] to 120))
+            .isEqualTo(mapOf(players[0] to 0, players[1] to 120))
     }
 
     @Test
     fun `second player should lose with first talon`() {
-        val summary = game.bid(initialState, 110)
+        val summary = game.bid(initialState.copy(ranking = mapOf(players[0] to 0, players[1] to 100)), 110)
             .let { (game.fold(it) as FoldingEffect.ReviewTransition).state }
             .let { game.pickTalon(it, 0) }
             .let { game.distributeCards(it, mapOf(players[0] to "QH".asCard())) }
@@ -73,7 +73,7 @@ internal class TwoPlayerScenarios : TestStateHolder.Bidding(
             .let { (game.play(it, "AS".asCard()) as PlayingEffect.SummaryTransition).state }
 
         assertThat(summary.ranking)
-            .isEqualTo(mapOf(players[0] to 0, players[1] to -110))
+            .isEqualTo(mapOf(players[0] to 0, players[1] to 0))
     }
 
     @Test

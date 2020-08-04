@@ -5,10 +5,10 @@ import oneK.player.Player
 import oneK.state.FoldingEffect
 import oneK.state.PlayingEffect
 import oneK.state.State
-import oneK.validation.GameValidator
+import oneK.validation.Validator
 
 abstract class ValidatedGame(
-    private val validator: GameValidator
+    private val validator: Validator
 ) {
     protected abstract fun doStart(state: State.Summary): State.Bidding
 

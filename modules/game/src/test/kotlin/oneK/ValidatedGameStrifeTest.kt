@@ -18,7 +18,7 @@ internal class ValidatedGameStrifeTest {
 
         @Test
         fun `should transition to summary with valid state`() {
-            val state = initialState
+            val state = initialState.copy(ranking = mapOf(players[0] to 200, players[1] to 0))
                 .let { (game.play(it, "JS".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "JD".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "JC".asCard()) as PlayingEffect.NoTransition).state }
@@ -28,7 +28,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to -100, players[1] to 0)
+                        ranking = mapOf(players[0] to 100, players[1] to 0)
                     )
                 )
         }
@@ -39,7 +39,7 @@ internal class ValidatedGameStrifeTest {
 
         @Test
         fun `should switch players correctly`() {
-            val state = initialState
+            val state = initialState.copy(ranking = mapOf(players[0] to 110, players[1] to 0))
                 .let { (game.play(it, "KH".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "AH".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "AC".asCard()) as PlayingEffect.NoTransition).state }
@@ -51,7 +51,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to -100, players[1] to 30)
+                        ranking = mapOf(players[0] to 10, players[1] to 30)
                     )
                 )
         }
@@ -77,7 +77,7 @@ internal class ValidatedGameStrifeTest {
 
         @Test
         fun `should not win with off color card`() {
-            val state = initialState
+            val state = initialState.copy(ranking = mapOf(players[0] to 90, players[1] to 0))
                 .let { (game.play(it, "KH".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "AH".asCard()) as PlayingEffect.NoTransition).state }
                 .let { (game.play(it, "9C".asCard()) as PlayingEffect.NoTransition).state }
@@ -89,7 +89,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
-                        ranking = mapOf(players[0] to -100, players[1] to 30)
+                        ranking = mapOf(players[0] to 0, players[1] to 30)
                     )
                 )
         }

@@ -30,4 +30,4 @@ internal fun isValidBid(
 }
 
 private fun Int.isMultiplicityOfTen() = this % 10 == 0
-internal fun Int.isValidStep(currentBid: Int, variant: Variant) = this - currentBid <= variant.getMaxBidStep()
+internal fun Int.isValidStep(currentBid: Int, variant: Variant) = this - currentBid <= variant.getBidStep()
