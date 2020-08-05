@@ -5,3 +5,5 @@ TODO on the level of server, check if the game is memory effective - if not incl
 
 TODO add objects being default validators for specific variants e.g. TwoPlayerSummaryValidator - decreases object creation per each game obj creation, or use cached game instances
 
+TODO add random agent for test purposes - with logging, check if acheiving game goal is feasible - maybe lowe the goal
+TODO update readme
