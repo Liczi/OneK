@@ -15,6 +15,14 @@ class ActionGenerator(
     private val variant: Variant
 ) {
 
+    fun generate(state: State) =
+        when (state) {
+            is State.Bidding -> generate(state)
+            is State.Review -> generate(state)
+            is State.Strife -> generate(state)
+            is State.Summary -> generate(state)
+        }
+
     fun generate(state: State.Summary): List<Action.Summary> =
         if (validator.canStart(state)) listOf(Action.Summary.Start)
         else emptyList()

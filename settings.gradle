@@ -1,2 +1,2 @@
 rootProject.name = 'OneK'
-include 'modules:game'
+include 'modules:game', 'modules:server'
