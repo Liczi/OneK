@@ -4,11 +4,10 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "1.4.0"
     id "com.github.johnrengelman.shadow" version "6.0.0"
     id "application"
-    id "com.google.protobuf" version "0.8.12"
+    id "com.google.protobuf" version "0.8.13"
 }
 
 configurations {
-    // for dependencies that are needed for development only
     developmentOnly
 }
 
@@ -16,6 +15,8 @@ dependencies {
     kapt(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     kapt("io.micronaut:micronaut-inject-java")
     kapt("io.micronaut:micronaut-validation")
+
+    implementation(project(":modules:game"))
     implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
@@ -25,6 +26,7 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.grpc:micronaut-grpc-runtime")
     implementation("javax.annotation:javax.annotation-api")
+
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
@@ -37,9 +39,8 @@ dependencies {
 
 test.classpath += configurations.developmentOnly
 
-mainClassName = "com.example.ApplicationKt"
+mainClassName = "oneK.ApplicationKt"
 
-// use JUnit 5 platform
 test {
     useJUnitPlatform()
 }
@@ -59,18 +60,20 @@ compileKotlin {
         javaParameters = true
     }
 }
+
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
         javaParameters = true
     }
 }
+
 kapt {
     arguments {
         arg("micronaut.processing.incremental", true)
-        arg("micronaut.processing.annotations", "com.example.*")
-        arg("micronaut.processing.group", "com.example")
-        arg("micronaut.processing.module", "demo")
+        arg("micronaut.processing.annotations", "oneK.*")
+        arg("micronaut.processing.group", "oneK")
+        arg("micronaut.processing.module", "server")
     }
 }
 
@@ -96,6 +99,7 @@ sourceSets {
             srcDirs 'build/generated/source/proto/main/grpc'
             srcDirs 'build/generated/source/proto/main/java'
         }
+        resources.srcDirs += 'src/main/proto'
     }
 }
 

@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+import "common.proto";
+import "action.proto";
+
+option java_multiple_files = true;
+option java_package = "oneK";
+
+message State {
+  oneof state {
+    BiddingState bidding = 1;
+    ReviewState review = 2;
+    StrifeState strife = 3;
+    SummaryState summary = 4;
+  }
+}
+
+message BiddingState {
+  repeated Bidder order = 1;
+  int32 current = 2;
+  repeated Card talon = 3; //TODO split appropriately (based on variant)
+  map<string, int32> ranking = 4; // TODO use uuid or name
+}
+
+message CardHolder {
+  Player player = 1;
+  repeated Card cards = 2;
+}
+
+message Bidder {
+  CardHolder holder = 1;
+  BiddingActionPayload lastAction = 2;
+}
+
+message ReviewState {
+  repeated CardHolder order = 1;
+  int32 current = 2;
+  int32 initialBid = 3;
+  repeated Card talon = 4; //TODO split appropriately (based on variant)
+  bool isTaken = 5;
+  map<string, int32> ranking = 6; // TODO use uuid or name
+  ToGive toGive = 7;
+  int32 changedBid = 8; // TODO optional
+}
+
+message StrifeState {
+  repeated Strifer order = 1;
+  int32 current = 2;
+  int32 bid = 3;
+  map<string, int32> ranking = 4; // TODO use uuid or name
+  string currentTriumph = 5;
+}
+
+message Strifer {
+  CardHolder holder = 1;
+  StrifeActionPayload lastAction = 2;
+  int32 points = 3;
+  bool isConstrained = 4;
+}
+
+message SummaryState {
+  repeated Player order = 1;
+  int32 current = 2;
+  map<string, int32> ranking = 3; // TODO use uuid or name
+}

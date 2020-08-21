@@ -1,5 +1,5 @@
 applicationType: grpc
-defaultPackage: com.example
+defaultPackage: oneK
 testFramework: junit
 sourceLanguage: kotlin
 buildTool: gradle

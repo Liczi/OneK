@@ -34,10 +34,10 @@ internal fun State.Strife.getWinner(): Strifer {
     val firstCard = this.firstCard()
     return this.order
         .filter { it.lastAction?.card?.color == this.currentTriumph }
-        .maxBy { lastCardValue(it) }
+        .maxByOrNull { lastCardValue(it) }
         ?: this.order
             .filter { it.lastAction?.card?.color == firstCard?.color }
-            .maxBy { lastCardValue(it) }
+            .maxByOrNull { lastCardValue(it) }
         ?: error("Unable to determine winner")
 }
 

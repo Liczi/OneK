@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+import "action.proto";
+import "state.proto";
+
+option java_multiple_files = true;
+option java_package = "oneK";
+option java_outer_classname = "Server";
+option objc_class_prefix = "ONEK";
+
+package oneK;
+
+service GameService {
+  rpc perform(Action) returns (State);
+}
