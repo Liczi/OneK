@@ -1,4 +1,5 @@
-package com.example
+package oneK.server
+
 import io.micronaut.runtime.EmbeddedApplication
 import io.micronaut.test.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
@@ -6,7 +7,7 @@ import org.junit.jupiter.api.Test
 import javax.inject.Inject
 
 @MicronautTest
-class DemoTest {
+class ApplicationTest {
 
     @Inject
     lateinit var application: EmbeddedApplication<*>

@@ -1,7 +1,7 @@
 package oneK.state
 
 class RepeatableOrder<T> private constructor(private val order: List<T>, private val currentInd: Int = 0) :
-    List<T> by order {
+        List<T> by order {
 
     private val lastInd = order.size - 1
 
@@ -57,22 +57,22 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
     fun current(): T = order[currentInd]
 
     fun <R> map(transform: (T) -> R): RepeatableOrder<R> =
-        this.copy(
-            order = this.order.map(transform),
-            currentInd = this.currentInd
-        )
+            this.copy(
+                    order = this.order.map(transform),
+                    currentInd = this.currentInd
+            )
 
     fun mapNotCurrent(transform: (T) -> T): RepeatableOrder<T> =
-        this.copy(
-            order = this.order.mapIndexed { index, elem -> if (index != currentInd) transform(elem) else elem },
-            currentInd = this.currentInd
-        )
+            this.copy(
+                    order = this.order.mapIndexed { index, elem -> if (index != currentInd) transform(elem) else elem },
+                    currentInd = this.currentInd
+            )
 
     fun <R> zip(iterable: Iterable<R>): RepeatableOrder<Pair<T, R>> =
-        this.copy(
-            order = this.order.zip(iterable),
-            currentInd = this.currentInd
-        )
+            this.copy(
+                    order = this.order.zip(iterable),
+                    currentInd = this.currentInd
+            )
 
     fun firstOrNull(predicate: (T) -> Boolean): T? {
         var currentIndex = this.currentInd
@@ -86,19 +86,19 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
     }
 
     fun withCurrent(predicate: (T) -> Boolean): RepeatableOrder<T> =
-        this.copy(
-            order = this.order,
-            currentInd = this.indexOfFirst(predicate)
-        )
+            this.copy(
+                    order = this.order,
+                    currentInd = this.indexOfFirst(predicate)
+            )
 
     private fun <R> copy(order: List<R>, currentInd: Int = this.currentInd): RepeatableOrder<R> =
-        RepeatableOrder(
-            order = order,
-            currentInd = currentInd
-        )
+            RepeatableOrder(
+                    order = order,
+                    currentInd = currentInd
+            )
 
     private fun List<T>.replaceCurrent(newCurrent: T) =
-        this.mapIndexed { index, elem -> if (index == currentInd) newCurrent else elem }
+            this.mapIndexed { index, elem -> if (index == currentInd) newCurrent else elem }
 
     private fun nextIndex(currentInd: Int): Int = if (currentInd < lastInd) currentInd + 1 else 0
 
@@ -106,16 +106,20 @@ class RepeatableOrder<T> private constructor(private val order: List<T>, private
     @OptIn(ExperimentalStdlibApi::class)
     private fun nextUntil(condition: (T) -> Boolean): Int {
         return order.indices
-            .scan(this.currentInd) { acc, _ -> nextIndex(acc) }
-            .drop(1)
-            .map { Pair(it, this.order[it]) }
-            .first { condition(it.second) }
-            .first
+                .scan(this.currentInd) { acc, _ -> nextIndex(acc) }
+                .drop(1)
+                .map { Pair(it, this.order[it]) }
+                .first { condition(it.second) }
+                .first
     }
 
     companion object {
         fun <T> of(order: List<T>): RepeatableOrder<T> {
             return RepeatableOrder(order)
+        }
+
+        fun <T> of(order: List<T>, index: Int): RepeatableOrder<T> {
+            return RepeatableOrder(order, index)
         }
     }
 }

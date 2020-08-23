@@ -67,7 +67,7 @@ class ActionGenerator(
         return generatePlayerToCardMappings(others, cards)
             .map { Action.Review.Distribute(it) }
             .appendRestartIfPossible(state)
-        //                TODO not validating here - do in testing
+        // TODO PERFORMANCE: not validating here - do in testing
     }
 
     private fun generatePlayerToCardMappings(

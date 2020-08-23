@@ -71,8 +71,8 @@ compileTestKotlin {
 kapt {
     arguments {
         arg("micronaut.processing.incremental", true)
-        arg("micronaut.processing.annotations", "oneK.*")
-        arg("micronaut.processing.group", "oneK")
+        arg("micronaut.processing.annotations", "oneK.server.*")
+        arg("micronaut.processing.group", "oneK.server")
         arg("micronaut.processing.module", "server")
     }
 }
@@ -86,9 +86,9 @@ tasks.withType(JavaExec) {
     jvmArgs('-XX:TieredStopAtLevel=1', '-Dcom.sun.management.jmxremote')
     if (gradle.startParameter.continuous) {
         systemProperties(
-            'micronaut.io.watch.restart':'true',
-            'micronaut.io.watch.enabled':'true',
-            "micronaut.io.watch.paths":"src/main"
+                'micronaut.io.watch.restart': 'true',
+                'micronaut.io.watch.enabled': 'true',
+                "micronaut.io.watch.paths": "src/main"
         )
     }
 }

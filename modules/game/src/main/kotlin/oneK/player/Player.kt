@@ -1,10 +1,9 @@
 package oneK.player
 
 import java.io.Serializable
-import java.util.*
+import java.util.UUID
 
-class Player(val name: String) : Serializable {
-    private val uuid = UUID.randomUUID()
+class Player(val name: String, val uuid: UUID = UUID.randomUUID()) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (other !is Player) return false
