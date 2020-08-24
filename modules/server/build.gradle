@@ -31,10 +31,13 @@ dependencies {
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     kaptTest(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     kaptTest("io.micronaut:micronaut-inject-java")
+
+    testImplementation(project(":modules:game").sourceSets.test.output)
     testImplementation(enforcedPlatform("io.micronaut:micronaut-bom:$micronautVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation "org.assertj:assertj-core:3.11.1"
 }
 
 test.classpath += configurations.developmentOnly

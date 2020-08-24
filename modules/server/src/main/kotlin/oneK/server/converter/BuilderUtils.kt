@@ -17,5 +17,5 @@ internal fun <T : MessageOrBuilder, R> T.setIfNotNull(nullable: R?, setFunction:
     }
 
 internal fun <T : MessageOrBuilder> T.setIf(condition: Boolean, setFunction: (T) -> T): T =
-    if (condition) this
-    else setFunction(this)
+    if (condition) setFunction(this)
+    else this

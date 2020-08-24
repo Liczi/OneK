@@ -9,17 +9,22 @@ import oneK.variant.getVariantFor
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    val variant = getVariantFor(2)
+    randomPlayout()
+}
+
+fun randomPlayout(playersCount: Int = 2, stateInterceptor: (State) -> Unit = {}) {
+    val variant = getVariantFor(playersCount)
     val game = GameFactory.default(variant)
     val generator = ActionGenerator(game.validator, variant)
 
-    val players = arrayListOf("Zbyszek", "Zdzichu").map { Player(it) }
+    val players = (1..playersCount).map { Player("Player$it") }
 
     var turn = 0
     var state: State = State.Summary(RepeatableOrder.of(players))
     var actions: List<Action> = generator.generate(state)
     val timeMs = measureTimeMillis {
         while (actions.isNotEmpty()) {
+            stateInterceptor(state)
             val action = actions.random()
             state = game.perform(action, state)
             turn++
