@@ -6,12 +6,12 @@ from generated.server_pb2_grpc import GameServiceStub
 from generated.server_pb2 import StartPayload
 
 channel = grpc.insecure_channel('localhost:50051')
-stub = GameServiceStub(channel)
+server = GameServiceStub(channel)
 
 payload = StartPayload()
 payload.names.extend(["Zbyszek", "Mietek"])
 print(payload)
 
-response = stub.start(payload)
+response = server.start(payload)
 print(response)
-print(response.summary)
+
