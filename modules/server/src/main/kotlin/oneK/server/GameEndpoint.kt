@@ -2,10 +2,10 @@ package oneK.server
 
 import io.grpc.stub.StreamObserver
 import io.micronaut.context.annotation.Value
+import oneK.proto.Actions
 import oneK.proto.GameServiceGrpc
 import oneK.proto.PerformPayload
 import oneK.proto.StartPayload
-import oneK.proto.action.Action
 import oneK.proto.state.State
 import oneK.server.converter.toModel
 import oneK.server.converter.toProtoMessage
@@ -25,9 +25,12 @@ class GameEndpoint(
         responseObserver.onCompleted()
     }
 
-    override fun actions(request: State, responseObserver: StreamObserver<Action>) {
+    override fun actions(request: State, responseObserver: StreamObserver<Actions>) {
         val actions = gameService.generate(request.toModel())
-        actions.forEach { responseObserver.onNext(it.toProtoMessage()) }
+        val response = Actions.newBuilder()
+            .addAllActions(actions.map { it.toProtoMessage() })
+            .build()
+        responseObserver.onNext(response)
         responseObserver.onCompleted()
     }
 
