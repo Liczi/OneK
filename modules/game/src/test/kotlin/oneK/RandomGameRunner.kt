@@ -18,8 +18,8 @@ fun main() {
 
 fun randomGame(
     playersCount: Int = 2,
-    stateInterceptor: (State) -> Unit = {},
-    silent: Boolean = false
+    silent: Boolean = false,
+    stateInterceptor: (State) -> Unit = {}
 ): Pair<Int, Long> {
     val variant = getVariantFor(playersCount)
     val game = GameFactory.default(variant)
