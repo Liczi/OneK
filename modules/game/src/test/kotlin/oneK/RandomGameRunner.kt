@@ -12,8 +12,8 @@ import kotlin.system.measureNanoTime
 private const val ONE_MILLION = 1000000
 
 fun main() {
-    randomGame()
-//    multipleRandomGames(1000)
+//    randomGame()
+    multipleRandomGames(1000)
 }
 
 fun randomGame(

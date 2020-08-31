@@ -72,6 +72,7 @@ private fun State.Summary.toProtoMessage(): SummaryState =
     SummaryState.newBuilder()
         .addAllOrder(this.order.map(Player::toProtoMessage))
         .setCurrent(this.order.indexOf(this.order.current()) + 1)
+        .putAllRoundRanking(this.roundRanking.toProtoMessage())
         .putAllRanking(this.ranking.toProtoMessage())
         .build()
 

@@ -10,9 +10,10 @@ from generated.server_pb2 import StartPayload, PerformPayload
 
 channel = grpc.insecure_channel('localhost:50051')
 server = GameServiceStub(channel)
+GAMES_TO_PLAY = 1
 
 all_times, all_turns = [], []
-for _ in range(100):
+for _ in range(GAMES_TO_PLAY):
     i = 0
     now = time.time()
 

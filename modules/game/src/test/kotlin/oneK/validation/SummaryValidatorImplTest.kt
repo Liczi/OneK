@@ -4,8 +4,8 @@ import oneK.state.State
 import oneK.testsuits.TestStateHolder
 import oneK.testsuits.ThreePlayer
 import oneK.testsuits.TwoPlayer
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -20,10 +20,17 @@ internal class SummaryValidatorImplTest {
         }
 
         @Test
-        fun `should disallow start gor a finished game`() {
+        fun `should disallow start for a finished game`() {
             val ranking = initialState.ranking
                 .mapValues { it.value + this.players.indexOf(it.key) * variant.getGameGoal() }
-            assertFalse(validator.canStart(State.Summary(initialState.order, ranking)))
+            assertFalse(
+                validator.canStart(
+                    State.Summary(
+                        order = initialState.order,
+                        ranking = ranking
+                    )
+                )
+            )
         }
     }
 
@@ -36,9 +43,16 @@ internal class SummaryValidatorImplTest {
         }
 
         @Test
-        fun `should disallow start gor a finished game`() {
+        fun `should disallow start for a finished game`() {
             val ranking = initialState.ranking.mapValues { it.value + this.players.indexOf(it.key) * 500 }
-            assertFalse(validator.canStart(State.Summary(initialState.order, ranking)))
+            assertFalse(
+                validator.canStart(
+                    State.Summary(
+                        order = initialState.order,
+                        ranking = ranking
+                    )
+                )
+            )
         }
     }
 }

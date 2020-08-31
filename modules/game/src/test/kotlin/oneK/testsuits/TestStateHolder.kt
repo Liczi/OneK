@@ -40,7 +40,7 @@ abstract class TestStateHolder(
 
         protected val validator = SummaryStateValidatorImpl(variant)
         private val order = RepeatableOrder.of(this.players)
-        protected val initialState = State.Summary(order, order.associateWith { 0 })
+        protected val initialState = State.Summary(order)
     }
 
     abstract class Bidding(

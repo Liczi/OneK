@@ -30,6 +30,7 @@ sealed class State {
 
     data class Summary(
         val order: RepeatableOrder<Player>,
+        val roundRanking: Map<Player, Int> = order.associateWith { 0 },
         val ranking: Map<Player, Int> = order.associateWith { 0 }
     ) : State()
 }

@@ -37,8 +37,8 @@ message ReviewAction {
 
 message ReviewActionPayload {
   oneof payload {
-    int32 talonInd = 1;
-    int32 newBid = 2;
+    int32 talon_ind = 1;
+    int32 new_bid = 2;
     ToGivePayload distribute = 3;
   }
 }

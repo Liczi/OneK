@@ -28,6 +28,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
+                        roundRanking = mapOf(players[0] to -100, players[1] to 0),
                         ranking = mapOf(players[0] to 100, players[1] to 0)
                     )
                 )
@@ -51,6 +52,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
+                        roundRanking = mapOf(players[0] to -100, players[1] to 29),
                         ranking = mapOf(players[0] to 10, players[1] to 30)
                     )
                 )
@@ -70,6 +72,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
+                        roundRanking = mapOf(players[0] to 100, players[1] to 14),
                         ranking = mapOf(players[0] to 100, players[1] to 10)
                     )
                 )
@@ -89,6 +92,7 @@ internal class ValidatedGameStrifeTest {
                 .isEqualToComparingFieldByField(
                     State.Summary(
                         order = RepeatableOrder.of(listOf(players[1], players[0])),
+                        roundRanking = mapOf(players[0] to -100, players[1] to 29),
                         ranking = mapOf(players[0] to 0, players[1] to 30)
                     )
                 )

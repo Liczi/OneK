@@ -16,12 +16,14 @@ internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransi
 }
 
 internal fun State.Strife.transitionToSummaryState(): PlayingEffect.SummaryTransition {
-    val newRanking = this.rankingAccountForConstraint()
+    val roundResult = this.rankingAccountForConstraint()
+    val newRanking = roundResult
         .map { (player, points) -> Pair(player, addPointsWithMinZero(points, player)) }
         .toMap()
     return PlayingEffect.SummaryTransition(
         State.Summary(
             order = RepeatableOrder.of(this.order.rotate().map { it.player }),
+            roundRanking = roundResult.toMap(),
             ranking = newRanking
         )
     )

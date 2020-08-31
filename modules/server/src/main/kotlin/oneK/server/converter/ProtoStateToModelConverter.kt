@@ -90,6 +90,7 @@ private fun SummaryState.toModel(): State.Summary =
     this.orderList.map(PlayerProto::toModel).let { players ->
         State.Summary(
             order = RepeatableOrder.of(players, this.current - 1),
+            roundRanking = this.roundRankingMap.toModel(players),
             ranking = this.rankingMap.toModel(players)
         )
     }

@@ -10,7 +10,6 @@ option objc_class_prefix = "ONEK";
 
 package oneK;
 
-//TODO change to list message instead of stream
 service GameService {
   rpc perform(PerformPayload) returns (State);
   rpc actions(State) returns (Actions);
