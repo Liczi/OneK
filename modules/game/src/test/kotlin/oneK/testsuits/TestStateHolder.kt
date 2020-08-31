@@ -3,13 +3,21 @@ package oneK.testsuits
 import oneK.asCardSet
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.state.*
+import oneK.state.Action
+import oneK.state.Bidder
+import oneK.state.Choice
+import oneK.state.RepeatableOrder
+import oneK.state.Reviewer
+import oneK.state.State
+import oneK.state.Strifer
 import oneK.validation.BiddingStateValidatorImpl
+import oneK.validation.BiddingValidator
 import oneK.validation.ReviewStateValidatorImpl
+import oneK.validation.ReviewValidator
 import oneK.validation.StrifeStateValidatorImpl
 import oneK.validation.SummaryStateValidatorImpl
 
-internal abstract class TestStateHolder(
+abstract class TestStateHolder(
     cards: List<String>? = null,
     talon: List<String>? = null
 ) {
@@ -42,7 +50,7 @@ internal abstract class TestStateHolder(
     ) : TestStateHolder(cards, talon),
         TestPlayersHolder by playersHolder {
 
-        protected val validator = BiddingStateValidatorImpl(variant)
+        protected val validator: BiddingValidator = BiddingStateValidatorImpl(variant)
 
         private val playerCards = getPlayerCards(this.players)
         private val talon = getTalon(this.players)
@@ -69,7 +77,7 @@ internal abstract class TestStateHolder(
     ) : TestStateHolder(cards, talon),
         TestPlayersHolder by playersHolder {
 
-        protected val validator = ReviewStateValidatorImpl(variant)
+        protected val validator: ReviewValidator = ReviewStateValidatorImpl(variant)
         protected val initialState = State.Review(
             order = RepeatableOrder.of(
                 getPlayerCards(this.players).map { (player, cardsString) ->

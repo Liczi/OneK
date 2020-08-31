@@ -15,7 +15,7 @@ internal fun State.Bidding.currentBid(): Int =
         .map(Bidder::lastAction)
         .filterIsInstance<Action.Bidding.Bid>()
         .map(Action.Bidding.Bid::amount)
-        .max() ?: 0
+        .maxOrNull() ?: 0
 
 internal fun isValidBid(
     bid: Int,

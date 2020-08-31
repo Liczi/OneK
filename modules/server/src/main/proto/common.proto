@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "oneK.proto.common";
+
+message ToGivePayload {
+  repeated ToGive payload = 1;
+}
+
+message ToGive {
+  Player player = 1;
+  Card card = 2;
+}
+
+message Player {
+  string uuid = 1;
+  string name = 2;
+}
+
+message Card {
+  string figure = 1;
+  string color = 2;
+}
+
+message CardHolder {
+  Player player = 1;
+  repeated Card cards = 2;
+}

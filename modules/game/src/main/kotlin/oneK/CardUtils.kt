@@ -60,7 +60,7 @@ private val ALL_NINES = "9S,9C,9D,9H".asCardSet()
 
 fun Set<Card>.containsAllNines(): Boolean = this.containsAll(ALL_NINES)
 
-internal fun Collection<Card>.splitCardsToEqualSets(setsCount: Int): List<Set<Card>> {
+fun Collection<Card>.splitCardsToEqualSets(setsCount: Int): List<Set<Card>> {
     require(this.size % setsCount == 0)
     val desiredSize = this.size / setsCount
     return this.withIndex()

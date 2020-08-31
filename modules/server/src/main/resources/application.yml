@@ -1,0 +1,6 @@
+micronaut:
+  application:
+    name: oneK-server
+game:
+  variant:
+    players: 2

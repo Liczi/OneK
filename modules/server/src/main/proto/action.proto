@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+import "common.proto";
+
+option java_multiple_files = true;
+option java_package = "oneK.proto.action";
+
+message Action {
+  oneof action {
+    BiddingAction bidding = 1;
+    ReviewAction review = 2;
+    StrifeAction strife = 3;
+    SummaryAction summary = 4;
+  }
+}
+
+message BiddingAction {
+  enum BiddingActionType {
+    BID = 0;
+    FOLD = 1;
+  }
+  BiddingActionType type = 1;
+  int32 amount = 2;
+}
+
+message ReviewAction {
+  enum ReviewActionType {
+    PICK = 0;
+    DISTRIBUTE = 1;
+    CHANGE = 2;
+    CONFIRM = 3;
+    RESTART = 4;
+  }
+  ReviewActionType type = 1;
+  ReviewActionPayload payload = 2;
+}
+
+message ReviewActionPayload {
+  oneof payload {
+    int32 talonInd = 1;
+    int32 newBid = 2;
+    ToGivePayload distribute = 3;
+  }
+}
+
+message StrifeAction {
+  enum StrifeActionType {
+    PLAY = 0;
+    TRIUMPH = 1;
+  }
+  StrifeActionType type = 1;
+  Card card = 2;
+}
+
+message SummaryAction {
+  enum SummaryActionType {
+    START = 0;
+  }
+  SummaryActionType type = 1;
+}

@@ -2,13 +2,14 @@ package oneK
 
 import oneK.deck.Card
 import oneK.player.Player
+import oneK.state.Action
 import oneK.state.FoldingEffect
 import oneK.state.PlayingEffect
 import oneK.state.State
 import oneK.validation.Validator
 
 abstract class ValidatedGame(
-    private val validator: Validator
+    val validator: Validator
 ) {
     protected abstract fun doStart(state: State.Summary): State.Bidding
 
@@ -78,7 +79,22 @@ abstract class ValidatedGame(
             doTriumph(state, card)
         else illegalState(state, "card" to card)
 
+    fun perform(action: Action, state: State): State =
+        when (action) {
+            Action.Summary.Start -> this.start(state as State.Summary)
+            is Action.Bidding.Bid -> this.bid(state as State.Bidding, action.amount)
+            Action.Bidding.Fold -> this.fold(state as State.Bidding).state()
+            is Action.Review.Pick -> this.pickTalon(state as State.Review, action.talonInd)
+            is Action.Review.Change -> this.changeBid(state as State.Review, action.newBid)
+            is Action.Review.Distribute -> this.distributeCards(state as State.Review, action.toGive)
+            Action.Review.Restart -> this.restart(state as State.Review)
+            Action.Review.Confirm -> this.confirm(state as State.Review)
+            is Action.Strife.Play -> this.play(state as State.Strife, action.card).state()
+            is Action.Strife.Triumph -> this.triumph(state as State.Strife, action.card)
+        }
+
     private fun <T> illegalState(state: State, vararg arguments: Any): T {
         throw IllegalStateException("Illegal action on oneK.state: $state, arguments: ${arguments.joinToString()}")
     }
+
 }

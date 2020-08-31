@@ -2,8 +2,22 @@ package oneK
 
 import oneK.deck.Card
 import oneK.player.Player
-import oneK.service.*
-import oneK.state.*
+import oneK.service.BiddingService
+import oneK.service.DefaultBiddingServiceImpl
+import oneK.service.DefaultReviewServiceImpl
+import oneK.service.DefaultStrifeServiceImpl
+import oneK.service.DefaultSummaryServiceImpl
+import oneK.service.ReviewService
+import oneK.service.StrifeService
+import oneK.service.SummaryService
+import oneK.state.FoldingEffect
+import oneK.state.PlayingEffect
+import oneK.state.State
+import oneK.state.addPointsAndClearBoard
+import oneK.state.isAllCardsPlayed
+import oneK.state.isBoardFull
+import oneK.state.transitionToReviewState
+import oneK.state.transitionToSummaryState
 import oneK.validation.DefaultValidator
 import oneK.validation.Validator
 import oneK.variant.Variant

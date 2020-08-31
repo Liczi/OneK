@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+import "action.proto";
+import "state.proto";
+
+option java_multiple_files = true;
+option java_package = "oneK.proto";
+option java_outer_classname = "Server";
+option objc_class_prefix = "ONEK";
+
+package oneK;
+
+//TODO change to list message instead of stream
+service GameService {
+  rpc perform(PerformPayload) returns (State);
+  rpc actions(State) returns (Actions);
+  rpc start(StartPayload) returns (State);
+}
+
+message Actions {
+  repeated Action actions = 1;
+}
+
+message PerformPayload {
+  Action action = 1;
+  State state = 2;
+}
+
+message StartPayload {
+  repeated string names = 1;
+}
