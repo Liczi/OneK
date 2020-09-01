@@ -25,7 +25,7 @@ def main(player_names, player_agents):
             break  # TODO return stats
         else:
             current_uuid = game.current_player(state)
-            game.set_current = current_uuid
+            game.set_current = current_uuid  # TODO stateful
             player = next(player for player in players if player['uuid'] == current_uuid)
             move = player['agent'].choose_move(state)
             state = game.apply_move(state, move)
@@ -34,4 +34,4 @@ def main(player_names, player_agents):
 
 OneKGame.randomize = False
 if __name__ == '__main__':
-    main(["MCTSPlayer", "RandomPlayer"], [MCTSAgent(game, 100), RandomAgent(game)])
+    main(["MCTS", "Random"], [MCTSAgent(game, 100), RandomAgent(game)])

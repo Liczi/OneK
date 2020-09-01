@@ -2,6 +2,15 @@ def get_actual_state(state):
     return getattr(state, state.WhichOneof('state'))
 
 
+def get_current_entity(parent_state):
+    state = get_actual_state(parent_state)
+    return state.order[state.current - 1]
+
+
+def get_current_player(parent_state):
+    return extract_player(get_current_entity(parent_state))
+
+
 def get_game_winner(state):
     ranking = get_actual_state(state).ranking
     return next(iter([uuid for uuid, points in ranking.items() if points >= 1000]), None)
@@ -29,3 +38,25 @@ def extract_player(entity):
         return entity.player
     else:
         return entity.holder.player
+
+
+def extract_player_cards(entity):
+    if getattr(entity, 'cards', None):
+        return [card_to_string(it) for it in entity.cards]
+    elif getattr(entity, 'holder', None):
+        return [card_to_string(it) for it in entity.holder.cards]
+    else:
+        return []
+
+
+def extract_board(state):
+    order = state.order
+    if getattr(order[0], 'is_constrained', None):
+        return [card_to_string(it.last_action.card) for it in order if
+                getattr(it, 'last_action', None) and it.last_action.card.figure]
+    else:
+        return []
+
+
+def card_to_string(card):
+    return f"{card.figure} of {card.color}"

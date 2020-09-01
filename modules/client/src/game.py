@@ -1,20 +1,20 @@
+from base64 import b64encode
 from google.protobuf.json_format import MessageToJson
 from mittmcts import Draw
+from proto import Server
 from utils import get_actual_state, get_stage_winner, extract_player
-
-from server import Server
 
 
 class Move:
 
     def __init__(self, action) -> None:
         self.action = action
-        self.action_json = MessageToJson(action)
+        self.action_json = MessageToJson(action, sort_keys=True, indent=-1)
 
     def __hash__(self) -> int:
-        return hash(self.action_json)
-        # TODO change
-        # return action_hash(self.action)
+        # return hash(self.action_json)
+        # TODO change TEST
+        return int.from_bytes(b64encode(self.action_json), 'big')
 
 
 class OneKGame(object):

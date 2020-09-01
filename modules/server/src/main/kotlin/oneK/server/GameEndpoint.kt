@@ -38,7 +38,14 @@ class GameEndpoint(
         val names = request.namesList.toList()
         if (playersCount.toInt() != names.size)
             responseObserver.onError(IllegalArgumentException("Couldn't create new game for $names. This server handles $playersCount-player games."))
-        val state = gameService.startGame(names)
+        val state = gameService.start(names)
+        responseObserver.onNext(state.toProtoMessage())
+        responseObserver.onCompleted()
+    }
+
+    override fun restart(request: State, responseObserver: StreamObserver<State>) {
+        val nameToUuid = request.summary.orderList.map { Pair(it.name, it.uuid) }
+        val state = gameService.restart(nameToUuid)
         responseObserver.onNext(state.toProtoMessage())
         responseObserver.onCompleted()
     }

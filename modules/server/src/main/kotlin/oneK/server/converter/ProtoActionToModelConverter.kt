@@ -28,7 +28,7 @@ private fun ReviewAction.toModel(): Action.Review =
     when (this.type) {
         ReviewAction.ReviewActionType.PICK -> Action.Review.Pick(this.payload.talonInd)
         ReviewAction.ReviewActionType.DISTRIBUTE -> Action.Review.Distribute(this.payload.distribute.toModel())
-        ReviewAction.ReviewActionType.CHANGE -> Action.Review.Change(this.payload.newBid)
+        ReviewAction.ReviewActionType.BID -> Action.Review.Change(this.payload.newBid)
         ReviewAction.ReviewActionType.CONFIRM -> Action.Review.Confirm
         ReviewAction.ReviewActionType.RESTART -> Action.Review.Restart
         else -> error("Unrecognized action type!")

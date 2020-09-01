@@ -2,6 +2,7 @@ package oneK.state
 
 import oneK.player.Player
 import oneK.rotate
+import oneK.service.DefaultReviewServiceImpl.performPickTalon
 import java.lang.Integer.max
 
 internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransition {
@@ -11,7 +12,7 @@ internal fun State.Bidding.transitionToReviewState(): FoldingEffect.ReviewTransi
             initialBid = this.currentBid(),
             talon = Choice.of(this.talon),
             ranking = this.ranking
-        )
+        ).performPickTalon(this.talon.indices.random()) // TODO solely for agent training purposes
     )
 }
 

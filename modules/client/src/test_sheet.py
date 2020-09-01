@@ -13,3 +13,5 @@ print(list(zip(l, l)))
 print(list(zip(l, l)))
 print(list(zip(list(zip(l, l)), l)))
 print([{'a': a, 'b': b, 'c': c} for (a, b), c in zip(list(zip(a, b)), c)])
+
+print(list(range(1,3)))

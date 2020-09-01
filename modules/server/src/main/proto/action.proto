@@ -27,7 +27,7 @@ message ReviewAction {
   enum ReviewActionType {
     PICK = 0;
     DISTRIBUTE = 1;
-    CHANGE = 2;
+    BID = 2;
     CONFIRM = 3;
     RESTART = 4;
   }

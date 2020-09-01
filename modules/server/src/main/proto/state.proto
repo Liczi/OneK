@@ -37,7 +37,7 @@ message ReviewState {
   repeated Card taken = 6;
   map<string, int32> ranking = 7;
   ToGivePayload to_give = 8;
-  int32 changedBid = 9;
+  int32 changed_bid = 9;
 }
 
 message StrifeState {
@@ -45,14 +45,14 @@ message StrifeState {
   int32 current = 2;
   int32 bid = 3;
   map<string, int32> ranking = 4;
-  string currentTriumph = 5;
+  string current_triumph = 5;
 }
 
 message Strifer {
   CardHolder holder = 1;
-  StrifeAction lastAction = 2;
+  StrifeAction last_action = 2;
   int32 points = 3;
-  bool isConstrained = 4;
+  bool is_constrained = 4;
 }
 
 message SummaryState {

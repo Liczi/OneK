@@ -14,6 +14,7 @@ service GameService {
   rpc perform(PerformPayload) returns (State);
   rpc actions(State) returns (Actions);
   rpc start(StartPayload) returns (State);
+  rpc restart(State) returns (State);
 }
 
 message Actions {
@@ -27,4 +28,9 @@ message PerformPayload {
 
 message StartPayload {
   repeated string names = 1;
+}
+
+message RestartPayload {
+  repeated string names = 1;
+  repeated string uuids = 2;
 }

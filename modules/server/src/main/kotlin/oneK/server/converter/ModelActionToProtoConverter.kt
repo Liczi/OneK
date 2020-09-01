@@ -54,7 +54,7 @@ private fun Action.Review.toProtoMessage(): ReviewAction {
             .type = ReviewAction.ReviewActionType.PICK
         is Action.Review.Change -> builder
             .setPayload(reviewPayloadWith { this.setNewBid(this@toProtoMessage.newBid) })
-            .type = ReviewAction.ReviewActionType.CHANGE
+            .type = ReviewAction.ReviewActionType.BID
         is Action.Review.Distribute -> builder
             .setPayload(reviewPayloadWith { this.setDistribute(this@toProtoMessage.toGive.toProtoMessage()) })
             .type = ReviewAction.ReviewActionType.DISTRIBUTE
