@@ -1,7 +1,6 @@
-from base64 import b64encode
-from google.protobuf.json_format import MessageToJson
 from mittmcts import Draw
 from proto import Server
+from state_utils import to_simple_action_string
 from utils import get_actual_state, get_stage_winner, extract_player
 
 
@@ -9,12 +8,13 @@ class Move:
 
     def __init__(self, action) -> None:
         self.action = action
-        self.action_json = MessageToJson(action, sort_keys=True, indent=-1)
+        self.simple_action = to_simple_action_string(action)  # MessageToJson(action, sort_keys=True, indent=-1)
+
+    def __eq__(self, o: object) -> bool:
+        return self.simple_action == o.simple_action
 
     def __hash__(self) -> int:
-        # return hash(self.action_json)
-        # TODO change TEST
-        return int.from_bytes(b64encode(self.action_json), 'big')
+        return int.from_bytes(self.simple_action.encode("ascii"), 'big')
 
 
 class OneKGame(object):
@@ -31,7 +31,7 @@ class OneKGame(object):
 
     @staticmethod
     def get_moves(state):
-        if OneKGame.randomize and OneKGame.current_player(state) == OneKGame.current_player:
+        if OneKGame.randomize and OneKGame.current_player(state) != OneKGame.current_player:
             return True, [Move(it) for it in Server.get_moves(state)]
         return False, [Move(it) for it in Server.get_moves(state)]
 

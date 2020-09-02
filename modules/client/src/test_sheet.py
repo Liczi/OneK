@@ -3,15 +3,13 @@ l = [1, 2]
 a = [1, 2]
 b = [3, 4]
 c = [5, 6]
-print(any([z >= 2 for z in x.values()]))
+import pickle
 
-# print(next([x for x in x.items()]))
+# with open(f"data/qlearning-epoch-500.pickle", 'rb') as handle:
+#     print(pickle.load(handle))
 
-print(max(x.keys(), key=(lambda key: x[key])))
+import pandas as pd
 
-print(list(zip(l, l)))
-print(list(zip(l, l)))
-print(list(zip(list(zip(l, l)), l)))
-print([{'a': a, 'b': b, 'c': c} for (a, b), c in zip(list(zip(a, b)), c)])
-
-print(list(range(1,3)))
+# q_df = pd.read_csv('data/agent/qlearning-epoch-100000.csv')
+# q_df.drop(columns='to_drop').to_csv('data/agent/qlearning-epoch-100000.csv', index=False)
+# q_df

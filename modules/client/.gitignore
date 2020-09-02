@@ -2,3 +2,6 @@
 venv
 src/generated
 __pycache__
+/src/data/
+/src/notebooks/data/
+/src/notebooks/.ipynb_checkpoints/

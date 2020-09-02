@@ -2,6 +2,10 @@ def get_actual_state(state):
     return getattr(state, state.WhichOneof('state'))
 
 
+def get_actual_action(action):
+    return getattr(action, action.WhichOneof('action'))
+
+
 def get_current_entity(parent_state):
     state = get_actual_state(parent_state)
     return state.order[state.current - 1]
@@ -59,4 +63,4 @@ def extract_board(state):
 
 
 def card_to_string(card):
-    return f"{card.figure} of {card.color}"
+    return f"{card.figure[0]}{card.color[0]}"
