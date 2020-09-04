@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import pickle
 import time
 from card_utils import compute_potential, triumph_points
@@ -7,7 +8,7 @@ from mcts_agent import MCTSAgent
 from proto import Server
 from pyqlearning.qlearning.greedy_q_learning import GreedyQLearning
 from random_agent import RandomAgent
-from state_utils import StateWrapper, ActionWrapper, MinimalStateWrapper
+from state_utils import ActionWrapper, MinimalStateWrapper
 from tqdm import tqdm
 from utils import extract_player_cards, get_actual_state, get_current_entity, get_current_player, \
     get_actual_action
@@ -82,6 +83,7 @@ def simple_reward(self, state_key, action_key, next_state_key, available_actions
         round_ranking = state.state.summary.round_ranking
         other_sum = sum([points for uuid, points in round_ranking.items() if uuid != self.uuid])
         return round_ranking[self.uuid] - other_sum
+
     if next_state_key.state.HasField("summary"):
         return get_reward_from_parent_state(next_state_key)
     elif state_key.state.HasField("summary"):
@@ -138,7 +140,9 @@ class OneKQlearningTrainer(GreedyQLearning):
         if self.epochs % STATS_EACH == 0:
             self.q_table_stats.append(self.q_df.describe())
             self.step_times.append((time.time() - self.step_started) / STATS_EACH)
-            checkpoint_stats({'q_table_stats': self.q_table_stats, 'step_times': self.step_times}, "data/runtime_stats")
+            self.step_started = time.time()
+            checkpoint_stats({'step_times': self.step_times}, "data/runtime_stats")
+            checkpoint_pandas_stats(self.q_table_stats, "data/runtime_q_table")
         if self.epochs % PRINT_EACH == 0:
             self.pbar.close()
             self.pbar = tqdm(total=PRINT_EACH)
@@ -147,7 +151,6 @@ class OneKQlearningTrainer(GreedyQLearning):
             print(self.q_df.nlargest(10, 'q_value'))
             print(self.q_df.nsmallest(10, 'q_value'))
             self.epoch_started = time.time()
-            self.step_started = time.time()
             print("\n")
         if self.epochs % EVAL_EACH == 0:
             win_ratio, avg_moves, point_stats = test_agents(TRAINING_PLAYERS, [self, RandomAgent()], TEST_GAMES)
@@ -166,6 +169,11 @@ class OneKQlearningTrainer(GreedyQLearning):
         return action_key.action
 
 
+def checkpoint_pandas_stats(pd_stats, name):
+    pd.concat(pd_stats, axis=1).transpose().reset_index() \
+        .drop("index", axis=1).to_pickle(f"{name}.pickle", protocol=pickle.HIGHEST_PROTOCOL)
+
+
 def checkpoint_stats(stats, name):
     with open(f"{name}.pickle", 'wb') as handle:
         pickle.dump(stats, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -175,21 +183,21 @@ def checkpoint_agent(agent, name):
     agent.q_df.to_csv(f"{name}.csv", index=False)
 
 
-STATS_EACH = 10_000
+STATS_EACH = 50
 EPOCH_LIMIT = 100_000_000_000_000  # TODO decrease
 PRINT_EACH = 10_000
 EVAL_EACH = 50_000
+TEST_GAMES = 1
 
 # TODO OVERRIDEN
-# PRINT_EACH = 1
-# EVAL_EACH = 1
-# STATS_EACH = 1
-
-TEST_GAMES = 30
+# PRINT_EACH = 10
+# EVAL_EACH = 10
+# STATS_EACH = 10
+# TEST_GAMES = 1
 
 # TODO make more efficient
 # profile - scalar compare
-import pandas as pd
+from state_utils import StateWrapper
 if __name__ == '__main__':
     _state = Server.initial_state(TRAINING_PLAYERS)
     mcts_agent = MCTSAgent(OneKGame, 2)
@@ -199,9 +207,9 @@ if __name__ == '__main__':
 
     # agent = OneKQlearningTrainer(trainer=mcts_agent)
     # _state_wrapper = StateWrapper
-    _state_wrapper = MinimalStateWrapper
-    agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=simple_reward)
-    # agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=sophisticated_reward)
+    _state_wrapper = StateWrapper
+    # agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=simple_reward)
+    agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=sophisticated_reward)
 
     agent.set_epsilon_greedy_rate(0.75)
     # agent.set_alpha_value(0.5)

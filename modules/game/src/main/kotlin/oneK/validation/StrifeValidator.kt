@@ -15,13 +15,14 @@ interface StrifeValidator {
 class StrifeStateValidatorImpl(private val variant: Variant) : StrifeValidator {
     override fun canPlay(state: State.Strife, card: Card): Boolean =
         state.currentPlayerHas(card)
-                && state.firstCard().let { state.boardIsEmptyOrColorNotPresent(it) || hasMatchingColor(it, card) }
+            && state.firstCard().let { state.boardIsEmptyOrColorNotPresent(it) || hasMatchingColor(it, card) }
 
+    //TODO can reduce to ?.let { state.boardIsEmptyOrColorNotPresent(it) || hasMatchingColor(it, card) } ?: true
     override fun canTriumph(state: State.Strife, card: Card): Boolean =
         card.figure == Figure.QUEEN
-                && state.currentPlayerHas(Card(Figure.KING, card.color))
-                && state.currentPlayerHas(card)
-                && state.currentCardsUnordered().isEmpty()
+            && state.currentPlayerHas(Card(Figure.KING, card.color))
+            && state.currentPlayerHas(card)
+            && state.currentCardsUnordered().isEmpty()
 
     private fun State.Strife.boardIsEmptyOrColorNotPresent(firstCard: Card?) =
         firstCard?.let { first -> !this.order.current().cards.any { it.color == first.color } } ?: true

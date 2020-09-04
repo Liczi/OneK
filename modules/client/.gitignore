@@ -5,3 +5,5 @@ __pycache__
 /src/data/
 /src/notebooks/data/
 /src/notebooks/.ipynb_checkpoints/
+/.idea/
+/src/plots/

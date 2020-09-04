@@ -2,6 +2,7 @@ from card_utils import compute_potential
 from utils import extract_player_cards, get_actual_state, extract_board, card_to_string, get_actual_action, \
     get_current_entity
 
+
 # TODO extract Wrapper class
 class MinimalStateWrapper:
     def __init__(self, state) -> None:
@@ -59,6 +60,7 @@ def to_minimal_state_string(state):
     if state.HasField("review") and not state.review.HasField("to_give"):
         return "--"
     elif state.HasField("bidding") or state.HasField("review"):
+        # potential = compute_potential(extract_player_cards(get_current_entity(state))) // 10  # TODO
         potential = compute_potential(extract_player_cards(get_current_entity(state)))
         return f"P:{potential}"
     # elif :
@@ -69,6 +71,8 @@ def to_minimal_state_string(state):
         return f"B:{board}|T:{triumph}"
     else:
         return "--"
+
+
 # def to_minimal_state_string(state):
 #     actual_state = get_actual_state(state)
 #     if state.HasField("bidding") or state.HasField("review"):

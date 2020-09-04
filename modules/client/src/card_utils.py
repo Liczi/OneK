@@ -1,4 +1,5 @@
 from collections import defaultdict
+from utils import extract_player_cards, get_current_entity
 
 triumph_points = {
     'H': 100,
@@ -34,6 +35,40 @@ def compute_potential(card_strings):
         else:
             card_sum = 0
     return card_sum + triumph_sum
+
+
+def compute_potential_diff(state, action):
+    if state.HasField("review"):
+        if action.review.type == 2:  # BID
+            current_bid = action.review.payload.new_bid
+            potential = compute_potential(extract_player_cards(get_current_entity(state)))
+            return current_bid - potential if current_bid < potential else None
+        elif action.review.type == 3:  # CONFIRM = 3;
+            if state.review.changed_bid <= 0:
+                potential = compute_potential(extract_player_cards(get_current_entity(state)))
+                current_bid = state.review.initial_bid
+                return current_bid - potential if current_bid < potential else None
+            return None
+        else:
+            return None
+    else:
+        return None
+
+
+def did_fold_within_potential(state, action):
+    if state.HasField("bidding"):
+        current_bid = [it.last_action for it in state.bidding.order if it.HasField("last_action")]
+        current_bid = [it.amount for it in current_bid if it.type == 0]
+        current_bid = 100 if not current_bid else max(current_bid)
+
+        potential = compute_potential(extract_player_cards(get_current_entity(state)))
+        did_bid = action.bidding.type == 0
+        if did_bid:
+            return 1 if current_bid + 10 <= potential else 0
+        else:
+            return -1 if current_bid + 10 <= potential else 0
+    else:
+        return None
 
 
 def get_triumph_colors(card_strings):

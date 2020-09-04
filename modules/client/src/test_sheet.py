@@ -13,3 +13,11 @@ import pandas as pd
 # q_df = pd.read_csv('data/agent/qlearning-epoch-100000.csv')
 # q_df.drop(columns='to_drop').to_csv('data/agent/qlearning-epoch-100000.csv', index=False)
 # q_df
+
+with open(f"data/IS-MCTS-time-c-10.pickle", 'rb') as f:
+    data = pickle.load(f)
+print(data)
+
+# with open(f"data/qlearning-invalid-to-plot/runtime_q_table.pickle", 'rb') as f:
+#     data = pickle.load(f)
+# print(data)
