@@ -4,9 +4,9 @@ import pickle
 import seaborn as sns
 
 
-def plot(data, title, x_y_labels, file_name, palette=None, dashes=None, ci=None, std=None):
+def plot(data, title, x_y_labels, file_name, ci=None, std=None):
     sns.set_style("whitegrid")
-    fig = sns.lineplot(data=data, palette=palette, dashes=dashes)
+    fig = sns.lineplot(data=data)
     fig.set(xlabel=x_y_labels[0], ylabel=x_y_labels[1])
     plt.title(title)
     x = data.index.values
@@ -38,13 +38,9 @@ with open(f"data/qlearning-working-simple-r/runtime_stats.pickle", 'rb') as f:
 print(data)
 print(data2)
 
-first_label = 'roz'
-second_label = 'pod'
-columns_mapping = {'mean_x': first_label, 'mean_y': second_label}  # TODO
-
-columns_mapping = {'max_x': first_label + '-max', 'min_x': first_label + '-min', 'max_y': second_label + '-max',
-                   'min_y': second_label + '-min'}
-
+first_label = 'rozszerzona'
+second_label = 'podstawowa'
+columns_mapping = {'mean_x': first_label, 'mean_y': second_label}
 std_mappings = {'std_x': first_label, 'std_y': second_label}
 ci_mappings = {first_label: ['max_x', 'min_x'], second_label: ['max_y', 'min_y']}
 merged = pd.concat([data, data3], axis=1).merge(pd.concat([data2, data4], axis=1), left_index=True,
@@ -61,16 +57,9 @@ print(to_print)
 
 # plot(data=to_print, title="Zależność czasu przetworzenia jednego kroku od numeru kroku uczenia", x_y_labels=["krok", "czas [s]"],
 #      file_name="full_figure.png")
-# std_df = merged[std_mappings.keys()].rename(columns=std_mappings)  # TODO subtract from y
-# ci_df = {k: [merged[it] for it in v] for k, v in ci_mappings.items()}
-
-p = sns.color_palette("Paired")
-palette = None
-dashes = None
-# dashes = ["", "", (3, 1), (3, 1)]
-palette = [p[2], p[4], p[3], p[5]]
-dashes = ["", "", "", ""]
-plot(data=to_print, title="Zależność wartości minimalnej i maksymalnej Q od kroku uczenia",
-     x_y_labels=["krok", "wartość Q"], file_name="full_figure.png", palette=palette, dashes=dashes)  # , std=std_df) # ci=ci_df
+std_df = merged[std_mappings.keys()].rename(columns=std_mappings)  # TODO subtract from y
+ci_df = {k: [merged[it] for it in v] for k, v in ci_mappings.items()}
+plot(data=to_print, title="Zależność wilekość Q-table od kroku uczenia", x_y_labels=["krok", "rozmiar Q-table"],
+     file_name="full_figure.png", std=std_df) # ci=ci_df
 # plot(data=data2['count'], title="Zależność wilekość Q-table od kroku uczenia",
 #      x_y_labels=["krok", "rozmiar Q-table"], file_name="full_figure.png")

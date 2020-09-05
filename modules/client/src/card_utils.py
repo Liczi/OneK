@@ -55,6 +55,8 @@ def compute_potential_diff(state, action):
         return None
 
 
+# returns 1 if did bid inside potential or folded outside
+# returns -1 if did fold inside potential or bid outside
 def did_fold_within_potential(state, action):
     if state.HasField("bidding"):
         current_bid = [it.last_action for it in state.bidding.order if it.HasField("last_action")]

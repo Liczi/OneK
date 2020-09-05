@@ -100,10 +100,12 @@ class OneKQlearningTrainer(GreedyQLearning):
     q_table_stats = []
     step_times = []
     pbar = None
+    results = []
 
-    def __init__(self, state_wrapper, reward_fun, trainer=None):
+    def __init__(self, name, state_wrapper, reward_fun, trainer=None):
         # super.__epsilon_greedy_rate = epsilon
         # self.__alpha_value = alpha
+        self.name = name
         self.state_wrapper = state_wrapper
         self.trainer = trainer
         self.reward_fun = reward_fun
@@ -135,14 +137,16 @@ class OneKQlearningTrainer(GreedyQLearning):
         return not next_action_list
 
     def visualize_learning_result(self, state_key):
+        def transform(entry):
+            return {k: np.mean(v.values[0]) for k,v in pd.DataFrame(entry).items()}
         self.epochs += 1
         self.pbar.update(1)
         if self.epochs % STATS_EACH == 0:
             self.q_table_stats.append(self.q_df.describe())
             self.step_times.append((time.time() - self.step_started) / STATS_EACH)
             self.step_started = time.time()
-            checkpoint_stats({'step_times': self.step_times}, "data/runtime_stats")
-            checkpoint_pandas_stats(self.q_table_stats, "data/runtime_q_table")
+            checkpoint_stats({'step_times': self.step_times}, f"data/qlearning-{self.name}-runtime-stats")
+            checkpoint_pandas_stats(self.q_table_stats, f"data/qlearning-{self.name}-runtime-q-table")
         if self.epochs % PRINT_EACH == 0:
             self.pbar.close()
             self.pbar = tqdm(total=PRINT_EACH)
@@ -153,11 +157,14 @@ class OneKQlearningTrainer(GreedyQLearning):
             self.epoch_started = time.time()
             print("\n")
         if self.epochs % EVAL_EACH == 0:
-            win_ratio, avg_moves, point_stats = test_agents(TRAINING_PLAYERS, [self, RandomAgent()], TEST_GAMES)
-            print(f"Tested step, win ratio: {win_ratio}, avg moves: {avg_moves}, points (mean, std): {point_stats}")
-            name = f"data/qlearning-epoch-{agent.epochs}"
+            results = test_agents(TRAINING_PLAYERS, [self, RandomAgent()], TEST_GAMES)
+            # print(f"Tested step, win ratio: {win_ratio}, avg moves: {avg_moves}, points (mean, std): {point_stats}")
+            name = f"data/qlearning-{self.name}-epoch-{self.epochs}"
             checkpoint_agent(self, name)
-            checkpoint_stats({'win_ratio': win_ratio, 'avg_moves': avg_moves, 'point_stats': point_stats}, name)
+            print(f"Win ratio {results[0]}")
+            print(f"moves: {pd.DataFrame(results[1]).mean()}; points: {transform(results[2])}; potentials: {transform(results[3])}; did_folds: {transform(results[4])};")
+            self.results.append(results)
+            checkpoint_stats(self.results, f"data/qlearning-{self.name}-game-results")
             print("\n")
 
     def choose_move(self, state):
@@ -183,23 +190,22 @@ def checkpoint_agent(agent, name):
     agent.q_df.to_csv(f"{name}.csv", index=False)
 
 
-STATS_EACH = 50
-EPOCH_LIMIT = 100_000_000_000_000  # TODO decrease
-PRINT_EACH = 10_000
-EVAL_EACH = 50_000
-TEST_GAMES = 1
+EPOCH_LIMIT = 500_000
+STATS_EACH = 25_000
+PRINT_EACH = 25_000
+EVAL_EACH = 25_000
+TEST_GAMES = 10
 
 # TODO OVERRIDEN
-# PRINT_EACH = 10
-# EVAL_EACH = 10
-# STATS_EACH = 10
+# EPOCH_LIMIT = 1
+#
+# PRINT_EACH = 1
+# EVAL_EACH = 1
+# STATS_EACH = 1
 # TEST_GAMES = 1
 
-# TODO make more efficient
-# profile - scalar compare
-from state_utils import StateWrapper
+from state_utils import StateWrapper, MinimalStateWrapper
 if __name__ == '__main__':
-    _state = Server.initial_state(TRAINING_PLAYERS)
     mcts_agent = MCTSAgent(OneKGame, 2)
     # agent = OneKQlearningTrainer(epsilon=0.75, trainer=)
     # q_df = pd.read_csv('data/agent/qlearning-epoch-150000.csv')
@@ -207,18 +213,26 @@ if __name__ == '__main__':
 
     # agent = OneKQlearningTrainer(trainer=mcts_agent)
     # _state_wrapper = StateWrapper
-    _state_wrapper = StateWrapper
+    _state_wrapper = MinimalStateWrapper
     # agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=simple_reward)
-    agent = OneKQlearningTrainer(state_wrapper=_state_wrapper, reward_fun=sophisticated_reward)
 
-    agent.set_epsilon_greedy_rate(0.75)
-    # agent.set_alpha_value(0.5)
-    # agent.q_df = q_df
-    agent.reset_uuid(_state)
-    agent.pbar = tqdm(total=PRINT_EACH)
+    # for alpha in [0.001, 0.01, 0.1, 1]:  # TODO was interrupted
+    for fun_name, fun in [('simple_reward', simple_reward), ('sophisticated_reward', sophisticated_reward)]:
+    # for fun_name, fun in [('sophisticated_reward', sophisticated_reward)]:
+        for epsilon in [0.3, 0.75, 0.9]:
+            # print(f"Running tests for alpha={alpha}, fun={fun_name}")
+            print(f"Running tests for epsilon={epsilon}, fun={fun_name}")
+            _state = Server.initial_state(TRAINING_PLAYERS)
+            agent = OneKQlearningTrainer(f"epsilon-{epsilon}-{fun_name}", state_wrapper=_state_wrapper, reward_fun=fun)
 
-    agent.learn(state_key=_state_wrapper(_state), limit=EPOCH_LIMIT)
+            agent.set_epsilon_greedy_rate(epsilon)
+            # agent.set_alpha_value(alpha)
+            # agent.q_df = q_df
+            agent.reset_uuid(_state)
+            agent.pbar = tqdm(total=PRINT_EACH)
 
-    while agent.epochs <= EPOCH_LIMIT:
-        agent.restarts += 1
-        agent.learn(state_key=_state_wrapper(Server.restart(_state)), limit=EPOCH_LIMIT - agent.epochs)
+            agent.learn(state_key=_state_wrapper(_state), limit=EPOCH_LIMIT)
+
+            while agent.epochs < EPOCH_LIMIT:
+                agent.restarts += 1
+                agent.learn(state_key=_state_wrapper(Server.restart(_state)), limit=EPOCH_LIMIT - agent.epochs)

@@ -17,7 +17,7 @@ def run(player_names, player_agents):
     # players = [{'agent': agent, 'name': name, 'uuid': uuid} for (name, agent), uuid in
     #            zip(list(zip(player_names, player_agents)), player_uuids)]
 
-    win_ratio, moves, points, potentials, did_folds = test_agents(player_names, player_agents, TEST_GAMES, game)
+    win_ratio, moves, points, potentials, did_folds = test_agents(player_names, player_agents, TEST_GAMES, game, max_moves=1000)
     print(f"Win ratio {win_ratio}")
     # win_ratio, avg_moves, point_stats = test_agents(player_names, player_agents, TEST_GAMES)
     # print(f"Tested step, win ratio: {win_ratio}, avg moves: {avg_moves}, points (mean, std): {point_stats}")
@@ -44,8 +44,6 @@ if __name__ == '__main__':
     # run(["Qlearning-weak", "Random"], [qlearning_weak, RandomAgent()])
     # run(["Qlearning-strong", "Qlearning-weak"], [qlearning_strong, qlearning_weak])
 
-
-
     all_results = {
         'max_time': [],
         'c': [],
@@ -59,19 +57,22 @@ if __name__ == '__main__':
     for max_time in [0.001, 0.01, 0.1, 1]:
         print(f"Running experiment for max_time: {max_time}")
         mcts_agent = MCTSAgent(game=game, max_time=max_time, c=math.sqrt(2))
-        results = run(["MCTS", "Random"], [mcts_agent, WrappingRandomAgent(game)])
+        results = run(["IS-MCTS", "Random"], [mcts_agent, WrappingRandomAgent(game)])
         all_results['max_time'].append({'mcts': mcts_agent.results, 'game': results})
 
     for c in [math.sqrt(it) for it in range(1, 5)]:
         print(f"Running experiment for c: {c}")
         mcts_agent1 = MCTSAgent(game=game, max_time=0.1, c=c)
-        results = run(["MCTS", "Random"], [mcts_agent1, WrappingRandomAgent(game)])
+        results = run(["IS-MCTS", "Random"], [mcts_agent1, WrappingRandomAgent(game)])
         all_results['c'].append({'mcts': mcts_agent1.results, 'game': results})
 
-    checkpoint_stats(all_results, f"data/MCTS-time-c-10")
+    checkpoint_stats(all_results, f"data/IS-MCTS-time-c-10")
 
-    OneKGame.randomize = False
-
+    OneKGame.randomize = True
+    all_results = {
+        'max_time': [],
+        'c': [],
+    }
     for max_time in [0.001, 0.01, 0.1, 1]:
         print(f"Running experiment for max_time: {max_time}")
         mcts_agent = MCTSAgent(game=game, max_time=max_time, c=math.sqrt(2))
@@ -84,5 +85,4 @@ if __name__ == '__main__':
         results = run(["MCTS", "Random"], [mcts_agent1, WrappingRandomAgent(game)])
         all_results['c'].append({'mcts': mcts_agent1.results, 'game': results})
 
-    checkpoint_stats(all_results, f"data/IS-MCTS-time-c-10")
-
+    checkpoint_stats(all_results, f"data/MCTS-time-c-10")

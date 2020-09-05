@@ -14,7 +14,7 @@ import pandas as pd
 # q_df.drop(columns='to_drop').to_csv('data/agent/qlearning-epoch-100000.csv', index=False)
 # q_df
 
-with open(f"data/IS-MCTS-time-c-10.pickle", 'rb') as f:
+with open(f"data/qlearning-alpha-0.1-runtime-stats.pickle", 'rb') as f:
     data = pickle.load(f)
 print(data)
 
