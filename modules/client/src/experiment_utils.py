@@ -96,7 +96,7 @@ def run_game(players, initial_state, max_moves=10_000):
         return player_won(state, players[0]['uuid']), moves, points, potentials, did_folds
 
 
-def test_agents(agent_names, agents, games, stateful_game=None, max_moves=2_000):
+def test_agents(agent_names, agents, games, stateful_game=None, max_moves=20_000):
     wins = draws = 0
     all_moves, all_point_stats, all_potentials, all_did_folds = [], [], [], []
     for _ in tqdm(range(0, games)):

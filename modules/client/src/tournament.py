@@ -41,20 +41,20 @@ def run_with(param_name, params, agents_names, agents_factories):
 
 OneKGame.randomize = False
 if __name__ == '__main__':
-    qlearning_simple_q_path = "data/qlearning-alpha-simple-all/qlearning-alpha-0.1-simple_reward-epoch-100000.csv"
+    qlearning_simple_q_path = "data/qlearning-epsilon-simple-all/qlearning-epsilon-0.75-simple_reward-epoch-500000.csv"
     qlearning_simple = QLearningAgent(qlearning_simple_q_path, MinimalStateWrapper)
     qlearning_simple_wrapper = WrappingQLearningAgent(game, qlearning_simple_q_path, MinimalStateWrapper)
     run(["Qlearning-simple", "Random"], [qlearning_simple, RandomAgent()])
 
-    qlearning_soph_q_path = "data/qlearning-alpha-soph-all/qlearning-alpha-0.1-sophisticated_reward-epoch-100000.csv"
+    qlearning_soph_q_path = "data/qlearning-epsilon-soph-all/qlearning-epsilon-0.75-sophisticated_reward-epoch-500000.csv"
     qlearning_soph = QLearningAgent(qlearning_soph_q_path, MinimalStateWrapper)
     qlearning_soph_wrapper = WrappingQLearningAgent(game, qlearning_soph_q_path, MinimalStateWrapper)
     run(["Qlearning-soph", "Random"], [qlearning_soph, RandomAgent()])
 
     run(["Qlearning-simple", "Qlearning-soph"], [qlearning_simple, qlearning_soph])
 
-    is_mcts = MCTSAgent(game, max_time=1)
-    run(["IS-MCTS", "Random"], [is_mcts, WrappingRandomAgent(game)], game)
+    is_mcts = MCTSAgent(game, max_time=0.5)
+    # run(["IS-MCTS", "Random"], [is_mcts, WrappingRandomAgent(game)], game)
     run(["IS-MCTS", "Qlearning-simple"], [is_mcts, qlearning_simple_wrapper], game)
     run(["IS-MCTS", "Qlearning-soph"], [is_mcts, qlearning_soph_wrapper], game)
 
